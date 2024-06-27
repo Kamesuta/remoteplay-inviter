@@ -1,9 +1,16 @@
 [package]
+edition = "2021"
 name = "remoteplay-inviter"
 version = "0.1.0"
-edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-steam-stuff = { path = "./steam-stuff" }
+anyhow = "1.0.86"
+futures = "0.3.30"
+futures-util = "0.3.30"
+rustls = {version = "0.23.10", default-features = false, features = ["ring"]}
+serde = {version = "1.0.203", features = ["derive"]}
+serde_json = "1.0.118"
+tokio = {version = "1.38.0", features = ["rt-multi-thread", "macros"]}
+tokio-tungstenite = {version = "0.23.1", features = ["rustls-tls-webpki-roots"]}
