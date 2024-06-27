@@ -1,4 +1,4 @@
-use remoteplay_inviter::{SteamStuff_Init, SteamStuff_Shutdown};
+use steam_stuff::{SteamStuff_Init, SteamStuff_Shutdown};
 
 fn main() {
     unsafe {

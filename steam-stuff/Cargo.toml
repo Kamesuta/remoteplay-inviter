@@ -1,9 +1,13 @@
 [package]
-name = "remoteplay-inviter"
+name = "steam-stuff"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-steam-stuff = { path = "./steam-stuff" }
+libc = "0.2.155"
+
+[build-dependencies]
+bindgen = "0.69.4"
+cmake = "0.1.50"

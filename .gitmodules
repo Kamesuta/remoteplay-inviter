@@ -1,3 +1,3 @@
-[submodule "cmake/open-steamworks"]
-	path = cmake/open-steamworks
+[submodule "steam-stuff/cmake/open-steamworks"]
+	path = steam-stuff/cmake/open-steamworks
 	url = https://github.com/m4dEngi/open-steamworks.git
