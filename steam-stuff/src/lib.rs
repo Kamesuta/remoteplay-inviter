@@ -1,6 +1,6 @@
-#![allow(non_upper_case_globals)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
-#![allow(improper_ctypes)]
+mod game_id;
+mod native;
+mod steam_stuff;
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+pub use game_id::{GameID, GameUID};
+pub use steam_stuff::SteamStuff;
