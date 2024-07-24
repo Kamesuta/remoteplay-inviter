@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use futures::SinkExt;
@@ -25,9 +25,15 @@ enum ServerCmd {
 }
 
 #[derive(Serialize, Deserialize)]
+struct User {
+    id: String,
+    name: String,
+}
+
+#[derive(Serialize, Deserialize)]
 struct ServerMessage {
     id: String,
-    user: String,
+    user: User,
     #[serde(flatten)]
     cmd: ServerCmd,
 }
@@ -66,6 +72,63 @@ async fn main() -> Result<()> {
         SteamStuff::new().context("Failed to initialize SteamStuff")?,
     ));
 
+    // 同期オブジェクト (Stringを渡す)
+    let (invite_tx, mut invite_rx) = channel::<(u64, String)>(32);
+
+    // guest_id → Discordのユーザー のマッピング
+    let guest_map = Arc::new(std::sync::Mutex::new(HashMap::<u64, String>::new()));
+
+    // コールバックを登録
+    {
+        let steam = steam.lock().await;
+        {
+            let guest_map = guest_map.clone();
+            steam.set_on_remote_started(move |_invitee, guest_id| {
+                if let Ok(guest_map) = guest_map.lock() {
+                    let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                    println!(
+                        "ユーザーが参加しました: claimer={}, guest_id={}",
+                        user_name, guest_id
+                    );
+                }
+            });
+        }
+        {
+            let guest_map = guest_map.clone();
+            steam.set_on_remote_stopped(move |_invitee, guest_id| {
+                if let Ok(guest_map) = guest_map.lock() {
+                    let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                    println!(
+                        "ユーザーが退出しました: claimer={}, guest_id={}",
+                        user_name, guest_id
+                    );
+                }
+            });
+        }
+        steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
+            // 招待リンクを送信
+            let invite_tx = invite_tx.clone();
+            let connect_url = String::from(connect_url);
+            tokio::spawn(async move {
+                if let Err(err) = invite_tx.send((guest_id, connect_url)).await {
+                    eprintln!("Failed to send invite link: {}", err);
+                }
+            });
+        });
+    }
+
+    // SteamStuff_RunCallbacksを定期的に呼び出すタスクを開始
+    {
+        let steam = steam.clone();
+        task::spawn(async move {
+            let mut interval = time::interval(Duration::from_millis(200));
+            loop {
+                interval.tick().await;
+                steam.lock().await.run_callbacks();
+            }
+        });
+    }
+
     // WebSocketクライアントを作成
     let (ws_stream, _) = connect_async(format!(
         "ws://localhost:8000/?token={}&ver={}",
@@ -75,47 +138,6 @@ async fn main() -> Result<()> {
     .context("Failed to connect")?;
     // サーバーと通信するためのストリームとシンク
     let (mut write, mut read) = ws_stream.split();
-
-    // 同期オブジェクト (Stringを渡す)
-    let (invite_tx, mut invite_rx) = channel::<String>(32);
-
-    // コールバックを登録
-    {
-        let steam = steam.lock().await;
-        steam.set_on_remote_started(|invitee, guest_id| {
-            println!("ユーザーが参加しました: [{}] ({})", guest_id, invitee);
-        });
-        steam.set_on_remote_stopped(|invitee, guest_id| {
-            println!("ユーザーが退出しました: [{}] ({})", guest_id, invitee);
-        });
-        steam.set_on_remote_invited(move |invitee, guest_id, connect_url| {
-            println!(
-                "招待リンクが作成されました: [{}] ({}) -> {}",
-                guest_id, invitee, connect_url
-            );
-
-            // 招待リンクを送信
-            let invite_tx = invite_tx.clone();
-            let connect_url = String::from(connect_url);
-            tokio::spawn(async move {
-                if let Err(err) = invite_tx.send(connect_url).await {
-                    eprintln!("Failed to send invite link: {}", err);
-                }
-            });
-        });
-    }
-
-    // SteamStuff_RunCallbacksを定期的に呼び出すタスクを開始
-    {
-        let steam = Arc::clone(&steam);
-        task::spawn(async move {
-            let mut interval = time::interval(Duration::from_secs(10));
-            loop {
-                interval.tick().await;
-                steam.lock().await.run_callbacks();
-            }
-        });
-    }
 
     // サーバーから受信したメッセージを処理するループ
     while let Some(message) = read.next().await {
@@ -143,6 +165,12 @@ async fn main() -> Result<()> {
                                 };
                             }
 
+                            // ログを出力
+                            println!(
+                                "起動中のゲーム情報を取得しました: game_id={}, claimer={}",
+                                game_id.app_id, msg.user.name
+                            );
+
                             // レスポンスデータを作成
                             ClientMessage {
                                 id: msg.id,
@@ -158,12 +186,24 @@ async fn main() -> Result<()> {
                             // 招待リンクを作成
                             let recv = invite_rx.recv();
                             steam.lock().await.send_invite(0, game_uid);
-                            let link_data = recv.await.context("Failed to receive")?;
+                            let (guest_id, connect_url) =
+                                recv.await.context("Failed to receive")?;
+
+                            // Discordのユーザーとguest_idを紐付け
+                            if let Ok(mut guest_map) = guest_map.lock() {
+                                guest_map.insert(guest_id, msg.user.name.clone());
+                            }
+
+                            // ログを出力
+                            println!(
+                                "招待リンクを作成しました: claimer={}, guest_id={}, game_id={}",
+                                msg.user.name, guest_id, game
+                            );
 
                             // レスポンスデータを作成
                             ClientMessage {
                                 id: msg.id,
-                                cmd: ClientCmd::Link { data: link_data },
+                                cmd: ClientCmd::Link { data: connect_url },
                             }
                         }
                         ServerCmd::Invalid => {
