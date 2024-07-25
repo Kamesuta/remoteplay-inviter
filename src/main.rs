@@ -83,24 +83,24 @@ async fn main() -> Result<()> {
         let steam = steam.lock().await;
         {
             let guest_map = guest_map.clone();
-            steam.set_on_remote_started(move |_invitee, guest_id| {
+            steam.set_on_remote_started(move |invitee, guest_id| {
                 if let Ok(guest_map) = guest_map.lock() {
                     let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                     println!(
-                        "ユーザーが参加しました: claimer={}, guest_id={}",
-                        user_name, guest_id
+                        "ユーザーが参加しました: claimer={}, guest_id={}, steam_id={}",
+                        user_name, guest_id, invitee
                     );
                 }
             });
         }
         {
             let guest_map = guest_map.clone();
-            steam.set_on_remote_stopped(move |_invitee, guest_id| {
+            steam.set_on_remote_stopped(move |invitee, guest_id| {
                 if let Ok(guest_map) = guest_map.lock() {
                     let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                     println!(
-                        "ユーザーが退出しました: claimer={}, guest_id={}",
-                        user_name, guest_id
+                        "ユーザーが退出しました: claimer={}, guest_id={}, steam_id={}",
+                        user_name, guest_id, invitee
                     );
                 }
             });
@@ -167,8 +167,8 @@ async fn main() -> Result<()> {
 
                             // ログを出力
                             println!(
-                                "起動中のゲーム情報を取得しました: game_id={}, claimer={}",
-                                game_id.app_id, msg.user.name
+                                "起動中のゲーム情報を取得しました: claimer={}, game_id={}",
+                                msg.user.name, game_id.app_id
                             );
 
                             // レスポンスデータを作成
