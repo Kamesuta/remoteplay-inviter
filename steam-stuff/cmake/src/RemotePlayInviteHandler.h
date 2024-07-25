@@ -4,6 +4,15 @@
 #include <Steamworks.h>
 #include "Types.h"
 
+// https://github.com/fire64/opensteamworks/blob/320f56f4cc9854eae686b5d8b86e79f16b8397f4/callbacks.json#L1822-L1826
+struct StreamingClientConnected_t
+{
+	enum { k_iCallback = k_iClientRemoteClientManagerCallbacks + 17 };
+
+	char unknown[0x80];
+	RemotePlayPlayer_t m_player;
+};
+
 class RemotePlayInviteHandler
 {
 public:
@@ -43,7 +52,7 @@ public:
 
 private:
 	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayInvited, RemotePlayInviteResult_t, m_remoteInvitedCb);
-	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStarted, RemoteClientStartStreamSession_t, m_remoteStartedCb);
+	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStarted, StreamingClientConnected_t, m_remoteStartedCb);
 	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStopped, RemoteClientStopStreamSession_t, m_remoteStoppedCb);
 };
 

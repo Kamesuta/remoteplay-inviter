@@ -50,7 +50,7 @@ void RemotePlayInviteHandler::OnRemotePlayInvited(RemotePlayInviteResult_t* cb)
 	}
 }
 
-void RemotePlayInviteHandler::OnRemotePlayStarted(RemoteClientStartStreamSession_t* cb)
+void RemotePlayInviteHandler::OnRemotePlayStarted(StreamingClientConnected_t* cb)
 {
 	// Call the session started callback
 	if (m_onRemoteStarted)
