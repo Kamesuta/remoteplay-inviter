@@ -1,9 +1,9 @@
-use std::{collections::HashMap, sync::Arc};
-
 use anyhow::{Context as _, Result};
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
+use indoc::printdoc;
 use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, sync::Arc};
 use steam_stuff::{GameID, GameUID, SteamStuff};
 use tokio::{
     sync::{mpsc::channel, Mutex},
@@ -67,6 +67,17 @@ struct ClientMessage {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    printdoc! {"
+        ------------------------------------------------------------------------------
+                    ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
+                    ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
+                    ╩╚═└─┘┴ ┴└─┘ ┴ └─┘┴  ┴─┘┴ ┴ ┴   ╩┘└┘ └┘ ┴ ┴ └─┘┴└─
+                                                    by Kamesuta
+            Invite your friends via Discord and play Steam games together for free! 
+        ------------------------------------------------------------------------------
+    
+    "};
+
     // SteamStuffを初期化
     let steam = Arc::new(Mutex::new(
         SteamStuff::new().context("Failed to initialize SteamStuff")?,
@@ -87,7 +98,7 @@ async fn main() -> Result<()> {
                 if let Ok(guest_map) = guest_map.lock() {
                     let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                     println!(
-                        "ユーザーが参加しました: claimer={}, guest_id={}, steam_id={}",
+                        "-> User Joined        : claimer={}, guest_id={}, steam_id={}",
                         user_name, guest_id, invitee
                     );
                 }
@@ -99,7 +110,7 @@ async fn main() -> Result<()> {
                 if let Ok(guest_map) = guest_map.lock() {
                     let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                     println!(
-                        "ユーザーが退出しました: claimer={}, guest_id={}, steam_id={}",
+                        "-> User Left          : claimer={}, guest_id={}, steam_id={}",
                         user_name, guest_id, invitee
                     );
                 }
@@ -129,15 +140,23 @@ async fn main() -> Result<()> {
         });
     }
 
+    let uuid = "abc";
+
     // WebSocketクライアントを作成
-    let (ws_stream, _) = connect_async(format!(
-        "ws://localhost:8000/?token={}&ver={}",
-        "abc", "1.0"
-    ))
-    .await
-    .context("Failed to connect")?;
+    let (ws_stream, _) =
+        connect_async(format!("ws://localhost:8000/?token={}&ver={}", uuid, "1.0"))
+            .await
+            .context("Failed to connect")?;
     // サーバーと通信するためのストリームとシンク
     let (mut write, mut read) = ws_stream.split();
+
+    printdoc!(
+        "
+        Type `/steam setup {}` to link your Discord account.
+        
+        ",
+        uuid
+    );
 
     // サーバーから受信したメッセージを処理するループ
     while let Some(message) = read.next().await {
@@ -167,7 +186,7 @@ async fn main() -> Result<()> {
 
                             // ログを出力
                             println!(
-                                "起動中のゲーム情報を取得しました: claimer={}, game_id={}",
+                                "-> Create Panel       : claimer={}, game_id={}",
                                 msg.user.name, game_id.app_id
                             );
 
@@ -196,8 +215,8 @@ async fn main() -> Result<()> {
 
                             // ログを出力
                             println!(
-                                "招待リンクを作成しました: claimer={}, guest_id={}, game_id={}",
-                                msg.user.name, guest_id, game
+                                "-> Create Invite Link : claimer={}, guest_id={}, game_id={}, invite_url={}",
+                                msg.user.name, guest_id, game, connect_url
                             );
 
                             // レスポンスデータを作成

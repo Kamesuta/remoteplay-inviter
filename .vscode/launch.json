@@ -7,25 +7,6 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in library 'remoteplay-inviter'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--lib",
-                    "--package=remoteplay-inviter"
-                ],
-                "filter": {
-                    "name": "remoteplay-inviter",
-                    "kind": "lib"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
             "name": "Debug executable 'remoteplay-inviter'",
             "cargo": {
                 "args": [
@@ -39,26 +20,8 @@
                 }
             },
             "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'remoteplay-inviter'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=remoteplay-inviter",
-                    "--package=remoteplay-inviter"
-                ],
-                "filter": {
-                    "name": "remoteplay-inviter",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}",
+            "terminal": "integrated"
         }
     ]
 }
