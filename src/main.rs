@@ -87,35 +87,35 @@ async fn main() -> Result<()> {
     let (invite_tx, mut invite_rx) = channel::<(u64, String)>(32);
 
     // guest_id → Discordのユーザー のマッピング
-    let guest_map = Arc::new(std::sync::Mutex::new(HashMap::<u64, String>::new()));
+    let guest_map = Arc::new(Mutex::new(HashMap::<u64, String>::new()));
 
     // コールバックを登録
     {
         let steam = steam.lock().await;
-        {
-            let guest_map = guest_map.clone();
-            steam.set_on_remote_started(move |invitee, guest_id| {
-                if let Ok(guest_map) = guest_map.lock() {
-                    let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
-                    println!(
-                        "-> User Joined        : claimer={}, guest_id={}, steam_id={}",
-                        user_name, guest_id, invitee
-                    );
-                }
+        let guests = guest_map.clone();
+        steam.set_on_remote_started(move |invitee, guest_id| {
+            let guests = guests.clone();
+            tokio::spawn(async move {
+                let guest_map = guests.lock().await;
+                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                println!(
+                    "-> User Joined        : claimer={}, guest_id={}, steam_id={}",
+                    user_name, guest_id, invitee
+                );
             });
-        }
-        {
-            let guest_map = guest_map.clone();
-            steam.set_on_remote_stopped(move |invitee, guest_id| {
-                if let Ok(guest_map) = guest_map.lock() {
-                    let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
-                    println!(
-                        "-> User Left          : claimer={}, guest_id={}, steam_id={}",
-                        user_name, guest_id, invitee
-                    );
-                }
+        });
+        let guests = guest_map.clone();
+        steam.set_on_remote_stopped(move |invitee, guest_id| {
+            let guests = guests.clone();
+            tokio::spawn(async move {
+                let guest_map = guests.lock().await;
+                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                println!(
+                    "-> User Left          : claimer={}, guest_id={}, steam_id={}",
+                    user_name, guest_id, invitee
+                );
             });
-        }
+        });
         steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
             // 招待リンクを送信
             let invite_tx = invite_tx.clone();
@@ -209,9 +209,10 @@ async fn main() -> Result<()> {
                                 recv.await.context("Failed to receive")?;
 
                             // Discordのユーザーとguest_idを紐付け
-                            if let Ok(mut guest_map) = guest_map.lock() {
-                                guest_map.insert(guest_id, msg.user.name.clone());
-                            }
+                            guest_map
+                                .lock()
+                                .await
+                                .insert(guest_id, msg.user.name.clone());
 
                             // ログを出力
                             println!(
