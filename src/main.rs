@@ -17,6 +17,9 @@ use tokio::{
 use tokio_tungstenite::tungstenite::Error as WsError;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
+// バージョン
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 // アップデートが必要な場合のメッセージ
 #[derive(Serialize, Deserialize)]
 struct UpdateRequired {
@@ -169,8 +172,6 @@ async fn main() -> Result<()> {
         });
     }
 
-    // バージョン
-    let version = "1.1.1";
     // UUID
     let uuid = "abc";
     // 再接続フラグ
@@ -182,7 +183,7 @@ async fn main() -> Result<()> {
     'main: loop {
         let result: Result<()> = try {
             // URLを作成
-            let url = format!("ws://localhost:8000/?token={uuid}&v={version}");
+            let url = format!("ws://localhost:8000/?token={uuid}&v={VERSION}");
 
             // 再接続時のメッセージを表示
             if reconnect {
@@ -211,8 +212,10 @@ async fn main() -> Result<()> {
                                 // 内容を表示
                                 printdoc! {
                                     "
-                                    ↑ Update required: {version} to {required}
+
+                                    ↑ Update required: {VERSION} to {required}
                                       Download: {download}
+                                    
                                     "
                                 };
                             } else {
