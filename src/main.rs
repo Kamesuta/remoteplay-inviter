@@ -2,7 +2,7 @@
 
 use std::{collections::HashMap, sync::Arc};
 
-use anyhow::{Context as _, Result};
+use anyhow::{anyhow, Context as _, Result};
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
 use indoc::printdoc;
@@ -14,12 +14,22 @@ use tokio::{
     task,
     time::{self, Duration},
 };
+use tokio_tungstenite::tungstenite::Error as WsError;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+
+// アップデートが必要な場合のメッセージ
+#[derive(Serialize, Deserialize)]
+struct UpdateRequired {
+    required: String,
+    download: String,
+}
 
 // JSONデータを表す構造体
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "cmd")]
 enum ServerCmd {
+    #[serde(rename = "message")]
+    Message { data: String },
     #[serde(rename = "game")]
     GameId,
     #[serde(rename = "link")]
@@ -37,7 +47,7 @@ struct User {
 #[derive(Serialize, Deserialize)]
 struct ServerMessage {
     id: String,
-    user: User,
+    user: Option<User>,
     #[serde(flatten)]
     cmd: ServerCmd,
 }
@@ -93,7 +103,7 @@ async fn main() -> Result<()> {
                     ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
                     ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
                     ╩╚═└─┘┴ ┴└─┘ ┴ └─┘┴  ┴─┘┴ ┴ ┴   ╩┘└┘ └┘ ┴ ┴ └─┘┴└─
-                                                    by Kamesuta
+                                                           by Kamesuta
             Invite your friends via Discord and play Steam games together for free! 
         ------------------------------------------------------------------------------
     
@@ -120,8 +130,7 @@ async fn main() -> Result<()> {
                 let guest_map = guests.lock().await;
                 let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                 println!(
-                    "-> User Joined        : claimer={}, guest_id={}, steam_id={}",
-                    user_name, guest_id, invitee
+                    "-> User Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
                 );
             });
         });
@@ -132,8 +141,7 @@ async fn main() -> Result<()> {
                 let guest_map = guests.lock().await;
                 let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
                 println!(
-                    "-> User Left          : claimer={}, guest_id={}, steam_id={}",
-                    user_name, guest_id, invitee
+                    "-> User Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
                 );
             });
         });
@@ -159,10 +167,10 @@ async fn main() -> Result<()> {
         });
     }
 
+    // バージョン
+    let version = "1.1.1";
     // UUID
     let uuid = "abc";
-    // 初回接続フラグ
-    let mut first_connect = true;
     // 再接続フラグ
     let mut reconnect = false;
     // リトライ秒数
@@ -172,7 +180,7 @@ async fn main() -> Result<()> {
     loop {
         let result: Result<()> = try {
             // URLを作成
-            let url = format!("ws://localhost:8000/?token={}&ver={}", uuid, "1.0");
+            let url = format!("ws://localhost:8000/?token={uuid}&v={version}");
 
             // 再接続時のメッセージを表示
             if reconnect {
@@ -180,10 +188,45 @@ async fn main() -> Result<()> {
             }
 
             // WebSocketクライアントを作成
-            let (ws_stream, _) = timeout(Duration::from_secs(10), connect_async(url))
+            let connect_result = timeout(Duration::from_secs(10), connect_async(url))
                 .await
-                .context("Connection timed out to the server")?
-                .context("Failed to connect to the server")?;
+                .context("Connection timed out to the server")?;
+            let ws_stream = match connect_result {
+                Ok((ws_stream, _)) => ws_stream,
+                Err(err) => {
+                    match err {
+                        // バージョンが古い場合
+                        WsError::Http(res) if res.status() == 426 => {
+                            // レスポンスボディを取得
+                            let res = res
+                                .into_body()
+                                // バイト列を文字列に変換
+                                .map(|b| String::from_utf8_lossy(&b).to_string())
+                                // JSONをパース
+                                .map(|b| serde_json::from_str::<UpdateRequired>(&b));
+                            // パースに成功した場合
+                            if let Some(Ok(UpdateRequired { required, download })) = res {
+                                // 内容を表示
+                                printdoc! {
+                                    "
+                                    ↑ Update required: {version} to {required}
+                                      Download: {download}
+                                    "
+                                };
+                            } else {
+                                // パースに失敗した場合
+                                eprintln!("↑ Update required: Download the latest version from the website");
+                            }
+                            return Ok(());
+                        }
+                        // その他HTTPエラーの場合
+                        WsError::Http(res) => Err(anyhow!("HTTP error: {}", res.status()))?,
+                        // その他のエラーの場合
+                        _ => Err(err).context("Failed to connect to the server")?,
+                    }
+                }
+            };
+
             // サーバーと通信するためのストリームとシンク
             let (mut write, mut read) = ws_stream.split();
 
@@ -194,25 +237,8 @@ async fn main() -> Result<()> {
                 println!("✓ Connected to the server!");
             }
 
-            // ユーザーに使い方を表示
-            if first_connect {
-                if reconnect {
-                    println!();
-                }
-
-                printdoc!(
-                    "
-                    Type `/steam setup {}` to link your Discord account.
-
-                    ",
-                    uuid
-                );
-
-                first_connect = false;
-            }
-
             // サーバーから受信したメッセージを処理するループ
-            while let Some(message) = timeout(Duration::from_secs(60), read.next())
+            'msgloop: while let Some(message) = timeout(Duration::from_secs(60), read.next())
                 .await
                 .context("Connection timed out")?
             {
@@ -233,6 +259,23 @@ async fn main() -> Result<()> {
                         // コマンドタイプによって分岐
                         let res = 'res: {
                             match msg.cmd {
+                                ServerCmd::Message { data } => {
+                                    // メッセージをインデント
+                                    let message = data
+                                        .lines()
+                                        .map(|line| format!("  {}", line))
+                                        .collect::<Vec<String>>()
+                                        .join("\n");
+                                    // Welcomeメッセージを表示
+                                    printdoc!(
+                                        "
+                                        
+                                        {message}
+                    
+                                        "
+                                    );
+                                    continue 'msgloop;
+                                }
                                 ServerCmd::GameId => {
                                     let game_id = steam.lock().await.get_running_game_id();
 
@@ -248,9 +291,11 @@ async fn main() -> Result<()> {
                                     }
 
                                     // ログを出力
+                                    let claimer =
+                                        msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                                     println!(
-                                        "-> Create Panel       : claimer={}, game_id={}",
-                                        msg.user.name, game_id.app_id
+                                        "-> Create Panel       : claimer={claimer}, game_id={0}",
+                                        game_id.app_id
                                     );
 
                                     // レスポンスデータを作成
@@ -271,15 +316,15 @@ async fn main() -> Result<()> {
                                     let (guest_id, connect_url) = recv.await.unwrap();
 
                                     // Discordのユーザーとguest_idを紐付け
-                                    guest_map
-                                        .lock()
-                                        .await
-                                        .insert(guest_id, msg.user.name.clone());
+                                    if let Some(user) = &msg.user {
+                                        guest_map.lock().await.insert(guest_id, user.name.clone());
+                                    }
 
                                     // ログを出力
+                                    let claimer =
+                                        msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                                     println!(
-                                        "-> Create Invite Link : claimer={}, guest_id={}, game_id={}, invite_url={}",
-                                        msg.user.name, guest_id, game, connect_url
+                                        "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}", 
                                     );
 
                                     // レスポンスデータを作成
@@ -321,7 +366,7 @@ async fn main() -> Result<()> {
 
         // サーバーとの接続が切れた場合、再接続する
         let sec = retry_sec.next();
-        println!("↪ Connection lost. Reconnect after {} seconds...", sec);
+        println!("↪ Connection lost. Reconnecting in {sec} seconds...");
         time::sleep(Duration::from_secs(sec)).await;
         reconnect = true;
     }
