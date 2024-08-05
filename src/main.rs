@@ -34,6 +34,8 @@ enum ServerCmd {
     GameId,
     #[serde(rename = "link")]
     Link { game: u32 },
+    #[serde(rename = "exit")]
+    Exit,
     #[serde(other)]
     Invalid,
 }
@@ -177,7 +179,7 @@ async fn main() -> Result<()> {
     let mut retry_sec = RetrySec::new();
 
     // イベントループ
-    loop {
+    'main: loop {
         let result: Result<()> = try {
             // URLを作成
             let url = format!("ws://localhost:8000/?token={uuid}&v={version}");
@@ -217,7 +219,20 @@ async fn main() -> Result<()> {
                                 // パースに失敗した場合
                                 eprintln!("↑ Update required: Download the latest version from the website");
                             }
-                            return Ok(());
+                            break 'main;
+                        }
+                        // Bad Requestの場合
+                        WsError::Http(res) if res.status() == 400 => {
+                            // レスポンスボディを取得
+                            let res = res
+                                .into_body()
+                                // バイト列を文字列に変換
+                                .map(|b| String::from_utf8_lossy(&b).to_string())
+                                // またはデフォルトのエラーメッセージ
+                                .unwrap_or_else(|| "Bad Request".to_string());
+                            // 内容を表示
+                            eprintln!("☓ {}", res);
+                            break 'main;
                         }
                         // その他HTTPエラーの場合
                         WsError::Http(res) => Err(anyhow!("HTTP error: {}", res.status()))?,
@@ -269,7 +284,7 @@ async fn main() -> Result<()> {
                                     // Welcomeメッセージを表示
                                     printdoc!(
                                         "
-                                        
+
                                         {message}
                     
                                         "
@@ -333,6 +348,10 @@ async fn main() -> Result<()> {
                                         cmd: ClientCmd::Link { data: connect_url },
                                     }
                                 }
+                                ServerCmd::Exit => {
+                                    // アプリを終了
+                                    return Ok(());
+                                }
                                 ServerCmd::Invalid => {
                                     // レスポンスデータを作成
                                     ClientMessage {
@@ -370,4 +389,10 @@ async fn main() -> Result<()> {
         time::sleep(Duration::from_secs(sec)).await;
         reconnect = true;
     }
+
+    // 入力があるまで待機
+    println!("□ Press Ctrl+C to exit...");
+    let _ = tokio::signal::ctrl_c().await;
+
+    Ok(())
 }
