@@ -8,11 +8,10 @@ use futures::SinkExt;
 use futures_util::stream::StreamExt;
 use indoc::printdoc;
 use serde::{Deserialize, Serialize};
-use steam_stuff::{GameID, GameUID, SteamStuff};
+use steam_stuff::SteamStuff;
 use tokio::time::timeout;
 use tokio::{
     sync::{mpsc::channel, Mutex},
-    task,
     time::{self, Duration},
 };
 use tokio_tungstenite::tungstenite::http::uri::Builder;
@@ -22,10 +21,12 @@ use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use uuid::Uuid;
 
 mod config;
+mod handlers;
 mod models;
 mod retry;
 
 use config::{read_or_generate_config, Config};
+use handlers::{handle_server_message, run_steam_callbacks, setup_steam_callbacks};
 use models::*;
 use retry::RetrySec;
 
@@ -67,51 +68,9 @@ async fn main() -> Result<()> {
     let guest_map = Arc::new(Mutex::new(HashMap::<u64, String>::new()));
 
     // コールバックを登録
-    {
-        let steam = steam.lock().await;
-        let guests = guest_map.clone();
-        steam.set_on_remote_started(move |invitee, guest_id| {
-            let guests = guests.clone();
-            tokio::spawn(async move {
-                let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
-                println!(
-                    "-> User Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
-                );
-            });
-        });
-        let guests = guest_map.clone();
-        steam.set_on_remote_stopped(move |invitee, guest_id| {
-            let guests = guests.clone();
-            tokio::spawn(async move {
-                let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
-                println!(
-                    "-> User Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
-                );
-            });
-        });
-        steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
-            // 招待リンクを送信
-            let invite_tx = invite_tx.clone();
-            let connect_url = String::from(connect_url);
-            tokio::spawn(async move {
-                invite_tx.send((guest_id, connect_url)).await.unwrap();
-            });
-        });
-    }
-
-    // SteamStuff_RunCallbacksを定期的に呼び出すタスクを開始
-    {
-        let steam = steam.clone();
-        task::spawn(async move {
-            let mut interval = time::interval(Duration::from_millis(200));
-            loop {
-                interval.tick().await;
-                steam.lock().await.run_callbacks();
-            }
-        });
-    }
+    setup_steam_callbacks(&steam, &guest_map, invite_tx.clone()).await;
+    // コールバックを定期的に呼び出すタスクを開始
+    run_steam_callbacks(&steam);
 
     // 再接続フラグ
     let mut reconnect = false;
@@ -216,7 +175,7 @@ async fn main() -> Result<()> {
                 }
 
                 // サーバーから受信したメッセージを処理するループ
-                'msgloop: while let Some(message) = timeout(Duration::from_secs(60), read.next())
+                while let Some(message) = timeout(Duration::from_secs(60), read.next())
                     .await
                     .context("Connection timed out")?
                 {
@@ -224,119 +183,35 @@ async fn main() -> Result<()> {
                     match message.context("Failed to receive message from the server")? {
                         Message::Close(_) => break,
                         Message::Ping(ping) => {
+                            // Pongメッセージを送信
                             write
                                 .send(Message::Pong(ping))
                                 .await
                                 .context("Failed to send pong message to the server")?;
+
+                            // リトライ秒数をリセット
                             retry_sec.reset();
                         }
                         Message::Text(text) => {
                             // JSONデータをパース
                             let msg: ServerMessage = serde_json::from_str(&text)
                                 .context("Failed to deserialize JSON message from the server")?;
-                            // コマンドタイプによって分岐
-                            let res = 'res: {
-                                match msg.cmd {
-                                    ServerCmd::Message { data } => {
-                                        // メッセージをインデント
-                                        let message = data
-                                            .lines()
-                                            .map(|line| format!("  {}", line))
-                                            .collect::<Vec<String>>()
-                                            .join("\n");
-                                        // Welcomeメッセージを表示
-                                        printdoc! {"
 
-                                        {message}
-                    
-                                        "};
-                                        continue 'msgloop;
-                                    }
-                                    ServerCmd::GameId => {
-                                        let game_id = steam.lock().await.get_running_game_id();
+                            // メッセージを処理
+                            if handle_server_message(
+                                msg,
+                                &steam,
+                                &mut invite_rx,
+                                &guest_map,
+                                &mut write,
+                            )
+                            .await?
+                            {
+                                // 終了フラグが立っている場合、ループを抜けて終了
+                                break 'main;
+                            }
 
-                                        // ゲームが実行されていない場合
-                                        if !game_id.is_valid_app() {
-                                            // レスポンスデータを作成
-                                            break 'res ClientMessage {
-                                                id: msg.id,
-                                                cmd: ClientCmd::Error {
-                                                    data: ErrorStatus::InvalidApp,
-                                                },
-                                            };
-                                        }
-
-                                        // ログを出力
-                                        let claimer =
-                                            msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                                        println!(
-                                            "-> Create Panel       : claimer={claimer}, game_id={0}",
-                                            game_id.app_id
-                                        );
-
-                                        // レスポンスデータを作成
-                                        ClientMessage {
-                                            id: msg.id,
-                                            cmd: ClientCmd::GameId {
-                                                data: game_id.app_id,
-                                            },
-                                        }
-                                    }
-                                    ServerCmd::Link { game } => {
-                                        // ゲームIDを取得
-                                        let game_uid: GameUID = GameID::new(game, 0, 0).into();
-
-                                        // 招待リンクを作成
-                                        let recv = invite_rx.recv();
-                                        steam.lock().await.send_invite(0, game_uid);
-                                        let (guest_id, connect_url) = recv.await.unwrap();
-
-                                        // Discordのユーザーとguest_idを紐付け
-                                        if let Some(user) = &msg.user {
-                                            guest_map
-                                                .lock()
-                                                .await
-                                                .insert(guest_id, user.name.clone());
-                                        }
-
-                                        // ログを出力
-                                        let claimer =
-                                            msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                                        println!(
-                                            "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}", 
-                                        );
-
-                                        // レスポンスデータを作成
-                                        ClientMessage {
-                                            id: msg.id,
-                                            cmd: ClientCmd::Link { data: connect_url },
-                                        }
-                                    }
-                                    ServerCmd::Exit => {
-                                        // アプリを終了
-                                        return Ok(());
-                                    }
-                                    ServerCmd::Invalid => {
-                                        // レスポンスデータを作成
-                                        ClientMessage {
-                                            id: msg.id,
-                                            cmd: ClientCmd::Error {
-                                                data: ErrorStatus::InvalidCmd,
-                                            },
-                                        }
-                                    }
-                                }
-                            };
-
-                            // レスポンスデータをJSONに変換
-                            let res_str = serde_json::to_string(&res)
-                                .context("Failed to serialize JSON message for the server")?;
-                            // レスポンスデータを送信
-                            write
-                                .send(Message::Text(res_str))
-                                .await
-                                .context("Failed to send message to the server")?;
-
+                            // リトライ秒数をリセット
                             retry_sec.reset();
                         }
                         _ => (),
