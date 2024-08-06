@@ -23,9 +23,11 @@ use uuid::Uuid;
 
 mod config;
 mod models;
+mod retry;
 
 use config::{read_or_generate_config, Config};
 use models::*;
+use retry::RetrySec;
 
 // バージョン
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -38,23 +40,6 @@ const DEFAULT_URL: &'static str = dotenv!("ENDPOINT_URL");
 struct UpdateRequired {
     required: String,
     download: String,
-}
-
-// リトライ秒数
-struct RetrySec(u64);
-impl RetrySec {
-    fn new() -> Self {
-        Self(1)
-    }
-
-    fn next(&mut self) -> u64 {
-        self.0 = self.0.min(60) * 2;
-        self.0
-    }
-
-    fn reset(&mut self) {
-        self.0 = 1;
-    }
 }
 
 #[tokio::main]
