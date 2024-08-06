@@ -22,8 +22,10 @@ use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use uuid::Uuid;
 
 mod config;
+mod models;
 
 use config::{read_or_generate_config, Config};
+use models::*;
 
 // バージョン
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -36,63 +38,6 @@ const DEFAULT_URL: &'static str = dotenv!("ENDPOINT_URL");
 struct UpdateRequired {
     required: String,
     download: String,
-}
-
-// JSONデータを表す構造体
-#[derive(Serialize, Deserialize)]
-#[serde(tag = "cmd")]
-enum ServerCmd {
-    #[serde(rename = "message")]
-    Message { data: String },
-    #[serde(rename = "game")]
-    GameId,
-    #[serde(rename = "link")]
-    Link { game: u32 },
-    #[serde(rename = "exit")]
-    Exit,
-    #[serde(other)]
-    Invalid,
-}
-
-#[derive(Serialize, Deserialize)]
-struct User {
-    id: String,
-    name: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct ServerMessage {
-    id: String,
-    user: Option<User>,
-    #[serde(flatten)]
-    cmd: ServerCmd,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum ErrorStatus {
-    /** The command is invalid */
-    InvalidCmd,
-    /** The app is not running */
-    InvalidApp,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(tag = "cmd")]
-enum ClientCmd {
-    #[serde(rename = "game")]
-    GameId { data: u32 },
-    #[serde(rename = "link")]
-    Link { data: String },
-    #[serde(rename = "error")]
-    Error { data: ErrorStatus },
-}
-
-#[derive(Serialize, Deserialize)]
-struct ClientMessage {
-    id: String,
-    #[serde(flatten)]
-    cmd: ClientCmd,
 }
 
 // リトライ秒数
