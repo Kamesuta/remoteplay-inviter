@@ -5,10 +5,10 @@ use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
 use indoc::printdoc;
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 use steam_stuff::SteamStuff;
 use tokio::{
-    sync::{mpsc::channel, Mutex},
+    sync::Mutex,
     time::{self, timeout, Duration},
 };
 use tokio_tungstenite::{
@@ -27,7 +27,7 @@ mod retry;
 mod ws_error_handler;
 
 use config::{read_or_generate_config, Config};
-use handlers::{handle_server_message, run_steam_callbacks, setup_steam_callbacks};
+use handlers::Handler;
 use models::*;
 use retry::RetrySec;
 use ws_error_handler::handle_ws_error;
@@ -56,16 +56,13 @@ async fn main() -> Result<()> {
         SteamStuff::new().context("☓ Failed to initialize SteamStuff")?,
     ));
 
-    // 同期オブジェクト (Stringを渡す)
-    let (invite_tx, mut invite_rx) = channel::<(u64, String)>(32);
-
-    // guest_id → Discordのユーザー のマッピング
-    let guest_map = Arc::new(Mutex::new(HashMap::<u64, String>::new()));
+    // Handlerを作成
+    let mut handler = Handler::new(steam.clone());
 
     // コールバックを登録
-    setup_steam_callbacks(&steam, &guest_map, invite_tx.clone()).await;
+    handler.setup_steam_callbacks().await;
     // コールバックを定期的に呼び出すタスクを開始
-    run_steam_callbacks(&steam);
+    handler.run_steam_callbacks();
 
     // 再接続フラグ
     let mut reconnect = false;
@@ -153,15 +150,7 @@ async fn main() -> Result<()> {
                                 .context("Failed to deserialize JSON message from the server")?;
 
                             // メッセージを処理
-                            if handle_server_message(
-                                msg,
-                                &steam,
-                                &mut invite_rx,
-                                &guest_map,
-                                &mut write,
-                            )
-                            .await?
-                            {
+                            if handler.handle_server_message(msg, &mut write).await? {
                                 // 終了フラグが立っている場合、ループを抜けて終了
                                 break 'main;
                             }
