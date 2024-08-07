@@ -1,16 +1,8 @@
 use anyhow::{anyhow, Context as _, Result};
 use indoc::printdoc;
-use serde::{Deserialize, Serialize};
 use tokio_tungstenite::tungstenite::Error as WsError;
 
-use crate::VERSION;
-
-// アップデートが必要な場合のメッセージ
-#[derive(Serialize, Deserialize)]
-struct UpdateRequired {
-    required: String,
-    download: String,
-}
+use crate::{UpdateRequired, VERSION};
 
 pub fn handle_ws_error(err: WsError) -> Result<()> {
     match err {
@@ -32,6 +24,9 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
                   Download: {download}
                 
                 "};
+
+                // ブラウザを開く
+                let _ = webbrowser::open(&download);
             } else {
                 // パースに失敗した場合
                 eprintln!("↑ Update required: Download the latest version from the website");
