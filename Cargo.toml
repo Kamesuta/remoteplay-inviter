@@ -2,6 +2,7 @@
 edition = "2021"
 name = "remoteplay-inviter"
 version = "0.1.0"
+description = "Invite your friends via Discord and play Steam games together for free!"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -21,3 +22,11 @@ tokio-tungstenite = {version = "0.23.1", features = ["rustls-tls-webpki-roots"]}
 toml = "0.8.19"
 uuid = { version = "1.10.0", features = ["v4"] }
 webbrowser = "1.0.1"
+
+[build-dependencies]
+winresource = "0.1.17"
+
+[package.metadata.winresource]
+OriginalFilename = "remoteplay-inviter.exe"
+LegalCopyright = "Copyright © 2024 Kamesuta"
+ProductName = "Remote Play Inviter Client"
