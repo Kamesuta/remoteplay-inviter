@@ -19,7 +19,7 @@ pub struct ServerMessage {
 #[serde(tag = "cmd")]
 pub enum ServerCmd {
     #[serde(rename = "message")]
-    Message { data: String },
+    Message { data: String, copy: Option<String> },
     #[serde(rename = "game")]
     GameId,
     #[serde(rename = "link")]

@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use clipboard::{ClipboardContext, ClipboardProvider};
 use futures::SinkExt;
 use indoc::printdoc;
 use std::{collections::HashMap, sync::Arc, time::Duration};
@@ -45,19 +46,31 @@ impl Handler {
     ) -> Result<bool> {
         // コマンドタイプによって分岐
         let res = match msg.cmd {
-            ServerCmd::Message { data } => {
+            ServerCmd::Message { data, copy } => {
                 // メッセージをインデント
                 let message = data
                     .lines()
                     .map(|line| format!("  {}", line))
                     .collect::<Vec<String>>()
                     .join("\n");
+
                 // Welcomeメッセージを表示
                 printdoc! {"
 
                 {message}
 
                 "};
+
+                // コピーがある場合はコピー
+                if let Some(copy) = copy {
+                    // クリップボードにコピー
+                    if let Err(_err) = ClipboardProvider::new()
+                        .map(|mut ctx: ClipboardContext| ctx.set_contents(copy.clone()))
+                    {
+                        eprintln!("☓ Failed to copy to clipboard: {}", copy);
+                    }
+                }
+
                 return Ok(false);
             }
             ServerCmd::GameId => {
