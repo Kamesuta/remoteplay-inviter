@@ -3,9 +3,29 @@ use serde::{Deserialize, Serialize};
 use std::{env, fs};
 
 #[derive(Serialize, Deserialize)]
+pub struct EndpointConfig {
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct Config {
     pub uuid: String,
-    pub url: Option<String>,
+}
+
+// URLを読み込む
+pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
+    let exe_path = env::current_exe().context("Unable to get current executable path")?;
+    let config_path = exe_path.with_extension("endpoint.toml");
+
+    if config_path.exists() {
+        let config_content = fs::read_to_string(&config_path)
+            .with_context(|| format!("Unable to read config file: {:?}", &config_path))?;
+        let config: EndpointConfig =
+            toml::from_str(&config_content).context("Unable to parse config file")?;
+        Ok(Some(config))
+    } else {
+        Ok(None)
+    }
 }
 
 // UUIDを読み込むか生成する

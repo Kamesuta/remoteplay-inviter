@@ -73,14 +73,22 @@ async fn main() -> Result<()> {
     'main: {
         // UUID
         let result: Result<String> = try {
+            // エンドポイントの設定ファイルを読み込む
+            let endpoint_config = config::read_endpoint_config()?;
+
             // 設定ファイルを読み込む (存在しない場合は生成)
             let config = read_or_generate_config(|| Config {
                 uuid: Uuid::new_v4().to_string(),
-                url: None,
             })?;
 
             // URLを作成
-            let endpoint_url = config.url.unwrap_or(DEFAULT_URL.to_string());
+            let endpoint_url = match endpoint_config {
+                Some(e) => {
+                    println!("✓ Using custom endpoint URL: {}", e.url);
+                    e.url
+                }
+                None => DEFAULT_URL.to_string(),
+            };
             let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
             let uri = Builder::from(uri)
                 .path_and_query(format!("/ws?token={0}&v={VERSION}", config.uuid))
