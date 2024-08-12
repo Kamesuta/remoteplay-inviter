@@ -1,10 +1,19 @@
 use serde::{Deserialize, Serialize};
 
-// アップデートが必要な場合のメッセージ
-#[derive(Serialize, Deserialize)]
-pub struct UpdateRequired {
-    pub required: String,
-    pub download: String,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ConnectionErrorMessage {
+    pub message: Option<String>,
+    #[serde(flatten)]
+    pub error: ConnectionErrorType,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "error")]
+pub enum ConnectionErrorType {
+    #[serde(rename = "outdated")]
+    Outdated { required: String, download: String },
+    #[serde(other)]
+    Other,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
