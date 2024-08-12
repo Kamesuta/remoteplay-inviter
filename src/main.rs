@@ -33,10 +33,10 @@ use retry::RetrySec;
 use ws_error_handler::handle_ws_error;
 
 // バージョン
-pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Endpoint URL
-const DEFAULT_URL: &'static str = dotenv!("ENDPOINT_URL");
+const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
 
 #[tokio::main]
 async fn main() -> Result<()> {

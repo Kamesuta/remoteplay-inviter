@@ -167,7 +167,7 @@ impl Handler {
             let guests = guests.clone();
             tokio::spawn(async move {
                 let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
                 println!(
                     "-> User Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
                 );
@@ -178,7 +178,7 @@ impl Handler {
             let guests = guests.clone();
             tokio::spawn(async move {
                 let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| &s);
+                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
                 println!(
                     "-> User Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
                 );
