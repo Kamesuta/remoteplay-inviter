@@ -19,9 +19,9 @@ pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
 
     if config_path.exists() {
         let config_content = fs::read_to_string(&config_path)
-            .with_context(|| format!("Unable to read config file: {:?}", &config_path))?;
+            .with_context(|| format!("Unable to read endpoint config file: {:?}", &config_path))?;
         let config: EndpointConfig =
-            toml::from_str(&config_content).context("Unable to parse config file")?;
+            toml::from_str(&config_content).context("Unable to parse endpoint config file")?;
         Ok(Some(config))
     } else {
         Ok(None)
@@ -35,9 +35,9 @@ pub fn read_or_generate_config<F: Fn() -> Config>(generate_config: F) -> Result<
 
     if config_path.exists() {
         let config_content = fs::read_to_string(&config_path)
-            .with_context(|| format!("Unable to read config file: {:?}", &config_path))?;
+            .with_context(|| format!("Unable to read uuid config file: {:?}", &config_path))?;
         let config: Config =
-            toml::from_str(&config_content).context("Unable to parse config file")?;
+            toml::from_str(&config_content).context("Unable to parse uuid config file")?;
         Ok(config)
     } else {
         let config = generate_config();
