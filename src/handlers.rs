@@ -46,7 +46,7 @@ impl Handler {
     ) -> Result<bool> {
         // コマンドタイプによって分岐
         let res = match msg.cmd {
-            ServerCmd::Message { data, copy } => {
+            ServerCmd::Message { text: data, copy } => {
                 // メッセージをインデント
                 let message = data
                     .lines()
@@ -88,7 +88,7 @@ impl Handler {
                     ClientMessage {
                         id: msg.id,
                         cmd: ClientCmd::GameId {
-                            data: game_id.app_id,
+                            game: game_id.app_id,
                         },
                     }
                 } else {
@@ -97,7 +97,7 @@ impl Handler {
                     ClientMessage {
                         id: msg.id,
                         cmd: ClientCmd::Error {
-                            data: ErrorStatus::InvalidApp,
+                            code: ErrorStatus::InvalidApp,
                         },
                     }
                 }
@@ -128,7 +128,7 @@ impl Handler {
                 // レスポンスデータを作成
                 ClientMessage {
                     id: msg.id,
-                    cmd: ClientCmd::Link { data: connect_url },
+                    cmd: ClientCmd::Link { url: connect_url },
                 }
             }
             ServerCmd::Exit => {
@@ -140,7 +140,7 @@ impl Handler {
                 ClientMessage {
                     id: msg.id,
                     cmd: ClientCmd::Error {
-                        data: ErrorStatus::InvalidCmd,
+                        code: ErrorStatus::InvalidCmd,
                     },
                 }
             }

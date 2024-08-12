@@ -28,7 +28,7 @@ pub struct ServerMessage {
 #[serde(tag = "cmd")]
 pub enum ServerCmd {
     #[serde(rename = "message")]
-    Message { data: String, copy: Option<String> },
+    Message { text: String, copy: Option<String> },
     #[serde(rename = "game")]
     GameId,
     #[serde(rename = "link")]
@@ -50,11 +50,11 @@ pub struct ClientMessage {
 #[serde(tag = "cmd")]
 pub enum ClientCmd {
     #[serde(rename = "game")]
-    GameId { data: u32 },
+    GameId { game: u32 },
     #[serde(rename = "link")]
-    Link { data: String },
+    Link { url: String },
     #[serde(rename = "error")]
-    Error { data: ErrorStatus },
+    Error { code: ErrorStatus },
 }
 
 #[derive(Debug, Serialize, Deserialize)]
