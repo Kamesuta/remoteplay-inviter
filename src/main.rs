@@ -71,7 +71,7 @@ async fn main() -> Result<()> {
 
     // Event loop
     'main: {
-        // UUID
+        // URL to connect to
         let result: Result<String> = try {
             // Read the endpoint configuration file
             let endpoint_config = config::read_endpoint_config()?;
@@ -81,7 +81,10 @@ async fn main() -> Result<()> {
                 uuid: Uuid::new_v4().to_string(),
             })?;
 
-            // Create the URL
+            // Session ID
+            let session_id: u32 = rand::random();
+
+            // Endpoint URL
             let endpoint_url = match endpoint_config {
                 Some(e) => {
                     println!("✓ Using custom endpoint URL: {}", e.url);
@@ -89,9 +92,14 @@ async fn main() -> Result<()> {
                 }
                 None => DEFAULT_URL.to_string(),
             };
+
+            // Create the URL
             let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
             let uri = Builder::from(uri)
-                .path_and_query(format!("/ws?token={0}&v={VERSION}", config.uuid))
+                .path_and_query(format!(
+                    "/ws?v={VERSION}&token={0}&session={session_id}",
+                    config.uuid
+                ))
                 .build()
                 .context("Failed to build URL")?;
             uri.to_string()
