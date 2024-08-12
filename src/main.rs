@@ -32,7 +32,7 @@ use models::*;
 use retry::RetrySec;
 use ws_error_handler::handle_ws_error;
 
-// バージョン
+// Version
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Endpoint URL
@@ -51,37 +51,37 @@ async fn main() -> Result<()> {
     
     "};
 
-    // SteamStuffを初期化
+    // Initialize SteamStuff
     let steam = Arc::new(Mutex::new(
         SteamStuff::new().context("☓ Failed to initialize SteamStuff")?,
     ));
 
-    // Handlerを作成
+    // Create a Handler
     let mut handler = Handler::new(steam.clone());
 
-    // コールバックを登録
+    // Set up Steam callbacks
     handler.setup_steam_callbacks().await;
-    // コールバックを定期的に呼び出すタスクを開始
+    // Start a task to periodically call Steam callbacks
     handler.run_steam_callbacks();
 
-    // 再接続フラグ
+    // Reconnection flag
     let mut reconnect = false;
-    // リトライ秒数
+    // Retry seconds
     let mut retry_sec = RetrySec::new();
 
-    // イベントループ
+    // Event loop
     'main: {
         // UUID
         let result: Result<String> = try {
-            // エンドポイントの設定ファイルを読み込む
+            // Read the endpoint configuration file
             let endpoint_config = config::read_endpoint_config()?;
 
-            // 設定ファイルを読み込む (存在しない場合は生成)
+            // Read or generate the configuration file (if it doesn't exist)
             let config = read_or_generate_config(|| Config {
                 uuid: Uuid::new_v4().to_string(),
             })?;
 
-            // URLを作成
+            // Create the URL
             let endpoint_url = match endpoint_config {
                 Some(e) => {
                     println!("✓ Using custom endpoint URL: {}", e.url);
@@ -106,12 +106,12 @@ async fn main() -> Result<()> {
 
         loop {
             let result: Result<()> = try {
-                // 再接続時のメッセージを表示
+                // Display the reconnection message
                 if reconnect {
                     println!("↪ Reconnecting to the server...");
                 }
 
-                // WebSocketクライアントを作成
+                // Create a WebSocket client
                 let connect_result = timeout(Duration::from_secs(10), connect_async(&url))
                     .await
                     .context("Connection timed out to the server")?;
@@ -119,51 +119,51 @@ async fn main() -> Result<()> {
                     Ok((ws_stream, _)) => ws_stream,
                     Err(err) => {
                         handle_ws_error(err)?;
-                        // OKが返ってきた場合は、ループを抜けて終了
+                        // If OK is returned, break the loop and exit
                         break 'main;
                     }
                 };
 
-                // サーバーと通信するためのストリームとシンク
+                // Stream and sink for communicating with the server
                 let (mut write, mut read) = ws_stream.split();
 
-                // 再接続時のメッセージを表示
+                // Display the reconnection message
                 if reconnect {
                     println!("✓ Reconnected!");
                 } else {
                     println!("✓ Connected to the server!");
                 }
 
-                // サーバーから受信したメッセージを処理するループ
+                // Loop to process messages received from the server
                 while let Some(message) = timeout(Duration::from_secs(60), read.next())
                     .await
                     .context("Connection timed out")?
                 {
-                    // メッセージごとに分岐して処理
+                    // Process each message
                     match message.context("Failed to receive message from the server")? {
                         Message::Close(_) => break,
                         Message::Ping(ping) => {
-                            // Pongメッセージを送信
+                            // Send a Pong message
                             write
                                 .send(Message::Pong(ping))
                                 .await
                                 .context("Failed to send pong message to the server")?;
 
-                            // リトライ秒数をリセット
+                            // Reset the retry seconds
                             retry_sec.reset();
                         }
                         Message::Text(text) => {
-                            // JSONデータをパース
+                            // Parse the JSON data
                             let msg: ServerMessage = serde_json::from_str(&text)
                                 .context("Failed to deserialize JSON message from the server")?;
 
-                            // メッセージを処理
+                            // Process the message
                             if handler.handle_server_message(msg, &mut write).await? {
-                                // 終了フラグが立っている場合、ループを抜けて終了
+                                // If the exit flag is set, break the loop and exit
                                 break 'main;
                             }
 
-                            // リトライ秒数をリセット
+                            // Reset the retry seconds
                             retry_sec.reset();
                         }
                         _ => (),
@@ -174,7 +174,7 @@ async fn main() -> Result<()> {
                 eprintln!("☓ {}", err);
             }
 
-            // サーバーとの接続が切れた場合、再接続する
+            // Reconnect to the server if the connection is lost
             let sec = retry_sec.next();
             println!("↪ Connection lost. Reconnecting in {sec} seconds...");
             time::sleep(Duration::from_secs(sec)).await;
@@ -182,7 +182,7 @@ async fn main() -> Result<()> {
         }
     }
 
-    // 入力があるまで待機
+    // Wait for input before exiting
     println!("□ Press Ctrl+C to exit...");
     let _ = tokio::signal::ctrl_c().await;
 

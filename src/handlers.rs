@@ -36,34 +36,34 @@ impl Handler {
     }
 
     /**
-     * サーバーメッセージを処理する
-     * @return 終了するかどうか (true: 終了する)
+     * Handles server messages
+     * @return Whether to exit (true: exit)
      */
     pub async fn handle_server_message(
         &mut self,
         msg: ServerMessage,
         write: &mut (impl SinkExt<Message, Error = WsError> + Unpin),
     ) -> Result<bool> {
-        // コマンドタイプによって分岐
+        // Branch based on command type
         let res = match msg.cmd {
             ServerCmd::Message { text: data, copy } => {
-                // メッセージをインデント
+                // Indent the message
                 let message = data
                     .lines()
                     .map(|line| format!("  {}", line))
                     .collect::<Vec<String>>()
                     .join("\n");
 
-                // Welcomeメッセージを表示
+                // Display the welcome message
                 printdoc! {"
 
                 {message}
 
                 "};
 
-                // コピーがある場合はコピー
+                // If there is a copy, copy it
                 if let Some(copy) = copy {
-                    // クリップボードにコピー
+                    // Copy to clipboard
                     if let Err(_err) = ClipboardProvider::new()
                         .map(|mut ctx: ClipboardContext| ctx.set_contents(copy.clone()))
                     {
@@ -77,14 +77,14 @@ impl Handler {
                 let game_id = self.steam.lock().await.get_running_game_id();
 
                 if game_id.is_valid_app() {
-                    // ログを出力
+                    // Log the output
                     let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                     println!(
                         "-> Create Panel       : claimer={claimer}, game_id={0}",
                         game_id.app_id
                     );
 
-                    // レスポンスデータを作成
+                    // Create the response data
                     ClientMessage {
                         id: msg.id,
                         cmd: ClientCmd::GameId {
@@ -92,8 +92,8 @@ impl Handler {
                         },
                     }
                 } else {
-                    // ゲームが実行されていない場合
-                    // レスポンスデータを作成
+                    // If the game is not running
+                    // Create the response data
                     ClientMessage {
                         id: msg.id,
                         cmd: ClientCmd::Error {
@@ -103,15 +103,15 @@ impl Handler {
                 }
             }
             ServerCmd::Link { game } => {
-                // ゲームIDを取得
+                // Get the game ID
                 let game_uid: GameUID = GameID::new(game, 0, 0).into();
 
-                // 招待リンクを作成
+                // Create an invite link
                 let recv = self.invite_rx.recv();
                 self.steam.lock().await.send_invite(0, game_uid);
                 let (guest_id, connect_url) = recv.await.unwrap();
 
-                // Discordのユーザーとguest_idを紐付け
+                // Associate the Discord user with guest_id
                 if let Some(user) = &msg.user {
                     self.guest_map
                         .lock()
@@ -119,24 +119,24 @@ impl Handler {
                         .insert(guest_id, user.name.clone());
                 }
 
-                // ログを出力
+                // Log the output
                 let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                 println!(
                     "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}", 
                 );
 
-                // レスポンスデータを作成
+                // Create the response data
                 ClientMessage {
                     id: msg.id,
                     cmd: ClientCmd::Link { url: connect_url },
                 }
             }
             ServerCmd::Exit => {
-                // アプリを終了
+                // Exit the application
                 return Ok(true);
             }
             ServerCmd::Invalid => {
-                // レスポンスデータを作成
+                // Create the response data
                 ClientMessage {
                     id: msg.id,
                     cmd: ClientCmd::Error {
@@ -146,10 +146,10 @@ impl Handler {
             }
         };
 
-        // レスポンスデータをJSONに変換
+        // Convert the response data to JSON
         let res_str = serde_json::to_string(&res)
             .context("Failed to serialize JSON message for the server")?;
-        // レスポンスデータを送信
+        // Send the response data
         write
             .send(Message::Text(res_str))
             .await
@@ -158,9 +158,9 @@ impl Handler {
         Ok(false)
     }
 
-    // SteamStuffのコールバックを設定
+    // Set up SteamStuff callbacks
     pub async fn setup_steam_callbacks(&self) {
-        // コールバックを登録
+        // Register callbacks
         let steam = self.steam.lock().await;
         let guests = self.guest_map.clone();
         steam.set_on_remote_started(move |invitee, guest_id| {
@@ -186,7 +186,7 @@ impl Handler {
         });
         let invite_tx = self.invite_tx.clone();
         steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
-            // 招待リンクを送信
+            // Send the invite link
             let invite_tx = invite_tx.clone();
             let connect_url = String::from(connect_url);
             tokio::spawn(async move {
@@ -195,7 +195,7 @@ impl Handler {
         });
     }
 
-    // SteamStuff_RunCallbacksを定期的に呼び出すタスクを開始
+    // Start a task to periodically call SteamStuff_RunCallbacks
     pub fn run_steam_callbacks(&self) {
         let steam_clone = self.steam.clone();
         task::spawn(async move {

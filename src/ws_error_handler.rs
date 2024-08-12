@@ -1,15 +1,15 @@
+use crate::{ConnectionErrorMessage, ConnectionErrorType, VERSION};
 use anyhow::{anyhow, Context as _, Result};
 use indoc::printdoc;
 use tokio_tungstenite::tungstenite::Error as WsError;
 
-use crate::{ConnectionErrorMessage, ConnectionErrorType, VERSION};
-
+/// Handle WebSocket errors
 pub fn handle_ws_error(err: WsError) -> Result<()> {
     match err {
-        // Bad Requestの場合
+        // In case of Bad Request
         WsError::Http(res) if res.status() == 400 => {
             let result: Result<()> = try {
-                // レスポンスボディを取得
+                // Get the response body
                 let header = res
                     .headers()
                     .get("X-Error")
@@ -17,15 +17,15 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
                 let text = header
                     .to_str()
                     .context("Connection refused with invalid error message")?;
-                // JSONをパース
+                // Parse JSON
                 let ConnectionErrorMessage { message, error } =
-                    serde_json::from_str::<ConnectionErrorMessage>(&text)
+                    serde_json::from_str::<ConnectionErrorMessage>(text)
                         .context("Connection refused with invalid JSON")?;
-                // パースに成功した場合
+                // If parsing is successful
                 match error {
-                    // バージョンが古い場合
+                    // If the version is outdated
                     ConnectionErrorType::Outdated { required, download } => {
-                        // 内容を表示
+                        // Display the content
                         printdoc! {"
 
                             ↑ Update required: {VERSION} to {required}
@@ -33,20 +33,20 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
                             
                             "};
 
-                        // ブラウザを開く
+                        // Open the browser
                         let _ = webbrowser::open(&download);
                     }
-                    // その他のエラーの場合
+                    // For other errors
                     _ => {
                         if let Some(message) = message {
-                            // メッセージをインデント
+                            // Indent the message
                             let message = message
                                 .lines()
                                 .map(|line| format!("  {}", line))
                                 .collect::<Vec<String>>()
                                 .join("\n");
 
-                            // エラーメッセージを表示
+                            // Display the error message
                             printdoc! {
                                 "
 
@@ -61,13 +61,13 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
             };
 
             if let Err(err) = result {
-                // パースに失敗した場合
+                // If parsing fails
                 eprintln!("☓ {err}");
             }
         }
-        // その他HTTPエラーの場合
+        // For other HTTP errors
         WsError::Http(res) => Err(anyhow!("HTTP error: {}", res.status()))?,
-        // その他のエラーの場合
+        // For other errors
         _ => Err(err).context("Failed to connect to the server")?,
     }
 

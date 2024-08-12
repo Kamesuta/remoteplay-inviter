@@ -2,17 +2,21 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::{env, fs};
 
+/// Endpoint configuration
 #[derive(Serialize, Deserialize)]
 pub struct EndpointConfig {
+    /// Endpoint URL to connect to
     pub url: String,
 }
 
+/// UUID configuration
 #[derive(Serialize, Deserialize)]
 pub struct Config {
+    /// UUID
     pub uuid: String,
 }
 
-// URLを読み込む
+/// Read the endpoint configuration
 pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
     let exe_path = env::current_exe().context("Unable to get current executable path")?;
     let config_path = exe_path.with_extension("endpoint.toml");
@@ -28,16 +32,16 @@ pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
     }
 }
 
-// UUIDを読み込むか生成する
+/// Read or generate the UUID configuration
 pub fn read_or_generate_config<F: Fn() -> Config>(generate_config: F) -> Result<Config> {
     let exe_path = env::current_exe().context("Unable to get current executable path")?;
     let config_path = exe_path.with_extension("config.toml");
 
     if config_path.exists() {
         let config_content = fs::read_to_string(&config_path)
-            .with_context(|| format!("Unable to read uuid config file: {:?}", &config_path))?;
+            .with_context(|| format!("Unable to read UUID config file: {:?}", &config_path))?;
         let config: Config =
-            toml::from_str(&config_content).context("Unable to parse uuid config file")?;
+            toml::from_str(&config_content).context("Unable to parse UUID config file")?;
         Ok(config)
     } else {
         let config = generate_config();
