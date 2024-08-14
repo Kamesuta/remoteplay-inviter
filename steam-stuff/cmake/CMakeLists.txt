@@ -13,6 +13,7 @@ add_library(cmake
     ./open-steamworks/OpenSteamAPI/src/CCallbackMgr.cpp
     ./open-steamworks/OpenSteamAPI/src/ClientWrap.cpp
     ./open-steamworks/OpenSteamAPI/src/Interface_OSW.cpp
+    ./open-steamworks/OpenSteamAPI/src/OSXPathHelper.mm
     ./src/SteamStuff.cpp
     ./src/RemotePlayInviteHandler.cpp
     ./src/Library.cpp
