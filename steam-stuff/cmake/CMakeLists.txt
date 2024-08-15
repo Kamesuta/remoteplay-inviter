@@ -19,4 +19,11 @@ add_library(cmake
     ./src/Library.cpp
 )
 
+# テスト用の実行ファイルを作成
+add_executable(test ./src/Test.cpp)
+target_link_libraries(test cmake)
+if(APPLE)
+    target_link_libraries(test "-framework Foundation")
+endif()
+
 install (TARGETS cmake DESTINATION .)

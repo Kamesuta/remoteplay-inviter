@@ -5,6 +5,8 @@
 
 int main()
 {
+	std::cout << "Initializing SteamStuff..." << std::endl;
+
 	if (!SteamStuff_Init())
 	{
 		std::cout << "Failed to initialize SteamStuff.dll" << std::endl;
