@@ -35,12 +35,12 @@ uint64_t SteamStuff_GetRunningGameID()
 
 uint64_t SteamStuff_SendInvite(uint64_t invitee, uint64_t gameID)
 {
-	return GRemotePlayInviteHandler()->SendInvite(CSteamID(invitee), CGameID(gameID));
+	return GRemotePlayInviteHandler()->SendInvite(CSteamID(uint64(invitee)), CGameID(uint64(gameID)));
 }
 
 void SteamStuff_CancelInvite(uint64_t invitee, uint64_t guestID)
 {
-	GRemotePlayInviteHandler()->CancelInvite(CSteamID(invitee), guestID);
+	GRemotePlayInviteHandler()->CancelInvite(CSteamID(uint64(invitee)), guestID);
 }
 
 void SteamStuff_SetOnRemoteInvited(OnRemoteInvited cb)

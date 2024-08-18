@@ -16,12 +16,12 @@ int main()
 	uint64_t gameId = SteamStuff_GetRunningGameID();
 	std::cout << "Hello, World! Game ID: " << gameId << std::endl;
 
-	if (!CGameID(gameId).IsValid())
+	if (!CGameID(uint64(gameId)).IsValid())
 	{
 		std::cout << "No game running" << std::endl;
 		return 1;
 	}
-	if (!CGameID(gameId).IsSteamApp())
+	if (!CGameID(uint64(gameId)).IsSteamApp())
 	{
 		std::cout << "Non-steam game running" << std::endl;
 		return 1;
