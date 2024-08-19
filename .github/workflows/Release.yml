@@ -1,0 +1,91 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - {
+              os: ubuntu-latest,
+              target: x86_64-unknown-linux-gnu,
+              use-cross: false,
+              extension: '',
+            }
+          - {
+              os: macos-latest,
+              target: x86_64-apple-darwin,
+              use-cross: false,
+              extension: '',
+            }
+          - {
+              os: macos-latest,
+              target: aarch64-apple-darwin,
+              use-cross: false,
+              extension: '',
+            }
+          - {
+              os: windows-latest,
+              target: x86_64-pc-windows-msvc,
+              use-cross: false,
+              extension: .exe,
+            }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Extract crate information
+        shell: bash
+        run: |
+          echo "PROJECT_NAME=$(sed -n 's/^name = "\(.*\)"/\1/p' Cargo.toml | head -n1)" >> $GITHUB_ENV
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly-2024-07-27
+          target: ${{ matrix.job.target }}
+          override: true
+          profile: minimal
+
+      - name: Install OpenSSL
+        shell: bash
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev libxcb-xfixes0-dev
+
+      - name: setup environments
+        run: |
+          echo "ENDPOINT_URL=${{ secrets.ENDPOINT_URL }}" > .env
+          cat .env
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: ${{ matrix.job.use-cross }}
+          command: build
+          args: --release --target ${{ matrix.job.target }}
+
+      - name: Rename artifacts
+        shell: bash
+        run: |
+          mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}{,-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}
