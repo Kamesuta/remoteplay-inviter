@@ -7,9 +7,6 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=cmake");
 
-    #[cfg(target_os = "linux")]
-    println!("cargo:rustc-link-lib=dylib=stdc++");
-
     let bindings = bindgen::Builder::default()
         .header("cmake/src/Library.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
