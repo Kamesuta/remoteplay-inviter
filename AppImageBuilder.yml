@@ -1,0 +1,59 @@
+version: 1
+script:
+  # Remove any previous build and create a new AppDir
+  - rm -rf $TARGET_APPDIR | true
+  - mkdir -p $TARGET_APPDIR
+  # Make usr and icons dirs
+  # Copy the application code into the AppDir
+  - cp target/release/remoteplay-inviter $TARGET_APPDIR
+  # Copy resources
+  - mkdir -p $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps
+  - cp resources/app.svg $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps/remoteplay-inviter.svg
+  # Copy test script
+  - cp scripts/test.sh $TARGET_APPDIR
+  - chmod +x $TARGET_APPDIR/test.sh
+  # Copy run script
+  - cp scripts/run.sh $TARGET_APPDIR
+  - chmod +x $TARGET_APPDIR/run.sh
+AppDir:
+  path: AppDir
+  app_info:
+    id: app.steaminviter.remoteplay-inviter
+    name: Steam Remote Play Inviter
+    icon: remoteplay-inviter
+    version: latest
+    exec: bin/bash
+    exec_args: "'$APPDIR/run.sh'"
+  files:
+    include:
+    - /bin/bash
+    - /usr/lib/x86_64-linux-gnu/libdl.so.2
+    - /usr/lib/x86_64-linux-gnu/librt.so.1
+    - /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+    exclude:
+    - usr/share/man
+    - usr/share/doc/*/README.*
+    - usr/share/doc/*/changelog.*
+    - usr/share/doc/*/NEWS.*
+    - usr/share/doc/*/TODO.*
+  test:
+    debian: &common
+      image: appimagecrafters/tests-env:debian-stable
+      use_host_x: true
+      command: bash test.sh
+    fedora:
+      <<: *common
+      image: appimagecrafters/tests-env:fedora-30
+    arch:
+      <<: *common
+      image: appimagecrafters/tests-env:archlinux-latest
+    centos:
+      <<: *common
+      image: appimagecrafters/tests-env:centos-7
+    ubuntu:
+      <<: *common
+      image: appimagecrafters/tests-env:ubuntu-xenial
+AppImage:
+  arch: x86_64
+  update-information: !ENV ${UPDATE_INFO}
+  sign-key: None
