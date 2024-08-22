@@ -40,37 +40,43 @@ const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    printdoc! {"
-        ------------------------------------------------------------------------------
-                    ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
-                    ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
-                    ╩╚═└─┘┴ ┴└─┘ ┴ └─┘┴  ┴─┘┴ ┴ ┴   ╩┘└┘ └┘ ┴ ┴ └─┘┴└─
-                                                           by Kamesuta
-            Invite your friends via Discord and play Steam games together for free! 
-        ------------------------------------------------------------------------------
-    
-    "};
-
-    // Initialize SteamStuff
-    let steam = Arc::new(Mutex::new(
-        SteamStuff::new().context("☓ Failed to initialize SteamStuff")?,
-    ));
-
-    // Create a Handler
-    let mut handler = Handler::new(steam.clone());
-
-    // Set up Steam callbacks
-    handler.setup_steam_callbacks().await;
-    // Start a task to periodically call Steam callbacks
-    handler.run_steam_callbacks();
-
-    // Reconnection flag
-    let mut reconnect = false;
-    // Retry seconds
-    let mut retry_sec = RetrySec::new();
-
     // Event loop
     'main: {
+        printdoc! {"
+            ------------------------------------------------------------------------------
+                        ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
+                        ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
+                        ╩╚═└─┘┴ ┴└─┘ ┴ └─┘┴  ┴─┘┴ ┴ ┴   ╩┘└┘ └┘ ┴ ┴ └─┘┴└─
+                                                            by Kamesuta
+                Invite your friends via Discord and play Steam games together for free! 
+            ------------------------------------------------------------------------------
+        
+        "};
+
+        // Initialize SteamStuff
+        let steam = match SteamStuff::new()
+            .context("Failed to connect to Steam Client. Please make sure Steam is running.")
+        {
+            Ok(steam) => Arc::new(Mutex::new(steam)),
+            Err(err) => {
+                eprintln!("☓ {}", err);
+                break 'main;
+            }
+        };
+
+        // Create a Handler
+        let mut handler = Handler::new(steam.clone());
+
+        // Set up Steam callbacks
+        handler.setup_steam_callbacks().await;
+        // Start a task to periodically call Steam callbacks
+        handler.run_steam_callbacks();
+
+        // Reconnection flag
+        let mut reconnect = false;
+        // Retry seconds
+        let mut retry_sec = RetrySec::new();
+
         // URL to connect to
         let result: Result<String> = try {
             // Read the endpoint configuration file
