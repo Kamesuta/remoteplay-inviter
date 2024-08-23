@@ -1,6 +1,9 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
-use std::{env, fs};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
 /// Endpoint configuration
 #[derive(Serialize, Deserialize)]
@@ -16,9 +19,27 @@ pub struct Config {
     pub uuid: String,
 }
 
+fn get_exe_path() -> Result<PathBuf> {
+    // If the APPIMAGE environment variable is set, use its path as the current executable path.
+    match env::var("APPIMAGE") {
+        Ok(appimage_path) => {
+            let appimage_path = Path::new(&appimage_path);
+            if appimage_path.exists() {
+                Ok(appimage_path.to_path_buf())
+            } else {
+                Err(anyhow::anyhow!(
+                    "APPIMAGE path does not exist: {:?}",
+                    appimage_path
+                ))
+            }
+        }
+        Err(_) => env::current_exe().context("Unable to get current executable path"),
+    }
+}
+
 /// Read the endpoint configuration
 pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
-    let exe_path = env::current_exe().context("Unable to get current executable path")?;
+    let exe_path = get_exe_path()?;
     let config_path = exe_path.with_extension("endpoint.toml");
 
     if config_path.exists() {
@@ -34,7 +55,7 @@ pub fn read_endpoint_config() -> Result<Option<EndpointConfig>> {
 
 /// Read or generate the UUID configuration
 pub fn read_or_generate_config<F: Fn() -> Config>(generate_config: F) -> Result<Config> {
-    let exe_path = env::current_exe().context("Unable to get current executable path")?;
+    let exe_path = get_exe_path()?;
     let config_path = exe_path.with_extension("config.toml");
 
     if config_path.exists() {
