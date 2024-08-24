@@ -47,11 +47,34 @@ async fn main() -> Result<()> {
                         ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
                         ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
                         ╩╚═└─┘┴ ┴└─┘ ┴ └─┘┴  ┴─┘┴ ┴ ┴   ╩┘└┘ └┘ ┴ ┴ └─┘┴└─
-                                                            by Kamesuta
+                           Version: {VERSION}                   by Kamesuta
+                                                            
                 Invite your friends via Discord and play Steam games together for free! 
             ------------------------------------------------------------------------------
         
         "};
+
+        // Version command
+        if std::env::args().any(|arg| arg == "--version" || arg == "-v") {
+            println!("✓ Version: {}", VERSION);
+            return Ok(());
+        }
+
+        // Help command
+        if std::env::args().any(|arg| arg == "--help" || arg == "-h") {
+            let program = std::env::current_exe()
+                .ok()
+                .and_then(|f| f.file_name().map(|f| f.to_string_lossy().into_owned()))
+                .unwrap_or_else(|| "remoteplay-inviter".to_owned());
+            printdoc! {"
+                Usage: {program} [options]
+
+                Options:
+                    -v, --version    Display the version of the program
+                    -h, --help       Display this help message
+            "};
+            return Ok(());
+        }
 
         // Initialize SteamStuff
         let steam = match SteamStuff::new()

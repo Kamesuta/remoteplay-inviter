@@ -9,12 +9,11 @@ script:
   # Copy resources
   - mkdir -p $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps
   - cp resources/app.svg $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps/remoteplay-inviter.svg
-  # Copy test script
-  - cp scripts/test.sh $TARGET_APPDIR
-  - chmod +x $TARGET_APPDIR/test.sh
   # Copy run script
   - cp scripts/run.sh $TARGET_APPDIR
   - chmod +x $TARGET_APPDIR/run.sh
+  - cp scripts/i3-sensible-terminal.sh $TARGET_APPDIR
+  - chmod +x $TARGET_APPDIR/i3-sensible-terminal.sh
 AppDir:
   path: AppDir
   app_info:
@@ -23,7 +22,7 @@ AppDir:
     icon: remoteplay-inviter
     version: latest
     exec: bin/bash
-    exec_args: "'$APPDIR/run.sh'"
+    exec_args: "'$APPDIR/run.sh' $@"
   files:
     include:
     - /bin/bash
@@ -39,8 +38,7 @@ AppDir:
   test:
     debian: &common
       image: appimagecrafters/tests-env:debian-stable
-      use_host_x: true
-      command: bash test.sh
+      command: ./AppRun --version
     fedora:
       <<: *common
       image: appimagecrafters/tests-env:fedora-30

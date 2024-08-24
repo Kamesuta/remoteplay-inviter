@@ -6,5 +6,5 @@ if [[ -t 0 ]]; then
   exec "$APPDIR/remoteplay-inviter" "$@"
 else
   # If executed by double-clicking or similar
-  gnome-terminal -- bash -c "'$APPIMAGE' $@"
+  exec "$APPDIR/i3-sensible-terminal.sh" -e bash -c "'$APPIMAGE' $@"
 fi

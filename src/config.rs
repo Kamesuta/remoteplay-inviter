@@ -19,7 +19,8 @@ pub struct Config {
     pub uuid: String,
 }
 
-fn get_exe_path() -> Result<PathBuf> {
+/// Get the current executable path
+pub fn get_exe_path() -> Result<PathBuf> {
     // If the APPIMAGE environment variable is set, use its path as the current executable path.
     match env::var("APPIMAGE") {
         Ok(appimage_path) => {
