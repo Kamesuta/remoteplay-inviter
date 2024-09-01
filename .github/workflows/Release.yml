@@ -12,33 +12,29 @@ jobs:
   build:
     runs-on: ${{ matrix.job.os }}
     strategy:
-      fail-fast: false
       matrix:
         job:
-          - {
-              os: ubuntu-latest,
-              target: x86_64-unknown-linux-gnu,
-              use-cross: false,
-              extension: '',
-            }
-          - {
-              os: macos-latest,
-              target: x86_64-apple-darwin,
-              use-cross: false,
-              extension: '',
-            }
-          - {
-              os: macos-latest,
-              target: aarch64-apple-darwin,
-              use-cross: false,
-              extension: '',
-            }
-          - {
-              os: windows-latest,
-              target: x86_64-pc-windows-msvc,
-              use-cross: false,
-              extension: .exe,
-            }
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            use-cross: false
+            extension: '.AppImage'
+            suffix: ''
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            use-cross: false
+            extension: ''
+            suffix: '-macos-intel'
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            use-cross: false
+            extension: ''
+            suffix: '-macos'
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            use-cross: false
+            extension: '.exe'
+            suffix: ''
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,7 +59,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libssl-dev libxcb-xfixes0-dev
+          sudo apt-get install -y libssl-dev libxcb-xfixes0-dev cmake clang build-essential
 
       - name: setup environments
         run: |
@@ -77,10 +73,21 @@ jobs:
           command: build
           args: --release --target ${{ matrix.job.target }}
 
+      - name: Build AppImage
+        uses: AppImageCrafters/build-appimage-action@master
+        if: runner.os == 'Linux'
+        env:
+          EXECUTABLE_PATH: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
+          UPDATE_INFO: gh-releases-zsync|${{ env.GITHUB_REPOSITORY_OWNER }}|${{ env.PROJECT_NAME }}|latest|*.AppImage.zsync
+          OUTPUT_NAME: ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
+        with:
+          recipe: AppImageBuilder.yml
+
       - name: Rename artifacts
         shell: bash
+        if: runner.os != 'Linux'
         run: |
-          mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}{,-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}}
+          mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }} ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -88,4 +95,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}
+            ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
