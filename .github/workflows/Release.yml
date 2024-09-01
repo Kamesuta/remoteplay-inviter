@@ -77,6 +77,14 @@ jobs:
           command: build
           args: --release --target ${{ matrix.job.target }}
 
+      - name: Build AppImage
+        uses: AppImageCrafters/build-appimage-action@master
+        if: runner.os == 'Linux'
+        env:
+          UPDATE_INFO: gh-releases-zsync|Kamesuta|remoteplay-inviter|latest|*x86_64.AppImage.zsync
+        with:
+          recipe: AppImageBuilder.yml
+
       - name: Rename artifacts
         shell: bash
         run: |
