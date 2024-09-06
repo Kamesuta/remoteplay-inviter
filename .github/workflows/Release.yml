@@ -81,6 +81,7 @@ jobs:
         uses: AppImageCrafters/build-appimage-action@master
         if: runner.os == 'Linux'
         env:
+          EXECUTABLE_PATH: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
           UPDATE_INFO: gh-releases-zsync|Kamesuta|remoteplay-inviter|latest|*x86_64.AppImage.zsync
         with:
           recipe: AppImageBuilder.yml
