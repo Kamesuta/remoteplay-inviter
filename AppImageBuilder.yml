@@ -53,5 +53,5 @@ AppDir:
       image: appimagecrafters/tests-env:ubuntu-xenial
 AppImage:
   arch: x86_64
-  update-information: {{UPDATE_INFO}}
+  update-information: "{{UPDATE_INFO}}"
   sign-key: None
