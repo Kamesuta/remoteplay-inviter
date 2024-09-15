@@ -5,6 +5,7 @@ script:
   - mkdir -p $TARGET_APPDIR
   # Make usr and icons dirs
   # Copy the application code into the AppDir
+  - echo AAAAAAAAAAAAAAAAAAAAAAAAA {{EXECUTABLE_PATH}}
   - cp {{EXECUTABLE_PATH}} $TARGET_APPDIR
   # Copy resources
   - mkdir -p $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps
