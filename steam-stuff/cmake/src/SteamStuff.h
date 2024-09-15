@@ -19,6 +19,12 @@ public:
 	IClientRemoteClientManager* RemoteClientManager();
 
 	/**
+		@brief Get the App Manager interface.
+		@return The App Manager interface.
+	*/
+	IClientAppManager* AppManager();
+
+	/**
 		@brief Initialize the Steam client.
 		@return True if the Steam client was initialized successfully.
 	*/
@@ -48,6 +54,7 @@ private:
 
 	IClientEngine* m_pClientEngine;
 	IClientRemoteClientManager* m_pClientRemoteManager;
+	IClientAppManager* m_pClientAppManager;
 
 	bool m_ShuttingDown;
 	bool m_Initialized;

@@ -14,6 +14,7 @@ extern "C" {
     pub fn SteamStuff_Shutdown();
     pub fn SteamStuff_RunCallbacks();
     pub fn SteamStuff_GetRunningGameID() -> u64;
+    pub fn SteamStuff_CanRemotePlayTogether(gameID: u64) -> bool;
     pub fn SteamStuff_SendInvite(invitee: u64, gameID: u64) -> u64;
     pub fn SteamStuff_CancelInvite(invitee: u64, guestID: u64);
     pub fn SteamStuff_SetOnRemoteInvited(cb: OnRemoteInvited);

@@ -73,6 +73,12 @@ bool ClientContext::Init()
 		return false;
 	}
 
+	m_pClientAppManager = m_pClientEngine->GetIClientAppManager(m_hUser, m_hPipe);
+	if (!m_pClientAppManager)
+	{
+		return false;
+	}
+
 	return m_Initialized = true;
 }
 
@@ -119,6 +125,11 @@ void ClientContext::RunCallbacks()
 IClientRemoteClientManager* ClientContext::RemoteClientManager()
 {
 	return m_pClientRemoteManager;
+}
+
+IClientAppManager* ClientContext::AppManager()
+{
+	return m_pClientAppManager;
 }
 
 CGameID ClientContext::GetRunningGameID()

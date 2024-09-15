@@ -30,6 +30,11 @@ uint64_t SteamStuff_GetRunningGameID()
 	return GClientContext()->GetRunningGameID().ToUint64();
 }
 
+bool SteamStuff_CanRemotePlayTogether(uint64_t gameID)
+{
+	return GClientContext()->AppManager()->BCanRemotePlayTogether(CGameID(uint64(gameID)).AppID());
+}
+
 
 // RemotePlayInviteHandler functions
 

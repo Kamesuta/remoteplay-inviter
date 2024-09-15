@@ -2,6 +2,7 @@
 #include <thread>
 #include <Steamworks.h>
 #include "Library.h"
+#include "SteamStuff.h"
 
 int main()
 {
@@ -15,6 +16,12 @@ int main()
 
 	uint64_t gameId = SteamStuff_GetRunningGameID();
 	std::cout << "Hello, World! Game ID: " << gameId << std::endl;
+
+	// Check if the game supports Remote Play Together
+	std::cout << "PICO PARK 2(expected=1): " << GClientContext()->AppManager()->BCanRemotePlayTogether(2644470) << std::endl;
+	std::cout << "Overcooked! 2(expected=1): "  << GClientContext()->AppManager()->BCanRemotePlayTogether(728880) << std::endl;
+	std::cout << "shapez(expected=0): "  << GClientContext()->AppManager()->BCanRemotePlayTogether(1318690) << std::endl;
+	std::cout << "Sackboy(expected=0): "  << GClientContext()->AppManager()->BCanRemotePlayTogether(1599660) << std::endl;
 
 	if (!CGameID(uint64(gameId)).IsValid())
 	{

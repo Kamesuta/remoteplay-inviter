@@ -11,6 +11,7 @@ bool SteamStuff_Init();
 void SteamStuff_Shutdown();
 void SteamStuff_RunCallbacks();
 uint64_t SteamStuff_GetRunningGameID();
+bool SteamStuff_CanRemotePlayTogether(uint64_t gameID);
 
 uint64_t SteamStuff_SendInvite(uint64_t invitee, uint64_t gameID);
 void SteamStuff_CancelInvite(uint64_t invitee, uint64_t guestID);
