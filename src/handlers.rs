@@ -73,33 +73,45 @@ impl Handler {
 
                 return Ok(false);
             }
-            ServerCmd::GameId => {
+            ServerCmd::GameId => 'cmd: {
                 let game_id = self.steam.lock().await.get_running_game_id();
 
-                if game_id.is_valid_app() {
-                    // Log the output
-                    let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                    println!(
-                        "-> Create Panel       : claimer={claimer}, game_id={0}",
-                        game_id.app_id
-                    );
-
-                    // Create the response data
-                    ClientMessage {
-                        id: msg.id,
-                        cmd: ClientCmd::GameId {
-                            game: game_id.app_id,
-                        },
-                    }
-                } else {
+                if !game_id.is_valid_app() {
                     // If the game is not running
                     // Create the response data
-                    ClientMessage {
+                    break 'cmd ClientMessage {
                         id: msg.id,
                         cmd: ClientCmd::Error {
                             code: ErrorStatus::InvalidApp,
                         },
-                    }
+                    };
+                }
+
+                let app_id = game_id.app_id;
+                let game_uid: GameUID = game_id.into();
+
+                if !self.steam.lock().await.can_remote_play_together(game_uid) {
+                    // If the game is not supported for Remote Play Together
+                    // Create the response data
+                    break 'cmd ClientMessage {
+                        id: msg.id,
+                        cmd: ClientCmd::Error {
+                            code: ErrorStatus::UnsupportedApp,
+                        },
+                    };
+                }
+
+                // Log the output
+                let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
+                println!(
+                    "-> Create Panel       : claimer={claimer}, game_id={0}",
+                    app_id
+                );
+
+                // Create the response data
+                ClientMessage {
+                    id: msg.id,
+                    cmd: ClientCmd::GameId { game: app_id },
                 }
             }
             ServerCmd::Link { game } => {

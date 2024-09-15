@@ -114,4 +114,6 @@ pub enum ErrorStatus {
     InvalidCmd,
     /// The app is not running
     InvalidApp,
+    /// The app does not support remote play
+    UnsupportedApp,
 }
