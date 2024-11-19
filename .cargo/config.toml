@@ -2,3 +2,6 @@
 # This is necessary for the dynamic linking to work on macOS
 # Otherwise, the symbols won't be available until runtime
 rustflags = ["-C", "link-args=-Wl,-undefined,dynamic_lookup"]
+
+[target.'cfg(target_family = "windows")']
+rustflags = ["-C", "target-feature=+crt-static"]
