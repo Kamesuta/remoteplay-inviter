@@ -9,6 +9,7 @@ description = "Invite your friends via Discord and play Steam games together for
 [dependencies]
 anyhow = "1.0.86"
 clipboard = "0.5.0"
+crossterm = "0.28.1"
 dotenvy_macro = "0.15.7"
 futures = "0.3.30"
 futures-util = "0.3.30"

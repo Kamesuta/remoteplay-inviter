@@ -4,7 +4,6 @@ use anyhow::{Context as _, Result};
 use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
-use indoc::printdoc;
 use std::sync::Arc;
 use steam_stuff::SteamStuff;
 use tokio::{
@@ -21,6 +20,7 @@ use tokio_tungstenite::{
 use uuid::Uuid;
 
 mod config;
+mod console;
 mod handlers;
 mod models;
 mod retry;
@@ -42,7 +42,7 @@ const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
 async fn main() -> Result<()> {
     // Event loop
     'main: {
-        printdoc! {"
+        console::printdoc! {"
             ------------------------------------------------------------------------------
                         ╦═╗┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐┬  ┌─┐┬ ┬  ╦┌┐┌┬  ┬┬┌┬┐┌─┐┬─┐
                         ╠╦╝├┤ ││││ │ │ ├┤ ├─┘│  ├─┤└┬┘  ║│││└┐┌┘│ │ ├┤ ├┬┘
@@ -56,7 +56,7 @@ async fn main() -> Result<()> {
 
         // Version command
         if std::env::args().any(|arg| arg == "--version" || arg == "-v") {
-            println!("✓ Version: {}", VERSION);
+            console::println!("✓ Version: {}", VERSION);
             return Ok(());
         }
 
@@ -66,7 +66,7 @@ async fn main() -> Result<()> {
                 .ok()
                 .and_then(|f| f.file_name().map(|f| f.to_string_lossy().into_owned()))
                 .unwrap_or_else(|| "remoteplay-inviter".to_owned());
-            printdoc! {"
+            console::printdoc! {"
                 Usage: {program} [options]
 
                 Options:
@@ -82,7 +82,7 @@ async fn main() -> Result<()> {
         {
             Ok(steam) => Arc::new(Mutex::new(steam)),
             Err(err) => {
-                eprintln!("☓ {}", err);
+                console::eprintln!("☓ {}", err);
                 break 'main;
             }
         };
@@ -116,7 +116,7 @@ async fn main() -> Result<()> {
             // Endpoint URL
             let endpoint_url = match endpoint_config {
                 Some(e) => {
-                    println!("✓ Using custom endpoint URL: {}", e.url);
+                    console::println!("✓ Using custom endpoint URL: {}", e.url);
                     e.url
                 }
                 None => DEFAULT_URL.to_string(),
@@ -136,7 +136,7 @@ async fn main() -> Result<()> {
         let url = match result {
             Ok(url) => url,
             Err(err) => {
-                eprintln!("☓ {}", err);
+                console::eprintln!("☓ {}", err);
                 break 'main;
             }
         };
@@ -145,7 +145,7 @@ async fn main() -> Result<()> {
             let result: Result<()> = try {
                 // Display the reconnection message
                 if reconnect {
-                    println!("↪ Reconnecting to the server...");
+                    console::println!("↪ Reconnecting to the server...");
                 }
 
                 // Create a WebSocket client
@@ -166,9 +166,9 @@ async fn main() -> Result<()> {
 
                 // Display the reconnection message
                 if reconnect {
-                    println!("✓ Reconnected!");
+                    console::println!("✓ Reconnected!");
                 } else {
-                    println!("✓ Connected to the server!");
+                    console::println!("✓ Connected to the server!");
                 }
 
                 // Loop to process messages received from the server
@@ -208,19 +208,19 @@ async fn main() -> Result<()> {
                 }
             };
             if let Err(err) = result {
-                eprintln!("☓ {}", err);
+                console::eprintln!("☓ {}", err);
             }
 
             // Reconnect to the server if the connection is lost
             let sec = retry_sec.next();
-            println!("↪ Connection lost. Reconnecting in {sec} seconds...");
+            console::println!("↪ Connection lost. Reconnecting in {sec} seconds...");
             time::sleep(Duration::from_secs(sec)).await;
             reconnect = true;
         }
     }
 
     // Wait for input before exiting
-    println!("□ Press Ctrl+C to exit...");
+    console::println!("□ Press Ctrl+C to exit...");
     let _ = tokio::signal::ctrl_c().await;
 
     Ok(())

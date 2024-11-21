@@ -1,6 +1,5 @@
-use crate::{ConnectionErrorMessage, ConnectionErrorType, VERSION};
+use crate::{console, ConnectionErrorMessage, ConnectionErrorType, VERSION};
 use anyhow::{anyhow, Context as _, Result};
-use indoc::printdoc;
 use tokio_tungstenite::tungstenite::Error as WsError;
 
 /// Handle WebSocket errors
@@ -26,7 +25,7 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
                     // If the version is outdated
                     ConnectionErrorType::Outdated { required, download } => {
                         // Display the content
-                        printdoc! {"
+                        console::printdoc! {"
 
                             ↑ Update required: {VERSION} to {required}
                               Download: {download}
@@ -47,7 +46,7 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
                                 .join("\n");
 
                             // Display the error message
-                            printdoc! {
+                            console::printdoc! {
                                 "
 
                                     ☓ Connection error:
@@ -62,7 +61,7 @@ pub fn handle_ws_error(err: WsError) -> Result<()> {
 
             if let Err(err) = result {
                 // If parsing fails
-                eprintln!("☓ {err}");
+                console::eprintln!("☓ {err}");
             }
         }
         // For other HTTP errors

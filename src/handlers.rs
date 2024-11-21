@@ -1,8 +1,11 @@
 use anyhow::{Context, Result};
 use clipboard::{ClipboardContext, ClipboardProvider};
 use futures::SinkExt;
-use indoc::printdoc;
-use std::{collections::HashMap, sync::Arc, time::Duration};
+use std::{
+    collections::{BTreeSet, HashMap},
+    sync::Arc,
+    time::Duration,
+};
 use steam_stuff::{GameID, GameUID};
 use tokio::{
     sync::{
@@ -14,14 +17,22 @@ use tokio::{
 };
 use tokio_tungstenite::tungstenite::{protocol::Message, Error as WsError};
 
-use crate::models::{ClientCmd, ClientMessage, ErrorStatus, ServerCmd, ServerMessage};
 use crate::SteamStuff;
+use crate::{
+    console,
+    models::{ClientCmd, ClientMessage, ErrorStatus, ServerCmd, ServerMessage},
+};
+
+pub struct GuestData {
+    pub guest_map: HashMap<u64, String>,
+    pub user_set: BTreeSet<u64>,
+}
 
 pub struct Handler {
     steam: Arc<Mutex<SteamStuff>>,
     invite_tx: Sender<(u64, String)>,
     invite_rx: Receiver<(u64, String)>,
-    guest_map: Arc<Mutex<HashMap<u64, String>>>,
+    guest_data: Arc<Mutex<GuestData>>,
 }
 
 impl Handler {
@@ -31,7 +42,10 @@ impl Handler {
             steam,
             invite_tx,
             invite_rx,
-            guest_map: Arc::new(Mutex::new(HashMap::<u64, String>::new())),
+            guest_data: Arc::new(Mutex::new(GuestData {
+                guest_map: HashMap::<u64, String>::new(),
+                user_set: BTreeSet::<u64>::new(),
+            })),
         }
     }
 
@@ -55,7 +69,7 @@ impl Handler {
                     .join("\n");
 
                 // Display the welcome message
-                printdoc! {"
+                console::printdoc! {"
 
                 {message}
 
@@ -67,7 +81,7 @@ impl Handler {
                     if let Err(_err) = ClipboardProvider::new()
                         .map(|mut ctx: ClipboardContext| ctx.set_contents(copy.clone()))
                     {
-                        eprintln!("☓ Failed to copy to clipboard: {}", copy);
+                        console::eprintln!("☓ Failed to copy to clipboard: {}", copy);
                     }
                 }
 
@@ -103,7 +117,7 @@ impl Handler {
 
                 // Log the output
                 let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                println!(
+                console::println!(
                     "-> Create Panel       : claimer={claimer}, game_id={0}",
                     app_id
                 );
@@ -125,15 +139,16 @@ impl Handler {
 
                 // Associate the Discord user with guest_id
                 if let Some(user) = &msg.user {
-                    self.guest_map
+                    self.guest_data
                         .lock()
                         .await
+                        .guest_map
                         .insert(guest_id, user.name.clone());
                 }
 
                 // Log the output
                 let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                println!(
+                console::println!(
                     "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}", 
                 );
 
@@ -174,26 +189,52 @@ impl Handler {
     pub async fn setup_steam_callbacks(&self) {
         // Register callbacks
         let steam = self.steam.lock().await;
-        let guests = self.guest_map.clone();
+        let guest_data = self.guest_data.clone();
         steam.set_on_remote_started(move |invitee, guest_id| {
-            let guests = guests.clone();
+            let guest_data = guest_data.clone();
             tokio::spawn(async move {
-                let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                println!(
-                    "-> User Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
-                );
+                let mut guest_data = guest_data.lock().await;
+                guest_data.user_set.insert(guest_id);
+                let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
+                let _: Result<()> = try {
+                    // Log the output
+                    console::println!(
+                        "-> Player Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
+                    );
+
+                    // Display the user list
+                    let users_text = guest_data
+                        .user_set
+                        .iter()
+                        .map(|id| format!("[{}]{}", id, guest_data.guest_map.get(&id).map_or_else(|| "?", |s| s)))
+                        .collect::<Vec<String>>()
+                        .join(", ");
+                    console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
+                };
             });
         });
-        let guests = self.guest_map.clone();
+        let guest_data = self.guest_data.clone();
         steam.set_on_remote_stopped(move |invitee, guest_id| {
-            let guests = guests.clone();
+            let guest_data = guest_data.clone();
             tokio::spawn(async move {
-                let guest_map = guests.lock().await;
-                let user_name = guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                println!(
-                    "-> User Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
-                );
+                let mut guest_data = guest_data.lock().await;
+                guest_data.user_set.remove(&guest_id);
+                let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
+                let _: Result<()> = try {
+                    // Log the output
+                    console::println!(
+                        "-> Player Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
+                    );
+
+                    // Display the user list
+                    let users_text = guest_data
+                        .user_set
+                        .iter()
+                        .map(|id| format!("[{}]{}", id, guest_data.guest_map.get(&id).map_or_else(|| "?", |s| s)))
+                        .collect::<Vec<String>>()
+                        .join(", ");
+                    console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
+                };
             });
         });
         let invite_tx = self.invite_tx.clone();
