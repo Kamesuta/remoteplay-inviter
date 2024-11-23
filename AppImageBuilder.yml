@@ -1,5 +1,7 @@
 version: 1
 script:
+  # Ensure that the mksquashfs tool is installed (workaround for the AppImageCrafters/build-appimage GHA)
+  - which mksquashfs || apt install squashfs-tools
   # Remove any previous build and create a new AppDir
   - rm -rf $TARGET_APPDIR | true
   - mkdir -p $TARGET_APPDIR
