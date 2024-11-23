@@ -78,7 +78,8 @@ jobs:
         if: runner.os == 'Linux'
         env:
           EXECUTABLE_PATH: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
-          UPDATE_INFO: gh-releases-zsync|Kamesuta|remoteplay-inviter|latest|*x86_64.AppImage.zsync
+          UPDATE_INFO: gh-releases-zsync|${{ env.GITHUB_REPOSITORY_OWNER }}|${{ env.PROJECT_NAME }}|latest|*.AppImage.zsync
+          OUTPUT_NAME: ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
         with:
           recipe: AppImageBuilder.yml
 
