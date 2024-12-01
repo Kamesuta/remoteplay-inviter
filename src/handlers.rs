@@ -28,6 +28,26 @@ pub struct GuestData {
     pub user_set: BTreeSet<u64>,
 }
 
+pub trait MessageResponder {
+    // Respond to a message
+    async fn send_response(&mut self, msg: ClientMessage) -> Result<()>;
+}
+
+impl<T: SinkExt<Message, Error = WsError> + Unpin> MessageResponder for T {
+    async fn send_response(&mut self, res: ClientMessage) -> Result<()> {
+        // Convert the response data to JSON
+        let res_str = serde_json::to_string(&res)
+            .context("Failed to serialize JSON message for the server")?;
+
+        // Send the response data
+        self.send(Message::Text(res_str))
+            .await
+            .context("Failed to send message to the server")?;
+
+        Ok(())
+    }
+}
+
 pub struct Handler {
     steam: Arc<Mutex<SteamStuff>>,
     invite_tx: Sender<(u64, String)>,
@@ -56,10 +76,10 @@ impl Handler {
     pub async fn handle_server_message(
         &mut self,
         msg: ServerMessage,
-        write: &mut (impl SinkExt<Message, Error = WsError> + Unpin),
+        responder: &mut impl MessageResponder,
     ) -> Result<bool> {
         // Branch based on command type
-        let res = match msg.cmd {
+        match msg.cmd {
             ServerCmd::Message { text: data, copy } => {
                 // Indent the message
                 let message = data
@@ -84,21 +104,22 @@ impl Handler {
                         console::eprintln!("☓ Failed to copy to clipboard: {}", copy);
                     }
                 }
-
-                return Ok(false);
             }
-            ServerCmd::GameId => 'cmd: {
+            ServerCmd::GameId => {
                 let game_id = self.steam.lock().await.get_running_game_id();
 
                 if !game_id.is_valid_app() {
                     // If the game is not running
                     // Create the response data
-                    break 'cmd ClientMessage {
-                        id: msg.id,
-                        cmd: ClientCmd::Error {
-                            code: ErrorStatus::InvalidApp,
-                        },
-                    };
+                    responder
+                        .send_response(ClientMessage {
+                            id: msg.id,
+                            cmd: ClientCmd::Error {
+                                code: ErrorStatus::InvalidApp,
+                            },
+                        })
+                        .await?;
+                    return Ok(false);
                 }
 
                 let app_id = game_id.app_id;
@@ -107,12 +128,15 @@ impl Handler {
                 if !self.steam.lock().await.can_remote_play_together(game_uid) {
                     // If the game is not supported for Remote Play Together
                     // Create the response data
-                    break 'cmd ClientMessage {
-                        id: msg.id,
-                        cmd: ClientCmd::Error {
-                            code: ErrorStatus::UnsupportedApp,
-                        },
-                    };
+                    responder
+                        .send_response(ClientMessage {
+                            id: msg.id,
+                            cmd: ClientCmd::Error {
+                                code: ErrorStatus::UnsupportedApp,
+                            },
+                        })
+                        .await?;
+                    return Ok(false);
                 }
 
                 // Log the output
@@ -123,10 +147,12 @@ impl Handler {
                 );
 
                 // Create the response data
-                ClientMessage {
-                    id: msg.id,
-                    cmd: ClientCmd::GameId { game: app_id },
-                }
+                responder
+                    .send_response(ClientMessage {
+                        id: msg.id,
+                        cmd: ClientCmd::GameId { game: app_id },
+                    })
+                    .await?;
             }
             ServerCmd::Link { game } => {
                 // Get the game ID
@@ -153,10 +179,12 @@ impl Handler {
                 );
 
                 // Create the response data
-                ClientMessage {
-                    id: msg.id,
-                    cmd: ClientCmd::Link { url: connect_url },
-                }
+                responder
+                    .send_response(ClientMessage {
+                        id: msg.id,
+                        cmd: ClientCmd::Link { url: connect_url },
+                    })
+                    .await?;
             }
             ServerCmd::Exit => {
                 // Exit the application
@@ -164,23 +192,16 @@ impl Handler {
             }
             ServerCmd::Invalid => {
                 // Create the response data
-                ClientMessage {
-                    id: msg.id,
-                    cmd: ClientCmd::Error {
-                        code: ErrorStatus::InvalidCmd,
-                    },
-                }
+                responder
+                    .send_response(ClientMessage {
+                        id: msg.id,
+                        cmd: ClientCmd::Error {
+                            code: ErrorStatus::InvalidCmd,
+                        },
+                    })
+                    .await?;
             }
         };
-
-        // Convert the response data to JSON
-        let res_str = serde_json::to_string(&res)
-            .context("Failed to serialize JSON message for the server")?;
-        // Send the response data
-        write
-            .send(Message::Text(res_str))
-            .await
-            .context("Failed to send message to the server")?;
 
         Ok(false)
     }
