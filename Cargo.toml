@@ -30,5 +30,6 @@ winresource = "0.1.17"
 
 [package.metadata.winresource]
 OriginalFilename = "remoteplay-inviter.exe"
+FileDescription = "Remote Play Inviter Client"
 LegalCopyright = "Copyright © 2024 Kamesuta"
 ProductName = "Remote Play Inviter Client"
