@@ -238,12 +238,22 @@ impl Handler {
             });
         });
         let invite_tx = self.invite_tx.clone();
+        let steam_data = self.steam.clone();
         steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
             // Send the invite link
             let invite_tx = invite_tx.clone();
             let connect_url = String::from(connect_url);
+            let steam_data = steam_data.clone();
             tokio::spawn(async move {
                 invite_tx.send((guest_id, connect_url)).await.unwrap();
+
+                // Show the Remote Play Together UI
+                let steam = steam_data.lock().await;
+                let game_id = steam.get_running_game_id();
+                if game_id.is_valid_app() {
+                    let game_uid: GameUID = game_id.into();
+                    steam.show_remote_play_together_ui(game_uid);
+                }
             });
         });
     }

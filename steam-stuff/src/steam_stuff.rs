@@ -34,6 +34,10 @@ impl SteamStuff {
         unsafe { native::SteamStuff_CanRemotePlayTogether(game_id) }
     }
 
+    pub fn show_remote_play_together_ui(&self, game_id: u64) {
+        unsafe { native::SteamStuff_ShowRemotePlayTogetherUI(game_id) }
+    }
+
     pub fn send_invite(&self, invitee: u64, game_id: u64) -> u64 {
         unsafe { native::SteamStuff_SendInvite(invitee, game_id) }
     }
