@@ -40,7 +40,25 @@ export default function Home() {
             </div>
             <h1 className="text-2xl font-bold text-white">Remote Play Inviter</h1>
           </div>
-          <div className="flex space-x-4">
+          <div className="flex space-x-6">
+            <a 
+              href="#about"
+              className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
+            >
+              機能紹介
+            </a>
+            <a 
+              href="#setup"
+              className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
+            >
+              導入手順
+            </a>
+            <a 
+              href="#download"
+              className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
+            >
+              ダウンロード
+            </a>
             <a 
               href="https://github.com/Kamesuta/remoteplay-inviter" 
               target="_blank"
@@ -77,8 +95,7 @@ export default function Home() {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a 
-                  href="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
-                  target="_blank"
+                  href="#setup"
                   className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center"
                 >
                   今すぐ始める
@@ -547,26 +564,7 @@ export default function Home() {
             Remote Play Inviterで友達との楽しいゲーム体験を始めましょう
           </p>
           
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <a 
-              href="https://github.com/Kamesuta/remoteplay-inviter"
-              target="_blank"
-              className="px-8 py-4 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-all flex items-center justify-center space-x-2"
-            >
-              <span>📱</span>
-              <span>メインリポジトリ</span>
-            </a>
-            <a 
-              href="https://github.com/Kamesuta/remoteplay-inviter-bot"
-              target="_blank"
-              className="px-8 py-4 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-all flex items-center justify-center space-x-2"
-            >
-              <span>🤖</span>
-              <span>BOTリポジトリ</span>
-            </a>
-          </div>
-          
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
               target="_blank"
@@ -601,22 +599,10 @@ export default function Home() {
             <span className="text-xl font-bold text-white">Remote Play Inviter</span>
           </div>
           <p className="text-slate-400 mb-6">
-            Steamの公式機能であるRemote Play Togetherを、より便利に使えるようにするツールです
+            このツールはSteamとは関係のない非公式ツールです。<br />
+            <a href="https://store.steampowered.com/remoteplay_together?l=japanese" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">Steam Remote Play Together</a> の公式機能をより便利に使えるようにするツールです
           </p>
-          <p className="text-slate-500 mb-6">
-            <strong>Remote Play Inviter</strong> by Kamesuta
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <a href="https://github.com/Kamesuta" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-              GitHub
-            </a>
-            <a href="https://x.com/Kmesuta" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-              X
-            </a>
-            <a href="https://discord.gg/kamepower" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-              Discord
-            </a>
-          </div>
+          
           <div className="flex flex-wrap justify-center gap-4 mb-6">
             <a href="https://github.com/Kamesuta/remoteplay-inviter" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
               ソースコード (クライアント)
@@ -624,11 +610,18 @@ export default function Home() {
             <a href="https://github.com/Kamesuta/remoteplay-inviter-bot" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
               ソースコード (BOT)
             </a>
-          </div>
-          <div className="flex justify-center space-x-6">
-            <a href="https://store.steampowered.com/remoteplay_together?l=japanese" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-              Steam Remote Play Together
+            <a href="https://github.com/Kamesuta/remoteplay-inviter-web" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
+              ソースコード (Web)
             </a>
+          </div>
+          
+          <div className="text-slate-500 text-sm">
+            <p className="mb-2">
+              © <a href="https://github.com/Kamesuta" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">Kamesuta</a>
+            </p>
+            <p>
+              MITライセンスの下でライセンスされています
+            </p>
           </div>
         </div>
       </footer>
