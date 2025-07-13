@@ -266,48 +266,48 @@ export default function Home() {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="relative">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center">
+            <div className="relative h-full">
+              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                   1
                 </div>
-                <div className="mt-6 mb-6">
-                  <Image src="/assets/invite_bot.png" alt="BOT招待画面" width={200} height={120} className="mx-auto rounded-lg border border-slate-600" />
+                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
+                  <Image src="/assets/invite_bot.png" alt="BOT招待画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">BOTを招待する</h3>
-                <p className="text-slate-300 mb-4">「マイアプリに追加」を押して、Remote Play InviterボットをDiscordサーバーにインストール</p>
+                <p className="text-slate-300 mb-4 flex-grow">「マイアプリに追加」を押して、Remote Play InviterボットをDiscordサーバーにインストール</p>
                 <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                   BOTを招待
                 </button>
               </div>
             </div>
 
-            <div className="relative">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center">
+            <div className="relative h-full">
+              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                   2
                 </div>
-                <div className="mt-6 mb-6">
-                  <Image src="/assets/inviter_client.png" alt="クライアント画面" width={200} height={120} className="mx-auto rounded-lg border border-slate-600" />
+                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
+                  <Image src="/assets/inviter_client.png" alt="クライアント画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">クライアントをダウンロード</h3>
-                <p className="text-slate-300 mb-4">Remote Play Inviterクライアントをダウンロードし、起動してclient_idをコピー</p>
+                <p className="text-slate-300 mb-4 flex-grow">Remote Play Inviterクライアントをダウンロードし、起動してclient_idをコピー</p>
                 <button className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                   ダウンロード
                 </button>
               </div>
             </div>
 
-            <div className="relative">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center">
+            <div className="relative h-full">
+              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
                   3
                 </div>
-                <div className="mt-6 mb-6">
-                  <Image src="/assets/inviter_setup.png" alt="セットアップ画面" width={200} height={120} className="mx-auto rounded-lg border border-slate-600" />
+                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
+                  <Image src="/assets/inviter_setup.png" alt="セットアップ画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">BOTとクライアントを連携</h3>
-                <p className="text-slate-300 mb-4">Discordで `/steam invite client_id:～～～` を入力してBOTとクライアントを連携</p>
+                <p className="text-slate-300 mb-4 flex-grow">Discordで `/steam invite client_id:～～～` を入力してBOTとクライアントを連携</p>
                 <div className="px-6 py-2 bg-slate-700 text-slate-300 rounded-lg font-mono text-sm">
                   /steam invite client_id:...
                 </div>
