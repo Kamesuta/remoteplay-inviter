@@ -38,7 +38,7 @@ export default function Home() {
                 className="object-cover"
               />
             </div>
-            <h1 className="text-2xl font-bold text-white">Steam Remoteplay Inviter</h1>
+            <h1 className="text-2xl font-bold text-white">Remote Play Inviter</h1>
           </div>
           <div className="flex space-x-4">
             <a 
@@ -64,12 +64,14 @@ export default function Home() {
               </div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                  Steam Remote Play
+                  Steam Remote Play Together
                 </span>
-                <span className="text-white">を簡単に</span>
+                <span className="text-white"> に </span>
+                <span className="whitespace-nowrap"><span className="text-indigo-400">Discord</span><span className="text-white"> で</span></span>
+                <span className="text-white whitespace-nowrap">簡単招待</span>
               </h1>
               <p className="text-xl text-slate-300 mb-12 leading-relaxed">
-                DiscordでSteamゲームのストリーミングプレイに招待できるBOT。<br />
+                DiscordでSteam Remote Play Togetherに招待できるBOT。<br />
                 1人がゲームを持っていれば、参加者は無料でゲームに参加可能！
               </p>
               
@@ -542,7 +544,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-white mb-6">今すぐ始めよう！</h2>
           <p className="text-xl text-slate-300 mb-12">
-            Steam Remote Play Inviterで友達との楽しいゲーム体験を始めましょう
+            Remote Play Inviterで友達との楽しいゲーム体験を始めましょう
           </p>
           
           <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -596,7 +598,7 @@ export default function Home() {
                 className="object-cover"
               />
             </div>
-            <span className="text-xl font-bold text-white">Steam Remoteplay Inviter</span>
+            <span className="text-xl font-bold text-white">Remote Play Inviter</span>
           </div>
           <p className="text-slate-400 mb-6">
             Steamの公式機能であるRemote Play Togetherを、より便利に使えるようにするツールです
