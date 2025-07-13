@@ -102,7 +102,7 @@ export default function Home() {
                 <span className="text-3xl mr-4">❌</span>
                 <h3 className="text-2xl font-bold text-red-300">公式のSteamクライアントだと...</h3>
               </div>
-              <ul className="space-y-4 text-slate-300">
+              <ul className="space-y-4 text-slate-300 mb-6">
                 <li className="flex items-start">
                   <span className="text-red-400 mr-3 mt-1">•</span>
                   ホストする人が手動で1人に1つずつ招待リンクを発行
@@ -116,6 +116,23 @@ export default function Home() {
                   参加者が増えると作業が煩雑に
                 </li>
               </ul>
+              <div className="rounded-lg overflow-hidden border border-red-500/30">
+                <video 
+                  className="w-full h-auto" 
+                  controls 
+                  autoPlay
+                  muted
+                  loop
+                  preload="metadata"
+                  poster="/assets/remoteplay_inviter_og.png"
+                >
+                  <source src="/assets/without_inviter.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
+                <div className="p-3 bg-red-900/30">
+                  <p className="text-red-300 text-sm font-medium">従来の方法：手動でのリンク発行</p>
+                </div>
+              </div>
             </div>
 
             {/* Solution */}
@@ -124,7 +141,7 @@ export default function Home() {
                 <span className="text-3xl mr-4">✅</span>
                 <h3 className="text-2xl font-bold text-green-300">Remote Play Inviterなら</h3>
               </div>
-              <ul className="space-y-4 text-slate-300">
+              <ul className="space-y-4 text-slate-300 mb-6">
                 <li className="flex items-start">
                   <span className="text-green-400 mr-3 mt-1">•</span>
                   Discord上で招待パネルを一度作るだけ
@@ -138,6 +155,23 @@ export default function Home() {
                   ホストする人は何もしなくてもOK！
                 </li>
               </ul>
+              <div className="rounded-lg overflow-hidden border border-green-500/30">
+                <video 
+                  className="w-full h-auto" 
+                  controls 
+                  autoPlay
+                  muted
+                  loop
+                  preload="metadata"
+                  poster="/assets/remoteplay_inviter_og.png"
+                >
+                  <source src="/assets/with_inviter.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
+                <div className="p-3 bg-green-900/30">
+                  <p className="text-green-300 text-sm font-medium">Remote Play Inviter：自動化された招待</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -238,9 +272,38 @@ export default function Home() {
       {/* How to Use */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center text-white mb-16">
+          <h2 className="text-4xl font-bold text-center text-white mb-8">
             使い方
           </h2>
+          <p className="text-center text-slate-300 mb-16 text-lg">
+            実際の操作手順を動画でご確認ください
+          </p>
+          
+          {/* Demo Video */}
+          <div className="mb-16">
+            <div className="max-w-4xl mx-auto bg-slate-800/50 border border-slate-700 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold text-white mb-6 text-center">
+                📹 招待・参加方法デモ動画
+              </h3>
+              <div className="rounded-lg overflow-hidden border border-slate-600">
+                <video 
+                  className="w-full h-auto" 
+                  controls 
+                  autoPlay
+                  muted
+                  loop
+                  preload="metadata"
+                  poster="/assets/remoteplay_inviter_og.png"
+                >
+                  <source src="/assets/howto_invite_join.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
+              </div>
+              <p className="text-slate-300 text-center mt-4">
+                ホストから参加まで、すべての手順を1つの動画で確認できます
+              </p>
+            </div>
+          </div>
           
           <div className="space-y-12">
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -350,7 +413,7 @@ export default function Home() {
               </p>
             </details>
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
+            <details className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 group">
               <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
                 <span>Q. このツールは公式のSteam機能ですか？</span>
                 <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
