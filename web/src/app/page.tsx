@@ -1,14 +1,42 @@
+"use client";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    {
+      src: "/assets/inviter_concept.svg",
+      alt: "Remote Play Inviter コンセプト図",
+      title: "簡単な招待システム"
+    },
+    {
+      src: "/assets/inviter_concept_multiplay.svg",
+      alt: "離れたお友達とローカルマルチプレイ",
+      title: "マルチプレイヤー対応"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
       {/* Navigation */}
       <nav className="relative z-10 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">🎮</span>
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
+              <Image 
+                src="/assets/remoteplay_inviter.png" 
+                alt="Remote Play Inviter Icon" 
+                width={32} 
+                height={32}
+                className="object-cover"
+              />
             </div>
             <h1 className="text-2xl font-bold text-white">Steam Remoteplay Inviter</h1>
           </div>
@@ -38,7 +66,6 @@ export default function Home() {
                 <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                   Steam Remote Play
                 </span>
-                <br />
                 <span className="text-white">を簡単に</span>
               </h1>
               <p className="text-xl text-slate-300 mb-12 leading-relaxed">
@@ -62,13 +89,47 @@ export default function Home() {
             
             <div className="relative">
               <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-8 backdrop-blur-sm border border-slate-600/50">
-                <Image 
-                  src="/assets/remoteplay_inviter.png" 
-                  alt="Steam Remoteplay Inviter メイン画像" 
-                  width={600} 
-                  height={400}
-                  className="rounded-lg shadow-2xl"
-                />
+                {/* Carousel container */}
+                <div className="relative overflow-hidden rounded-lg">
+                  <div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {slides.map((slide, index) => (
+                      <div key={index} className="w-full flex-shrink-0 flex items-center justify-center">
+                        <Image 
+                          src={slide.src}
+                          alt={slide.alt}
+                          width={600} 
+                          height={400}
+                          className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Navigation dots */}
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    {slides.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          currentSlide === index 
+                            ? 'bg-blue-500 scale-110' 
+                            : 'bg-slate-400 hover:bg-slate-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Slide title overlay */}
+                  <div className="absolute bottom-6 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
+                    <span className="text-white text-sm font-medium">
+                      {slides[currentSlide].title}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -81,19 +142,6 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center text-white mb-16">
             なぜRemote Play Inviterが必要なの？
           </h2>
-          
-          {/* Concept Image */}
-          <div className="mb-16 text-center">
-            <div className="bg-white/10 rounded-2xl p-8 backdrop-blur-sm">
-              <Image 
-                src="/assets/inviter_concept.svg" 
-                alt="Remote Play Inviter コンセプト図" 
-                width={800} 
-                height={400}
-                className="mx-auto"
-              />
-            </div>
-          </div>
           
           <div className="grid md:grid-cols-2 gap-12">
             {/* Problem */}
@@ -488,8 +536,14 @@ export default function Home() {
       <footer className="py-12 px-6 bg-slate-900">
         <div className="max-w-6xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">🎮</span>
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
+              <Image 
+                src="/assets/remoteplay_inviter.png" 
+                alt="Remote Play Inviter Icon" 
+                width={24} 
+                height={24}
+                className="object-cover"
+              />
             </div>
             <span className="text-xl font-bold text-white">Steam Remoteplay Inviter</span>
           </div>
