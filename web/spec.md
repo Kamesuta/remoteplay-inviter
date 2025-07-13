@@ -32,6 +32,30 @@ Tailwind CSS を使う
 
 ## 追加
 
+### メタ情報・SEO
+- タイトル: Remote Play Inviter - DiscordでSteamゲームのストリーミングプレイに招待できるBOT
+- OGP画像: https://steaminviter.app/assets/remoteplay_inviter_og.png
+- ドメイン: https://steaminviter.app
+- Twitter/OGPメタタグ設定済み
+
+### ナビゲーション
+- 機能紹介 (#about)
+- ABOUT (#setup) 
+- DOWNLOAD (#download)
+
+### 実際のリンク・URL
+- BOT招待URL: https://discord.com/oauth2/authorize?client_id=1252429340780527714
+- Windows版ダウンロード: https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe
+- macOS版ダウンロード: https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter-macos-intel
+- Linux版ダウンロード: https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.AppImage
+- Steam Remote Play Together公式: https://store.steampowered.com/remoteplay#together
+- Steam Remote Play Together対応ゲーム: https://store.steampowered.com/remoteplay_together
+
+### 動画・メディア
+- without_inviter.mp4: 公式Steamクライアントでの招待手順
+- with_inviter.mp4: Remote Play Inviterでの招待手順  
+- howto_invite_join.mp4: 招待方法＆参加方法のデモ動画
+
 ### 導入手順
 
 - ①BOTを招待する
@@ -85,8 +109,18 @@ A. 招待リンクは使い捨てで、一度使うと無効になります。�
 
 Q. このツールのソースコードは公開されていますか？
 A. はい、GitHubで公開されています。自由に改変して使っていただいて構いません。プルリクエストも歓迎です。
-BOTのソースコードはこちら、このWebサイトのソースコードはこちらです。
+BOTのソースコードは https://github.com/Kamesuta/remoteplay-inviter-bot 、このWebサイトのソースコードは https://github.com/Kamesuta/remoteplay-inviter-web です。
 
 Q. コントローラーを持っていないのですが、遊べますか？
-A. x360ce というソフトウェアを使えば、キーボードでゲームパッドのエミュレーションが可能です。詳しい手順はこちらをご覧ください。
+A. x360ce というソフトウェアを使えば、キーボードでゲームパッドのエミュレーションが可能です。詳しい手順は https://kamesuta.notion.site/Xbox-f94467e5ad7642c68b8a4bffc5e4a6fa をご覧ください。
+
+### フッター情報
+- 作者: Kamesuta
+- SNS・リンク:
+  - GitHub: https://github.com/Kamesuta
+  - X (Twitter): https://x.com/Kmesuta  
+  - Discord: https://discord.gg/kamepower
+- ソースコードリンク:
+  - クライアント: https://github.com/Kamesuta/remoteplay-inviter
+  - BOT: https://github.com/Kamesuta/remoteplay-inviter-bot
 
