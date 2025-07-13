@@ -96,15 +96,17 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a 
                   href="#setup"
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center"
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center flex items-center justify-center gap-3"
                 >
+                  <i className="fas fa-rocket"></i>
                   今すぐ始める
                 </a>
                 <a 
                   href="https://github.com/Kamesuta/remoteplay-inviter" 
                   target="_blank"
-                  className="px-8 py-4 border border-slate-600 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all"
+                  className="px-8 py-4 border border-slate-600 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-3"
                 >
+                  <i className="fab fa-github"></i>
                   GitHub で見る
                 </a>
               </div>
@@ -170,7 +172,7 @@ export default function Home() {
             {/* Problem */}
             <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-8">
               <div className="flex items-center mb-6">
-                <span className="text-3xl mr-4">❌</span>
+                <i className="fas fa-times text-3xl mr-4 text-red-400"></i>
                 <h3 className="text-2xl font-bold text-red-300">公式のSteamクライアントだと...</h3>
               </div>
               <ul className="space-y-4 text-slate-300 mb-6">
@@ -209,7 +211,7 @@ export default function Home() {
             {/* Solution */}
             <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-8">
               <div className="flex items-center mb-6">
-                <span className="text-3xl mr-4">✅</span>
+                <i className="fas fa-check text-3xl mr-4 text-green-400"></i>
                 <h3 className="text-2xl font-bold text-green-300">Remote Play Inviterなら</h3>
               </div>
               <ul className="space-y-4 text-slate-300 mb-6">
@@ -256,7 +258,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🤖</span>
+                <i className="fab fa-discord text-2xl text-white"></i>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Discord BOT</h3>
               <p className="text-slate-300">Discordを使って招待リンクの発行と共有を楽にしてくれる便利BOT</p>
@@ -264,7 +266,7 @@ export default function Home() {
 
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
               <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🔗</span>
+                <i className="fas fa-link text-2xl text-white"></i>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">自動招待リンク発行</h3>
               <p className="text-slate-300">参加者がボタンを押したときに自動で招待リンクが発行される</p>
@@ -272,7 +274,7 @@ export default function Home() {
 
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
               <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">💰</span>
+                <i className="fas fa-dollar-sign text-2xl text-white"></i>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">完全無料</h3>
               <p className="text-slate-300">Steamの公式機能を活用。1人がゲームを持っていれば参加者は無料</p>
@@ -302,8 +304,9 @@ export default function Home() {
                 <a 
                   href="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
                   target="_blank"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block text-center"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                 >
+                  <i className="fab fa-discord"></i>
                   BOTを招待
                 </a>
               </div>
@@ -322,8 +325,9 @@ export default function Home() {
                 <a 
                   href="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
                   target="_blank"
-                  className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors inline-block text-center"
+                  className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
                 >
+                  <i className="fas fa-download"></i>
                   ダウンロード
                 </a>
               </div>
@@ -362,7 +366,7 @@ export default function Home() {
           <div className="mb-16">
             <div className="max-w-4xl mx-auto bg-slate-800/50 border border-slate-700 rounded-2xl p-8">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
-                📹 招待・参加方法デモ動画
+                <i className="fas fa-play-circle mr-2"></i>招待・参加方法デモ動画
               </h3>
               <div className="rounded-lg overflow-hidden border border-slate-600">
                 <video 
@@ -568,15 +572,17 @@ export default function Home() {
             <a 
               href="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
               target="_blank"
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all text-center"
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all text-center flex items-center justify-center gap-2"
             >
+              <i className="fab fa-discord"></i>
               BOTを招待する
             </a>
             <a 
               href="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
               target="_blank"
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all text-center"
+              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all text-center flex items-center justify-center gap-2"
             >
+              <i className="fas fa-download"></i>
               クライアントをダウンロード
             </a>
           </div>
