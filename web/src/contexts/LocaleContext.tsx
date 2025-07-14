@@ -33,7 +33,7 @@ export function useLocale() {
 export function useTranslations() {
   const { messages } = useLocale();
   
-  return function t(key: string): string {
+  function t(key: string): string {
     const keys = key.split('.');
     let value: unknown = messages;
     
@@ -47,5 +47,23 @@ export function useTranslations() {
     }
     
     return (typeof value === 'string' ? value : key);
-  };
+  }
+
+  function tData<T = unknown>(key: string): T | string {
+    const keys = key.split('.');
+    let value: unknown = messages;
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = (value as Record<string, unknown>)[k];
+      } else {
+        value = undefined;
+        break;
+      }
+    }
+    
+    return value !== undefined ? (value as T) : key;
+  }
+  
+  return { t, tData };
 }

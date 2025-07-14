@@ -3,8 +3,13 @@
   "description": "Easily invite friends to Steam Remote Play Together through Discord for free!",
   "hero": {
     "badge": "Enjoy Steam games with friends for free!",
-    "title": "Steam Remote Play Together",
-    "titleSuffix": " Easy Discord Invites",
+    "title": [
+      {"text": "Steam Remote Play Together", "style": "gradient"},
+      {"text": " ", "style": "white"},
+      {"text": "Easy", "style": "white"},
+      {"text": " Discord", "style": "discord"},
+      {"text": " Invites", "style": "white"}
+    ],
     "description": "A Discord bot that makes Steam Remote Play Together invitations easy.",
     "description2": "If one person owns the game, participants can join for free!",
     "getStarted": "Get Started",

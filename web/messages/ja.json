@@ -3,8 +3,13 @@
   "description": "DiscordでSteam Remote Play Togetherに友達を無料で簡単に招待！",
   "hero": {
     "badge": "無料でSteamゲームを友達と楽しもう！",
-    "title": "Steam Remote Play Together",
-    "titleSuffix": " に Discord で簡単招待",
+    "title": [
+      {"text": "Steam Remote Play Together", "style": "gradient"},
+      {"text": " に", "style": "white"},
+      {"text": "Discord", "style": "discord", "break": true},
+      {"text": " で", "style": "white"},
+      {"text": "簡単招待", "style": "white", "nowrap": true}
+    ],
     "description": "DiscordでSteam Remote Play Togetherに招待できるBOT。",
     "description2": "1人がゲームを持っていれば、参加者は無料でゲームに参加可能！",
     "getStarted": "今すぐ始める",

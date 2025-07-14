@@ -5,7 +5,7 @@ import { useTranslations } from '@/contexts/LocaleContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Home() {
-  const t = useTranslations();
+  const { t, tData } = useTranslations();
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
@@ -85,10 +85,36 @@ export default function Home() {
                 </span>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                  {t('hero.title')}
-                </span>
-                <span className="text-white whitespace-nowrap">{t('hero.titleSuffix')}</span>
+                {(() => {
+                  const titleData = tData<{text: string, style: string, break?: boolean, nowrap?: boolean}[]>('hero.title');
+                  if (Array.isArray(titleData)) {
+                    return titleData.map((segment: {text: string, style: string, break?: boolean, nowrap?: boolean}, index: number) => {
+                      const getClassName = (style: string) => {
+                        switch (style) {
+                          case 'gradient':
+                            return 'bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent';
+                          case 'discord':
+                            return 'text-indigo-400';
+                          case 'white':
+                          default:
+                            return 'text-white';
+                        }
+                      };
+                      
+                      return (
+                        <span key={index}>
+                          {segment.break && <br />}
+                          <span 
+                            className={`${getClassName(segment.style)} ${segment.nowrap ? 'whitespace-nowrap' : ''}`}
+                          >
+                            {segment.text}
+                          </span>
+                        </span>
+                      );
+                    });
+                  }
+                  return t('hero.title');
+                })()}
               </h1>
               <p className="text-xl text-slate-300 mb-12 leading-relaxed">
                 {t('hero.description')}<br />
