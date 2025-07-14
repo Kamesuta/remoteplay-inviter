@@ -1,20 +1,12 @@
 "use client";
 import { useLocale } from '@/contexts/LocaleContext';
-import { useRouter, usePathname } from 'next/navigation';
 
 export default function LanguageSwitcher() {
-  const { locale } = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { locale, setLocale } = useLocale();
 
   const switchLanguage = (newLocale: 'en' | 'ja') => {
     if (newLocale === locale) return;
-    
-    // 現在のパスから言語コードを除いたパスを取得
-    const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '');
-    const newPath = `/${newLocale}${pathWithoutLocale}`;
-    
-    router.push(newPath);
+    setLocale(newLocale);
   };
 
   return (

@@ -1,22 +1,41 @@
 "use client";
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useState } from 'react';
 
 type Locale = 'en' | 'ja';
 
 interface LocaleContextType {
   locale: Locale;
   messages: Record<string, unknown>;
+  setLocale: (locale: Locale) => void;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-export function LocaleProvider({ children, locale, messages }: { 
+export function LocaleProvider({ children, initialLocale, initialMessages }: { 
   children: ReactNode; 
-  locale: Locale; 
-  messages: Record<string, unknown>;
+  initialLocale: Locale; 
+  initialMessages: Record<string, unknown>;
 }) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [messages, setMessages] = useState<Record<string, unknown>>(initialMessages);
+
+  const setLocale = async (newLocale: Locale) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred-language', newLocale);
+    }
+    setLocaleState(newLocale);
+    
+    // Load new messages
+    try {
+      const newMessages = await import(`../../messages/${newLocale}.json`).then(m => m.default);
+      setMessages(newMessages);
+    } catch (error) {
+      console.error('Failed to load messages for locale:', newLocale, error);
+    }
+  };
+
   return (
-    <LocaleContext.Provider value={{ locale, messages }}>
+    <LocaleContext.Provider value={{ locale, messages, setLocale }}>
       {children}
     </LocaleContext.Provider>
   );

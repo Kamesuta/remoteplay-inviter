@@ -90,7 +90,7 @@ export default async function LocaleLayout({
   }
   
   return (
-    <LocaleProvider locale={locale as 'en' | 'ja'} messages={messages}>
+    <LocaleProvider initialLocale={locale as 'en' | 'ja'} initialMessages={messages}>
       {children}
     </LocaleProvider>
   );
