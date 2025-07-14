@@ -4,6 +4,11 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useTranslations } from '@/contexts/LocaleContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import FAQItem from '@/components/sections/FAQItem';
+import SetupCard from '@/components/sections/SetupCard';
+import FeatureCard from '@/components/sections/FeatureCard';
+import HowToUseStep from '@/components/sections/HowToUseStep';
+import ProblemSolutionCard from '@/components/sections/ProblemSolutionCard';
 
 export default function HomePageContent() {
   const { t, tData } = useTranslations();
@@ -201,82 +206,34 @@ export default function HomePageContent() {
           
           <div className="grid md:grid-cols-2 gap-12">
             {/* Problem */}
-            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-8">
-              <div className="flex items-center mb-6">
-                <i className="fas fa-times text-3xl mr-4 text-red-400"></i>
-                <h3 className="text-2xl font-bold text-red-300">{t('problemSolution.problem.title')}</h3>
-              </div>
-              <ul className="space-y-4 text-slate-300 mb-6">
-                <li className="flex items-start">
-                  <span className="text-red-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.problem.point1')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-red-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.problem.point2')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-red-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.problem.point3')}
-                </li>
-              </ul>
-              <div className="rounded-lg overflow-hidden border border-red-500/30">
-                <video 
-                  className="w-full h-auto" 
-                  controls 
-                  autoPlay
-                  muted
-                  loop
-                  preload="metadata"
-                  poster="/assets/remoteplay_inviter_og.png"
-                >
-                  <source src="/assets/without_inviter.mp4" type="video/mp4" />
-                  {t('media.videoFallback')}
-                </video>
-                <div className="p-3 bg-red-900/30">
-                  <p className="text-red-300 text-sm font-medium">{t('media.videoCaption.without')}</p>
-                </div>
-              </div>
-            </div>
+            <ProblemSolutionCard 
+              type="problem"
+              title={t('problemSolution.problem.title')}
+              points={[
+                t('problemSolution.problem.point1'),
+                t('problemSolution.problem.point2'),
+                t('problemSolution.problem.point3')
+              ]}
+              videoSrc="/assets/without_inviter.mp4"
+              videoPoster="/assets/remoteplay_inviter_og.png"
+              videoCaption={t('media.videoCaption.without')}
+              videoFallback={t('media.videoFallback')}
+            />
 
             {/* Solution */}
-            <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-8">
-              <div className="flex items-center mb-6">
-                <i className="fas fa-check text-3xl mr-4 text-green-400"></i>
-                <h3 className="text-2xl font-bold text-green-300">{t('problemSolution.solution.title')}</h3>
-              </div>
-              <ul className="space-y-4 text-slate-300 mb-6">
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.solution.point1')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.solution.point2')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-3 mt-1">•</span>
-                  {t('problemSolution.solution.point3')}
-                </li>
-              </ul>
-              <div className="rounded-lg overflow-hidden border border-green-500/30">
-                <video 
-                  className="w-full h-auto" 
-                  controls 
-                  autoPlay
-                  muted
-                  loop
-                  preload="metadata"
-                  poster="/assets/remoteplay_inviter_og.png"
-                >
-                  <source src="/assets/with_inviter.mp4" type="video/mp4" />
-                  {t('media.videoFallback')}
-                </video>
-                <div className="p-3 bg-green-900/30">
-                  <p className="text-green-300 text-sm font-medium">{t('media.videoCaption.with')}</p>
-                </div>
-              </div>
-            </div>
+            <ProblemSolutionCard 
+              type="solution"
+              title={t('problemSolution.solution.title')}
+              points={[
+                t('problemSolution.solution.point1'),
+                t('problemSolution.solution.point2'),
+                t('problemSolution.solution.point3')
+              ]}
+              videoSrc="/assets/with_inviter.mp4"
+              videoPoster="/assets/remoteplay_inviter_og.png"
+              videoCaption={t('media.videoCaption.with')}
+              videoFallback={t('media.videoFallback')}
+            />
           </div>
         </div>
       </section>
@@ -287,29 +244,26 @@ export default function HomePageContent() {
           <h2 className="text-4xl font-bold text-center text-white mb-16">{t('features.title')}</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fab fa-discord text-2xl text-white"></i>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">{t('features.discord.title')}</h3>
-              <p className="text-slate-300">{t('features.discord.description')}</p>
-            </div>
+            <FeatureCard 
+              icon="fab fa-discord" 
+              iconColor="blue"
+              title={t('features.discord.title')} 
+              description={t('features.discord.description')}
+            />
 
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
-              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fas fa-link text-2xl text-white"></i>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">{t('features.autoInvite.title')}</h3>
-              <p className="text-slate-300">{t('features.autoInvite.description')}</p>
-            </div>
+            <FeatureCard 
+              icon="fas fa-link" 
+              iconColor="purple"
+              title={t('features.autoInvite.title')} 
+              description={t('features.autoInvite.description')}
+            />
 
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-all">
-              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fas fa-dollar-sign text-2xl text-white"></i>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">{t('features.free.title')}</h3>
-              <p className="text-slate-300">{t('features.free.description')}</p>
-            </div>
+            <FeatureCard 
+              icon="fas fa-dollar-sign" 
+              iconColor="green"
+              title={t('features.free.title')} 
+              description={t('features.free.description')}
+            />
           </div>
         </div>
       </section>
@@ -322,63 +276,41 @@ export default function HomePageContent() {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="relative h-full">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                  1
-                </div>
-                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/invite_bot.png" alt={t('media.altText.botInvite')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">{t('setup.step1.title')}</h3>
-                <p className="text-slate-300 mb-4 flex-grow">{t('setup.step1.description')}</p>
-                <a 
-                  href="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
-                  target="_blank"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <i className="fab fa-discord"></i>
-                  {t('setup.step1.button')}
-                </a>
-              </div>
-            </div>
+            <SetupCard 
+              stepNumber={1} 
+              title={t('setup.step1.title')} 
+              description={t('setup.step1.description')} 
+              imageSrc="/assets/invite_bot.png"
+              imageAlt={t('media.altText.botInvite')}
+              buttonText={t('setup.step1.button')} 
+              buttonHref="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
+              buttonColor="blue"
+              buttonIcon="fab fa-discord"
+            />
 
-            <div className="relative h-full">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                  2
-                </div>
-                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/inviter_client.png" alt={t('media.altText.clientScreen')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">{t('setup.step2.title')}</h3>
-                <p className="text-slate-300 mb-4 flex-grow">{t('setup.step2.description')}</p>
-                <a 
-                  href="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
-                  target="_blank"
-                  className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <i className="fas fa-download"></i>
-                  {t('setup.step2.button')}
-                </a>
-              </div>
-            </div>
+            <SetupCard 
+              stepNumber={2} 
+              title={t('setup.step2.title')} 
+              description={t('setup.step2.description')} 
+              imageSrc="/assets/inviter_client.png"
+              imageAlt={t('media.altText.clientScreen')}
+              buttonText={t('setup.step2.button')} 
+              buttonHref="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
+              buttonColor="purple"
+              buttonIcon="fas fa-download"
+            />
 
-            <div className="relative h-full">
-              <div className="bg-slate-800/70 border border-slate-600 rounded-xl p-8 text-center h-full flex flex-col">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
-                  3
-                </div>
-                <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/inviter_setup.png" alt={t('media.altText.setupScreen')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">{t('setup.step3.title')}</h3>
-                <p className="text-slate-300 mb-4 flex-grow">{t('setup.step3.description')}</p>
-                <div className="px-6 py-2 bg-slate-700 text-slate-300 rounded-lg font-mono text-sm">
-                  /steam invite client_id:...
-                </div>
-              </div>
-            </div>
+            <SetupCard 
+              stepNumber={3} 
+              title={t('setup.step3.title')} 
+              description={t('setup.step3.description')} 
+              imageSrc="/assets/inviter_setup.png"
+              imageAlt={t('media.altText.setupScreen')}
+              buttonText="/steam invite client_id:..."
+              buttonHref=""
+              buttonColor="green"
+              isCodeExample={true}
+            />
           </div>
         </div>
       </section>
@@ -420,71 +352,34 @@ export default function HomePageContent() {
           </div>
           
           <div className="space-y-12">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="flex items-center mb-4">
-                  <span className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">1</span>
-                  <h3 className="text-2xl font-bold text-white">{t('howToUse.step1.title')}</h3>
-                </div>
-                <p className="text-slate-300 mb-4">
-                  {t('howToUse.step1.description')}
-                </p>
-                <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 font-mono text-green-400">
-                  /steam invite
-                </div>
-              </div>
-              <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
-                <Image 
-                  src="/assets/invite_panel.png" 
-                  alt={t('media.altText.discordPanel')} 
-                  width={400} 
-                  height={300} 
-                  className="rounded-lg border border-slate-600"
-                />
-              </div>
-            </div>
+            <HowToUseStep 
+              stepNumber={1} 
+              title={t('howToUse.step1.title')} 
+              description={t('howToUse.step1.description')} 
+              imageSrc="/assets/invite_panel.png"
+              imageAlt={t('media.altText.discordPanel')}
+              stepColor="blue"
+              codeExample="/steam invite"
+            />
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="md:order-2">
-                <div className="flex items-center mb-4">
-                  <span className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4">2</span>
-                  <h3 className="text-2xl font-bold text-white">{t('howToUse.step2.title')}</h3>
-                </div>
-                <p className="text-slate-300 mb-4">
-                  {t('howToUse.step2.description')}
-                </p>
-              </div>
-              <div className="md:order-1 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
-                <Image 
-                  src="/assets/invite_join.png" 
-                  alt={t('media.altText.joinButton')} 
-                  width={400} 
-                  height={250} 
-                  className="rounded-lg border border-slate-600"
-                />
-              </div>
-            </div>
+            <HowToUseStep 
+              stepNumber={2} 
+              title={t('howToUse.step2.title')} 
+              description={t('howToUse.step2.description')} 
+              imageSrc="/assets/invite_join.png" 
+              imageAlt={t('media.altText.joinButton')} 
+              stepColor="purple"
+              reversed={true}
+            />
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="flex items-center mb-4">
-                  <span className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold mr-4">3</span>
-                  <h3 className="text-2xl font-bold text-white">{t('howToUse.step3.title')}</h3>
-                </div>
-                <p className="text-slate-300">
-                  {t('howToUse.step3.description')}
-                </p>
-              </div>
-              <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
-                <Image 
-                  src="/assets/invite_steam.png" 
-                  alt={t('media.altText.steamScreen')} 
-                  width={400} 
-                  height={300} 
-                  className="rounded-lg border border-slate-600"
-                />
-              </div>
-            </div>
+            <HowToUseStep 
+              stepNumber={3} 
+              title={t('howToUse.step3.title')} 
+              description={t('howToUse.step3.description')} 
+              imageSrc="/assets/invite_steam.png" 
+              imageAlt={t('media.altText.steamScreen')} 
+              stepColor="green"
+            />
           </div>
         </div>
       </section>
@@ -495,95 +390,50 @@ export default function HomePageContent() {
           <h2 className="text-4xl font-bold text-center text-white mb-16">{t('faq.title')}</h2>
           
           <div className="space-y-6">
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q1.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q1.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q1.question')} 
+              answer={t('faq.q1.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q2.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q2.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q2.question')} 
+              answer={t('faq.q2.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q3.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q3.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q3.question')} 
+              answer={t('faq.q3.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q4.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q4.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q4.question')} 
+              answer={t('faq.q4.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q5.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q5.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q5.question')} 
+              answer={t('faq.q5.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q6.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q6.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q6.question')} 
+              answer={t('faq.q6.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q7.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q7.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q7.question')} 
+              answer={t('faq.q7.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q8.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q8.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q8.question')} 
+              answer={t('faq.q8.answer')} 
+            />
 
-            <details className="bg-slate-800/50 border border-slate-600 rounded-xl p-6 group">
-              <summary className="text-xl font-semibold text-white cursor-pointer list-none flex items-center justify-between">
-                <span>{t('faq.q9.question')}</span>
-                <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="text-slate-300 mt-4 leading-relaxed">
-                {t('faq.q9.answer')}
-              </p>
-            </details>
+            <FAQItem 
+              question={t('faq.q9.question')} 
+              answer={t('faq.q9.answer')} 
+            />
           </div>
         </div>
       </section>
