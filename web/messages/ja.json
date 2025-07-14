@@ -13,7 +13,17 @@
     "description": "DiscordでSteam Remote Play Togetherに招待できるBOT。",
     "description2": "1人がゲームを持っていれば、参加者は無料でゲームに参加可能！",
     "getStarted": "今すぐ始める",
-    "viewGitHub": "GitHub で見る"
+    "viewGitHub": "GitHub で見る",
+    "slides": [
+      {
+        "alt": "Remote Play Inviter コンセプト図",
+        "title": "簡単な招待システム"
+      },
+      {
+        "alt": "離れたお友達とローカルマルチプレイ",
+        "title": "マルチプレイヤー対応"
+      }
+    ]
   },
   "nav": {
     "features": "機能紹介",
@@ -84,6 +94,21 @@
     "step3": {
       "title": "参加者: Steamを開く",
       "description": "招待リンクが発行されたら「クリックしてゲームに参加！」を押して、Steam Remote Play Togetherのページを開きます。その後はSteamの指示に従って、ゲームを楽しむだけ！"
+    }
+  },
+  "media": {
+    "videoFallback": "お使いのブラウザは動画再生に対応していません。",
+    "videoCaption": {
+      "without": "従来の方法：手動でのリンク発行",
+      "with": "Remote Play Inviter：自動化された招待"
+    },
+    "altText": {
+      "botInvite": "BOT招待画面",
+      "clientScreen": "クライアント画面", 
+      "setupScreen": "セットアップ画面",
+      "discordPanel": "Discord招待パネル",
+      "joinButton": "参加ボタンを押した画面",
+      "steamScreen": "Steam Remote Play Together画面"
     }
   },
   "faq": {

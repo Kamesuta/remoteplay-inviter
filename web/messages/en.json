@@ -13,7 +13,17 @@
     "description": "A Discord bot that makes Steam Remote Play Together invitations easy.",
     "description2": "If one person owns the game, participants can join for free!",
     "getStarted": "Get Started",
-    "viewGitHub": "View on GitHub"
+    "viewGitHub": "View on GitHub",
+    "slides": [
+      {
+        "alt": "Remote Play Inviter Concept Diagram",
+        "title": "Easy Invitation System"
+      },
+      {
+        "alt": "Local Multiplayer with Remote Friends",
+        "title": "Multiplayer Support"
+      }
+    ]
   },
   "nav": {
     "features": "Features",
@@ -84,6 +94,21 @@
     "step3": {
       "title": "Participants: Open Steam",
       "description": "When the invite link is generated, click \"Click to Join Game!\" to open the Steam Remote Play Together page. Then just follow Steam's instructions and enjoy the game!"
+    }
+  },
+  "media": {
+    "videoFallback": "Your browser does not support video playback.",
+    "videoCaption": {
+      "without": "Traditional Method: Manual Link Generation",
+      "with": "Remote Play Inviter: Automated Invitations"
+    },
+    "altText": {
+      "botInvite": "Bot Invitation Screen",
+      "clientScreen": "Client Screen",
+      "setupScreen": "Setup Screen", 
+      "discordPanel": "Discord Invitation Panel",
+      "joinButton": "Join Button Clicked Screen",
+      "steamScreen": "Steam Remote Play Together Screen"
     }
   },
   "faq": {

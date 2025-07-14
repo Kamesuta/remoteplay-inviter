@@ -7,16 +7,18 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 export default function Home() {
   const { t, tData } = useTranslations();
   const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const slidesData = tData<{alt: string, title: string}[]>('hero.slides');
   const slides = [
     {
       src: "/assets/inviter_concept.svg",
-      alt: "Remote Play Inviter コンセプト図",
-      title: "簡単な招待システム"
+      alt: Array.isArray(slidesData) ? slidesData[0]?.alt : "Remote Play Inviter Concept Diagram",
+      title: Array.isArray(slidesData) ? slidesData[0]?.title : "Easy Invitation System"
     },
     {
-      src: "/assets/inviter_concept_multiplay.svg",
-      alt: "離れたお友達とローカルマルチプレイ",
-      title: "マルチプレイヤー対応"
+      src: "/assets/inviter_concept_multiplay.svg", 
+      alt: Array.isArray(slidesData) ? slidesData[1]?.alt : "Local Multiplayer with Remote Friends",
+      title: Array.isArray(slidesData) ? slidesData[1]?.title : "Multiplayer Support"
     }
   ];
 
@@ -228,10 +230,10 @@ export default function Home() {
                   poster="/assets/remoteplay_inviter_og.png"
                 >
                   <source src="/assets/without_inviter.mp4" type="video/mp4" />
-                  お使いのブラウザは動画再生に対応していません。
+                  {t('media.videoFallback')}
                 </video>
                 <div className="p-3 bg-red-900/30">
-                  <p className="text-red-300 text-sm font-medium">従来の方法：手動でのリンク発行</p>
+                  <p className="text-red-300 text-sm font-medium">{t('media.videoCaption.without')}</p>
                 </div>
               </div>
             </div>
@@ -267,10 +269,10 @@ export default function Home() {
                   poster="/assets/remoteplay_inviter_og.png"
                 >
                   <source src="/assets/with_inviter.mp4" type="video/mp4" />
-                  お使いのブラウザは動画再生に対応していません。
+                  {t('media.videoFallback')}
                 </video>
                 <div className="p-3 bg-green-900/30">
-                  <p className="text-green-300 text-sm font-medium">Remote Play Inviter：自動化された招待</p>
+                  <p className="text-green-300 text-sm font-medium">{t('media.videoCaption.with')}</p>
                 </div>
               </div>
             </div>
@@ -325,7 +327,7 @@ export default function Home() {
                   1
                 </div>
                 <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/invite_bot.png" alt="BOT招待画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
+                  <Image src="/assets/invite_bot.png" alt={t('media.altText.botInvite')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">{t('setup.step1.title')}</h3>
                 <p className="text-slate-300 mb-4 flex-grow">{t('setup.step1.description')}</p>
@@ -346,7 +348,7 @@ export default function Home() {
                   2
                 </div>
                 <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/inviter_client.png" alt="クライアント画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
+                  <Image src="/assets/inviter_client.png" alt={t('media.altText.clientScreen')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">{t('setup.step2.title')}</h3>
                 <p className="text-slate-300 mb-4 flex-grow">{t('setup.step2.description')}</p>
@@ -367,7 +369,7 @@ export default function Home() {
                   3
                 </div>
                 <div className="mt-6 mb-6 h-56 flex items-center justify-center rounded-lg overflow-hidden">
-                  <Image src="/assets/inviter_setup.png" alt="セットアップ画面" width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
+                  <Image src="/assets/inviter_setup.png" alt={t('media.altText.setupScreen')} width={300} height={180} className="max-w-full max-h-full object-contain rounded-lg" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">{t('setup.step3.title')}</h3>
                 <p className="text-slate-300 mb-4 flex-grow">{t('setup.step3.description')}</p>
@@ -407,7 +409,7 @@ export default function Home() {
                   poster="/assets/remoteplay_inviter_og.png"
                 >
                   <source src="/assets/howto_invite_join.mp4" type="video/mp4" />
-                  お使いのブラウザは動画再生に対応していません。
+                  {t('media.videoFallback')}
                 </video>
               </div>
               <p className="text-slate-300 text-center mt-4">
@@ -433,7 +435,7 @@ export default function Home() {
               <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
                 <Image 
                   src="/assets/invite_panel.png" 
-                  alt="Discord招待パネル" 
+                  alt={t('media.altText.discordPanel')} 
                   width={400} 
                   height={300} 
                   className="rounded-lg border border-slate-600"
@@ -454,7 +456,7 @@ export default function Home() {
               <div className="md:order-1 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
                 <Image 
                   src="/assets/invite_join.png" 
-                  alt="参加ボタンを押した画面" 
+                  alt={t('media.altText.joinButton')} 
                   width={400} 
                   height={250} 
                   className="rounded-lg border border-slate-600"
@@ -475,7 +477,7 @@ export default function Home() {
               <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
                 <Image 
                   src="/assets/invite_steam.png" 
-                  alt="Steam Remote Play Together画面" 
+                  alt={t('media.altText.steamScreen')} 
                   width={400} 
                   height={300} 
                   className="rounded-lg border border-slate-600"
