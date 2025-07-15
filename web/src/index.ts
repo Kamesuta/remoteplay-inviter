@@ -1,5 +1,5 @@
-export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+const worker = {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     
     // Try to serve static assets
@@ -30,6 +30,8 @@ export default {
     return env.ASSETS.fetch(new Request(url.origin + '/404.html'));
   }
 };
+
+export default worker;
 
 interface Env {
   ASSETS: {
