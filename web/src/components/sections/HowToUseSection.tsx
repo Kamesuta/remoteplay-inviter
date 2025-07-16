@@ -30,9 +30,9 @@ export default function HowToUseSection() {
                 muted
                 loop
                 preload="metadata"
-                poster="/assets/remoteplay_inviter_og.png"
+                poster="/assets/branding/og-image.png"
               >
-                <source src="/assets/howto_invite_join.mp4" type="video/mp4" />
+                <source src="/assets/howto/invitation-demo.mp4" type="video/mp4" />
                 {t('media.videoFallback')}
               </video>
             </div>
@@ -47,7 +47,7 @@ export default function HowToUseSection() {
             stepNumber={1} 
             title={t('step1.title')} 
             description={t('step1.description')} 
-            imageSrc="/assets/invite_panel.png"
+            imageSrc="/assets/howto/discord-invitation-panel.png"
             imageAlt={t('media.altText.discordPanel')}
             stepColor="blue"
             codeExample="/steam invite"
@@ -57,7 +57,7 @@ export default function HowToUseSection() {
             stepNumber={2} 
             title={t('step2.title')} 
             description={t('step2.description')} 
-            imageSrc="/assets/invite_join.png" 
+            imageSrc="/assets/howto/join-button-clicked.png" 
             imageAlt={t('media.altText.joinButton')} 
             stepColor="purple"
             reversed={true}
@@ -67,7 +67,7 @@ export default function HowToUseSection() {
             stepNumber={3} 
             title={t('step3.title')} 
             description={t('step3.description')} 
-            imageSrc="/assets/invite_steam.png" 
+            imageSrc="/assets/howto/steam-remote-play-screen.png" 
             imageAlt={t('media.altText.steamScreen')} 
             stepColor="green"
           />

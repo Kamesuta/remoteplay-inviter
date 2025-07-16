@@ -10,12 +10,12 @@ export default function HeroSection() {
   // we'll access each slide individually
   const slides = [
     {
-      src: "/assets/inviter_concept.svg",
+      src: "/assets/hero/concept-diagram.svg",
       alt: t('slides.0.alt'),
       title: t('slides.0.title')
     },
     {
-      src: "/assets/inviter_concept_multiplay.svg", 
+      src: "/assets/hero/multiplayer-concept.svg", 
       alt: t('slides.1.alt'),
       title: t('slides.1.title')
     }

@@ -17,7 +17,7 @@ export default function SetupSection() {
             stepNumber={1} 
             title={t('step1.title')} 
             description={t('step1.description')} 
-            imageSrc="/assets/invite_bot.png"
+            imageSrc="/assets/setup/bot-invitation-screen.png"
             imageAlt={t('media.altText.botInvite')}
             buttonText={t('step1.button')} 
             buttonHref="https://discord.com/oauth2/authorize?client_id=1252429340780527714" 
@@ -29,7 +29,7 @@ export default function SetupSection() {
             stepNumber={2} 
             title={t('step2.title')} 
             description={t('step2.description')} 
-            imageSrc="/assets/inviter_client.png"
+            imageSrc="/assets/setup/client-interface.png"
             imageAlt={t('media.altText.clientScreen')}
             buttonText={t('step2.button')} 
             buttonHref="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
@@ -41,7 +41,7 @@ export default function SetupSection() {
             stepNumber={3} 
             title={t('step3.title')} 
             description={t('step3.description')} 
-            imageSrc="/assets/inviter_setup.png"
+            imageSrc="/assets/setup/setup-configuration.png"
             imageAlt={t('media.altText.setupScreen')}
             buttonText="/steam invite client_id:..."
             buttonHref=""

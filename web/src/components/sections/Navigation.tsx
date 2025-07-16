@@ -12,7 +12,7 @@ export default function Navigation() {
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
             <Image 
-              src="/assets/remoteplay_inviter.png" 
+              src="/assets/branding/logo.png" 
               alt="Remote Play Inviter Icon" 
               width={32} 
               height={32}

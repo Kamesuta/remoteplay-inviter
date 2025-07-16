@@ -21,8 +21,8 @@ export default function ProblemSolutionSection() {
               t('problem.point2'),
               t('problem.point3')
             ]}
-            videoSrc="/assets/without_inviter.mp4"
-            videoPoster="/assets/remoteplay_inviter_og.png"
+            videoSrc="/assets/comparison-without-tool.mp4"
+            videoPoster="/assets/branding/og-image.png"
             videoCaption={t('media.videoCaption.without')}
             videoFallback={t('media.videoFallback')}
           />
@@ -35,8 +35,8 @@ export default function ProblemSolutionSection() {
               t('solution.point2'),
               t('solution.point3')
             ]}
-            videoSrc="/assets/with_inviter.mp4"
-            videoPoster="/assets/remoteplay_inviter_og.png"
+            videoSrc="/assets/comparison-with-tool.mp4"
+            videoPoster="/assets/branding/og-image.png"
             videoCaption={t('media.videoCaption.with')}
             videoFallback={t('media.videoFallback')}
           />

@@ -34,7 +34,7 @@ Tailwind CSS を使う
 
 ### メタ情報・SEO
 - タイトル: Remote Play Inviter - DiscordでSteamゲームのストリーミングプレイに招待できるBOT
-- OGP画像: https://steaminviter.app/assets/remoteplay_inviter_og.png
+- OGP画像: https://steaminviter.app/assets/branding/og-image.png
 - ドメイン: https://steaminviter.app
 - Twitter/OGPメタタグ設定済み
 

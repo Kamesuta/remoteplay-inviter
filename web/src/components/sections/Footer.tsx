@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="flex items-center justify-center space-x-3 mb-6">
           <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
             <Image 
-              src="/assets/remoteplay_inviter.png" 
+              src="/assets/branding/logo.png" 
               alt="Remote Play Inviter Icon" 
               width={24} 
               height={24}

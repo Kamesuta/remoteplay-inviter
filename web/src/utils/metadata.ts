@@ -30,7 +30,7 @@ export function generateMetadata(messages: Messages): Metadata {
       description: messages.description,
       images: [
         {
-          url: "https://steaminviter.app/assets/remoteplay_inviter_og.png",
+          url: "https://steaminviter.app/assets/branding/og-image.png",
           width: 1200,
           height: 630,
           alt: "Remote Play Inviter",
@@ -43,7 +43,7 @@ export function generateMetadata(messages: Messages): Metadata {
       card: "summary_large_image",
       title: messages.title,
       description: messages.description,
-      images: ["https://steaminviter.app/assets/remoteplay_inviter_og.png"],
+      images: ["https://steaminviter.app/assets/branding/og-image.png"],
     },
   };
 }
