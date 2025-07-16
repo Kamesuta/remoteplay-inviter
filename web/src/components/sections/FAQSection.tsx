@@ -1,61 +1,61 @@
 import React from 'react';
-import { useTranslations } from '@/contexts/LocaleContext';
+import { useTranslations } from 'next-intl';
 import FAQItem from './FAQItem';
 
 export default function FAQSection() {
-  const { t } = useTranslations();
+  const t = useTranslations('faq');
 
   return (
     <section className="py-20 px-6 bg-slate-800/30">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold text-center text-white mb-16">
-          {t('faq.title')}
+          {t('title')}
         </h2>
         
         <div className="space-y-6">
           <FAQItem 
-            question={t('faq.q1.question')} 
-            answer={t('faq.q1.answer')} 
+            question={t('q1.question')} 
+            answer={t('q1.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q2.question')} 
-            answer={t('faq.q2.answer')} 
+            question={t('q2.question')} 
+            answer={t('q2.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q3.question')} 
-            answer={t('faq.q3.answer')} 
+            question={t('q3.question')} 
+            answer={t('q3.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q4.question')} 
-            answer={t('faq.q4.answer')} 
+            question={t('q4.question')} 
+            answer={t('q4.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q5.question')} 
-            answer={t('faq.q5.answer')} 
+            question={t('q5.question')} 
+            answer={t('q5.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q6.question')} 
-            answer={t('faq.q6.answer')} 
+            question={t('q6.question')} 
+            answer={t('q6.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q7.question')} 
-            answer={t('faq.q7.answer')} 
+            question={t('q7.question')} 
+            answer={t('q7.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q8.question')} 
-            answer={t('faq.q8.answer')} 
+            question={t('q8.question')} 
+            answer={t('q8.answer')} 
           />
 
           <FAQItem 
-            question={t('faq.q9.question')} 
-            answer={t('faq.q9.answer')} 
+            question={t('q9.question')} 
+            answer={t('q9.answer')} 
           />
         </div>
       </div>

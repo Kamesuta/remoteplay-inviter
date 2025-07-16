@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
-import { useTranslations } from '@/contexts/LocaleContext';
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
-  const { t } = useTranslations();
+  const t = useTranslations('footer');
 
   return (
     <footer className="py-12 px-6 bg-slate-900">
@@ -21,22 +21,22 @@ export default function Footer() {
           <span className="text-xl font-bold text-white">Remote Play Inviter</span>
         </div>
         <p className="text-slate-400 mb-6">
-          {t('footer.description')}<br />
+          {t('description')}<br />
           <a href="https://store.steampowered.com/remoteplay_together?l=japanese" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
             Steam Remote Play Together
           </a>
-          {t('footer.description2')}
+          {t('description2')}
         </p>
         
         <div className="flex flex-wrap justify-center gap-4 mb-6">
           <a href="https://github.com/Kamesuta/remoteplay-inviter" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-            {t('footer.sourceCode.client')}
+            {t('sourceCode.client')}
           </a>
           <a href="https://github.com/Kamesuta/remoteplay-inviter-bot" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-            {t('footer.sourceCode.bot')}
+            {t('sourceCode.bot')}
           </a>
           <a href="https://github.com/Kamesuta/remoteplay-inviter-web" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-            {t('footer.sourceCode.web')}
+            {t('sourceCode.web')}
           </a>
         </div>
         
@@ -45,7 +45,7 @@ export default function Footer() {
             © <a href="https://github.com/Kamesuta" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">Kamesuta</a>
           </p>
           <p>
-            {t('footer.license')}
+            {t('license')}
           </p>
         </div>
       </div>

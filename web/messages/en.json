@@ -44,6 +44,13 @@
       "point1": "Create invite panel once on Discord",
       "point2": "Automatic invite link generation when participants click",
       "point3": "Host does nothing - fully automated!"
+    },
+    "media": {
+      "videoCaption": {
+        "without": "Traditional Method: Manual Link Generation",
+        "with": "Remote Play Inviter: Automated Invitations"
+      },
+      "videoFallback": "Your browser does not support video playback."
     }
   },
   "features": {
@@ -76,6 +83,13 @@
     "step3": {
       "title": "Link Bot & Client",
       "description": "In Discord, type `/steam invite client_id:~~~` to link the bot and client"
+    },
+    "media": {
+      "altText": {
+        "botInvite": "Bot Invitation Screen",
+        "clientScreen": "Client Screen",
+        "setupScreen": "Setup Screen"
+      }
     }
   },
   "howToUse": {
@@ -94,6 +108,14 @@
     "step3": {
       "title": "Participants: Open Steam",
       "description": "When the invite link is generated, click \"Click to Join Game!\" to open the Steam Remote Play Together page. Then just follow Steam's instructions and enjoy the game!"
+    },
+    "media": {
+      "videoFallback": "Your browser does not support video playback.",
+      "altText": {
+        "discordPanel": "Discord Invitation Panel",
+        "joinButton": "Join Button Clicked Screen",
+        "steamScreen": "Steam Remote Play Together Screen"
+      }
     }
   },
   "media": {

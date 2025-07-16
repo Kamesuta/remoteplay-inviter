@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm run build:*)",
       "WebFetch(domain:developers.cloudflare.com)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(find:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": []
   }

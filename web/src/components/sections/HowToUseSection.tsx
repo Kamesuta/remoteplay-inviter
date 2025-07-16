@@ -1,18 +1,18 @@
 import React from 'react';
-import { useTranslations } from '@/contexts/LocaleContext';
+import { useTranslations } from 'next-intl';
 import HowToUseStep from './HowToUseStep';
 
 export default function HowToUseSection() {
-  const { t } = useTranslations();
+  const t = useTranslations('howToUse');
 
   return (
     <section className="py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center text-white mb-8">
-          {t('howToUse.title')}
+          {t('title')}
         </h2>
         <p className="text-center text-slate-300 mb-16 text-lg">
-          {t('howToUse.subtitle')}
+          {t('subtitle')}
         </p>
         
         {/* Demo Video */}
@@ -20,7 +20,7 @@ export default function HowToUseSection() {
           <div className="max-w-4xl mx-auto bg-slate-800/50 border border-slate-700 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-white mb-6 text-center">
               <i className="fas fa-play-circle mr-2"></i>
-              {t('howToUse.videoTitle')}
+              {t('videoTitle')}
             </h3>
             <div className="rounded-lg overflow-hidden border border-slate-600">
               <video 
@@ -37,7 +37,7 @@ export default function HowToUseSection() {
               </video>
             </div>
             <p className="text-slate-300 text-center mt-4">
-              {t('howToUse.videoDescription')}
+              {t('videoDescription')}
             </p>
           </div>
         </div>
@@ -45,8 +45,8 @@ export default function HowToUseSection() {
         <div className="space-y-12">
           <HowToUseStep 
             stepNumber={1} 
-            title={t('howToUse.step1.title')} 
-            description={t('howToUse.step1.description')} 
+            title={t('step1.title')} 
+            description={t('step1.description')} 
             imageSrc="/assets/invite_panel.png"
             imageAlt={t('media.altText.discordPanel')}
             stepColor="blue"
@@ -55,8 +55,8 @@ export default function HowToUseSection() {
 
           <HowToUseStep 
             stepNumber={2} 
-            title={t('howToUse.step2.title')} 
-            description={t('howToUse.step2.description')} 
+            title={t('step2.title')} 
+            description={t('step2.description')} 
             imageSrc="/assets/invite_join.png" 
             imageAlt={t('media.altText.joinButton')} 
             stepColor="purple"
@@ -65,8 +65,8 @@ export default function HowToUseSection() {
 
           <HowToUseStep 
             stepNumber={3} 
-            title={t('howToUse.step3.title')} 
-            description={t('howToUse.step3.description')} 
+            title={t('step3.title')} 
+            description={t('step3.description')} 
             imageSrc="/assets/invite_steam.png" 
             imageAlt={t('media.altText.steamScreen')} 
             stepColor="green"

@@ -1,18 +1,16 @@
 "use client";
-import { useLocale } from '@/contexts/LocaleContext';
+import { useLocale } from 'next-intl';
+import { Link, usePathname } from '@/i18n/routing';
 
 export default function LanguageSwitcher() {
-  const { locale, setLocale } = useLocale();
-
-  const switchLanguage = (newLocale: 'en' | 'ja') => {
-    if (newLocale === locale) return;
-    setLocale(newLocale);
-  };
+  const locale = useLocale();
+  const pathname = usePathname();
 
   return (
     <div className="flex items-center space-x-2">
-      <button
-        onClick={() => switchLanguage('en')}
+      <Link
+        href={pathname}
+        locale="en"
         className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
           locale === 'en'
             ? 'bg-blue-600 text-white'
@@ -20,9 +18,10 @@ export default function LanguageSwitcher() {
         }`}
       >
         EN
-      </button>
-      <button
-        onClick={() => switchLanguage('ja')}
+      </Link>
+      <Link
+        href={pathname}
+        locale="ja"
         className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
           locale === 'ja'
             ? 'bg-blue-600 text-white'
@@ -30,7 +29,7 @@ export default function LanguageSwitcher() {
         }`}
       >
         JA
-      </button>
+      </Link>
     </div>
   );
 }

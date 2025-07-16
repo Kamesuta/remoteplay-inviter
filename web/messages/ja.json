@@ -44,6 +44,13 @@
       "point1": "Discord上で招待パネルを一度作るだけ",
       "point2": "参加者がボタンを押すと自動で招待リンクが発行",
       "point3": "ホストする人は何もしなくてもOK！"
+    },
+    "media": {
+      "videoCaption": {
+        "without": "従来の方法：手動でのリンク発行",
+        "with": "Remote Play Inviter：自動化された招待"
+      },
+      "videoFallback": "お使いのブラウザは動画再生に対応していません。"
     }
   },
   "features": {
@@ -76,6 +83,13 @@
     "step3": {
       "title": "BOTとクライアントを連携",
       "description": "Discordで `/steam invite client_id:～～～` を入力してBOTとクライアントを連携"
+    },
+    "media": {
+      "altText": {
+        "botInvite": "BOT招待画面",
+        "clientScreen": "クライアント画面",
+        "setupScreen": "セットアップ画面"
+      }
     }
   },
   "howToUse": {
@@ -94,6 +108,14 @@
     "step3": {
       "title": "参加者: Steamを開く",
       "description": "招待リンクが発行されたら「クリックしてゲームに参加！」を押して、Steam Remote Play Togetherのページを開きます。その後はSteamの指示に従って、ゲームを楽しむだけ！"
+    },
+    "media": {
+      "videoFallback": "お使いのブラウザは動画再生に対応していません。",
+      "altText": {
+        "discordPanel": "Discord招待パネル",
+        "joinButton": "参加ボタンを押した画面",
+        "steamScreen": "Steam Remote Play Together画面"
+      }
     }
   },
   "media": {

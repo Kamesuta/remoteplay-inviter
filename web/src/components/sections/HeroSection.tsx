@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useTranslations } from '@/contexts/LocaleContext';
+import { useTranslations } from 'next-intl';
 
 export default function HeroSection() {
-  const { t, tData } = useTranslations();
+  const t = useTranslations('hero');
   const [currentSlide, setCurrentSlide] = useState(0);
   
-  const slidesData = tData<{alt: string, title: string}[]>('hero.slides');
+  // Get slide data - since next-intl doesn't support arrays directly, 
+  // we'll access each slide individually
   const slides = [
     {
       src: "/assets/inviter_concept.svg",
-      alt: Array.isArray(slidesData) ? slidesData[0]?.alt : "Remote Play Inviter Concept Diagram",
-      title: Array.isArray(slidesData) ? slidesData[0]?.title : "Easy Invitation System"
+      alt: t('slides.0.alt'),
+      title: t('slides.0.title')
     },
     {
       src: "/assets/inviter_concept_multiplay.svg", 
-      alt: Array.isArray(slidesData) ? slidesData[1]?.alt : "Local Multiplayer with Remote Friends",
-      title: Array.isArray(slidesData) ? slidesData[1]?.title : "Multiplayer Support"
+      alt: t('slides.1.alt'),
+      title: t('slides.1.title')
     }
   ];
 
@@ -34,44 +35,29 @@ export default function HeroSection() {
           <div className="text-center lg:text-left">
             <div className="mb-8">
               <span className="inline-block px-4 py-2 bg-blue-600/20 text-blue-300 rounded-full text-sm font-medium mb-6">
-                {t('hero.badge')}
+                {t('badge')}
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              {(() => {
-                const titleData = tData<{text: string, style: string, break?: boolean, nowrap?: boolean}[]>('hero.title');
-                if (Array.isArray(titleData)) {
-                  return titleData.map((segment: {text: string, style: string, break?: boolean, nowrap?: boolean}, index: number) => {
-                    const getClassName = (style: string) => {
-                      switch (style) {
-                        case 'gradient':
-                          return 'bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent';
-                        case 'discord':
-                          return 'text-indigo-400';
-                        case 'white':
-                        default:
-                          return 'text-white';
-                      }
-                    };
-                    
-                    return (
-                      <span key={index}>
-                        {segment.break && <br />}
-                        <span 
-                          className={`${getClassName(segment.style)} ${segment.nowrap ? 'whitespace-nowrap' : ''}`}
-                        >
-                          {segment.text}
-                        </span>
-                      </span>
-                    );
-                  });
-                }
-                return t('hero.title');
-              })()}
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                {t('title.0.text')}
+              </span>
+              <span className="text-white">
+                {t('title.1.text')}
+              </span>
+              <span className="text-white">
+                {t('title.2.text')}
+              </span>
+              <span className="text-indigo-400">
+                {t('title.3.text')}
+              </span>
+              <span className="text-white">
+                {t('title.4.text')}
+              </span>
             </h1>
             <p className="text-xl text-slate-300 mb-12 leading-relaxed">
-              {t('hero.description')}<br />
-              {t('hero.description2')}
+              {t('description')}<br />
+              {t('description2')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -80,7 +66,7 @@ export default function HeroSection() {
                 className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center flex items-center justify-center gap-3"
               >
                 <i className="fas fa-rocket"></i>
-                {t('hero.getStarted')}
+                {t('getStarted')}
               </a>
               <a 
                 href="https://github.com/Kamesuta/remoteplay-inviter" 
@@ -88,7 +74,7 @@ export default function HeroSection() {
                 className="px-8 py-4 border border-slate-600 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-3"
               >
                 <i className="fab fa-github"></i>
-                {t('hero.viewGitHub')}
+                {t('viewGitHub')}
               </a>
             </div>
           </div>

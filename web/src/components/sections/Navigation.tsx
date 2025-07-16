@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
-import { useTranslations } from '@/contexts/LocaleContext';
+import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Navigation() {
-  const { t } = useTranslations();
+  const t = useTranslations('nav');
 
   return (
     <nav className="relative z-10 p-6">
@@ -26,26 +26,26 @@ export default function Navigation() {
             href="#about"
             className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
           >
-            {t('nav.features')}
+            {t('features')}
           </a>
           <a 
             href="#setup"
             className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
           >
-            {t('nav.setup')}
+            {t('setup')}
           </a>
           <a 
             href="#download"
             className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
           >
-            {t('nav.download')}
+            {t('download')}
           </a>
           <a 
             href="https://github.com/Kamesuta/remoteplay-inviter" 
             target="_blank"
             className="px-4 py-2 text-blue-300 hover:text-blue-200 transition-colors"
           >
-            {t('nav.github')}
+            {t('github')}
           </a>
           <LanguageSwitcher />
         </div>
