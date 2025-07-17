@@ -187,5 +187,9 @@
       "web": "Source Code (Web)"
     },
     "license": "Licensed under the MIT License"
+  },
+  "diagram": {
+    "text1": "Invite Friends on Discord",
+    "text2": "Click to auto-generate invite links!"
   }
 }

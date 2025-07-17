@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import LocalizedSvg from '@/components/LocalizedSvg';
 
 export default function HeroSection() {
   const t = useTranslations('hero');
+  const tDiagram = useTranslations('diagram');
   const [currentSlide, setCurrentSlide] = useState(0);
   
   // Get slide data - since next-intl doesn't support arrays directly, 
@@ -12,12 +14,24 @@ export default function HeroSection() {
     {
       src: "/assets/hero/concept-diagram.svg",
       alt: t('slides.0.alt'),
-      title: t('slides.0.title')
+      title: t('slides.0.title'),
+      isLocalizedSvg: true,
+      textTranslations: {
+        text1: {
+          ja: "Discordでフレンドを招待",
+          en: tDiagram('text1')
+        },
+        text2: {
+          ja: "参加ボタン押すと自動で招待リンク発行！",
+          en: tDiagram('text2')
+        }
+      }
     },
     {
       src: "/assets/hero/multiplayer-concept.svg", 
       alt: t('slides.1.alt'),
-      title: t('slides.1.title')
+      title: t('slides.1.title'),
+      isLocalizedSvg: false
     }
   ];
 
@@ -89,13 +103,24 @@ export default function HeroSection() {
                 >
                   {slides.map((slide, index) => (
                     <div key={index} className="w-full flex-shrink-0 flex items-center justify-center">
-                      <Image 
-                        src={slide.src}
-                        alt={slide.alt}
-                        width={600} 
-                        height={400}
-                        className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
-                      />
+                      {slide.isLocalizedSvg ? (
+                        <LocalizedSvg 
+                          src={slide.src}
+                          alt={slide.alt}
+                          width={600} 
+                          height={400}
+                          className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
+                          textTranslations={slide.textTranslations}
+                        />
+                      ) : (
+                        <Image 
+                          src={slide.src}
+                          alt={slide.alt}
+                          width={600} 
+                          height={400}
+                          className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
