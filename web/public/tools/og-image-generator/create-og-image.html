@@ -256,6 +256,13 @@
             background: #3b82f6;
             border-color: #3b82f6;
         }
+        
+        .highlight {
+            color: #00d4ff;
+            text-decoration: underline;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -325,9 +332,9 @@
             ja: {
                 title: 'Remote Play Inviter',
                 features: [
-                    '離れたお友達と簡単にローカルマルチプレイ！',
-                    '一人が持ってたらほかの人はゲーム購入不要',
-                    'Discord上で自動で招待リンクを発行！'
+                    '離れたお友達と簡単に<span class="highlight">ローカルマルチプレイ</span>！',
+                    '一人が持ってたらほかの人はゲーム<span class="highlight">購入不要</span>',
+                    '<span class="highlight">Discord上で</span>自動で招待リンクを発行！'
                 ],
                 downloadBtn: 'ダウンロード',
                 inviteBtn: 'BOTを招待'
@@ -335,9 +342,9 @@
             en: {
                 title: 'Remote Play Inviter',
                 features: [
-                    'Easy local multiplayer with distant friends!',
-                    'One purchase, others play free',
-                    'Automatically issue invitation links on Discord!'
+                    'Easy <span class="highlight">local multiplayer</span> with distant friends!',
+                    'One purchase, others play <span class="highlight">free</span>',
+                    '<span class="highlight">On Discord</span> automatically issue invitation links!'
                 ],
                 downloadBtn: 'Download',
                 inviteBtn: 'Invite BOT'
@@ -359,9 +366,12 @@
             const msg = messages[lang];
             document.querySelector('.header-title').textContent = msg.title;
             
-            const featureItems = document.querySelectorAll('.feature-item span:last-child');
+            const featureItems = document.querySelectorAll('.feature-item');
             featureItems.forEach((item, index) => {
-                item.textContent = msg.features[index];
+                if (index < msg.features.length) {
+                    const textSpan = item.querySelector('span:last-child');
+                    textSpan.innerHTML = msg.features[index];
+                }
             });
             
             document.querySelector('.download-btn span').textContent = msg.downloadBtn;
