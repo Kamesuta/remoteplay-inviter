@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OG Image Generator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -298,25 +299,20 @@
         async function downloadImage() {
             const container = document.getElementById('ogContainer');
             
-            // html2canvasライブラリを動的に読み込み
-            if (!window.html2canvas) {
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                document.head.appendChild(script);
-                await new Promise(resolve => script.onload = resolve);
-            }
-            
-            const canvas = await html2canvas(container, {
+            // より高品質な画像生成
+            const dataUrl = await domtoimage.toPng(container, {
                 width: 1200,
                 height: 630,
-                scale: 1,
-                backgroundColor: null,
-                useCORS: true
+                quality: 1,
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left'
+                }
             });
             
             const link = document.createElement('a');
             link.download = 'og-image.png';
-            link.href = canvas.toDataURL('image/png');
+            link.href = dataUrl;
             link.click();
         }
     </script>
