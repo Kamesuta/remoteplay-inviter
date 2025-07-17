@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OG Image Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -20,6 +21,8 @@
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
         
         .bg-pattern {
@@ -36,122 +39,190 @@
                 radial-gradient(circle at 1000px 150px, #66c0f4 40px, transparent 40px);
         }
         
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 60px 30px 60px;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        
+        .header-title {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            margin: 0;
+        }
+        
         .main-content {
             position: relative;
             z-index: 2;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            padding: 40px;
+            justify-content: space-between;
+            flex: 1;
+            padding: 0 60px;
         }
         
-        .icons-container {
+        .left-content {
+            flex: 1;
+            max-width: 600px;
+            margin-left: 50px;
+        }
+        
+        .feature-list {
             display: flex;
-            align-items: center;
-            gap: 60px;
+            flex-direction: column;
+            gap: 24px;
             margin-bottom: 40px;
         }
         
-        .icon-box {
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 26px;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+            color: #10b981;
+        }
+        
+        .right-content {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -30px;
+        }
+        
+        .game-share-visual {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        
+        .center-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 80px;
             height: 80px;
+            background: linear-gradient(135deg, #1b2838, #66c0f4);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 10;
         }
         
-        .discord-icon {
-            background: linear-gradient(135deg, #5865f2, #7289da);
-        }
-        
-        .steam-icon {
-            background: linear-gradient(135deg, #1b2838, #66c0f4);
-        }
-        
-        .connection-line {
-            width: 120px;
-            height: 4px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            border-radius: 2px;
-            position: relative;
-        }
-        
-        .connection-line::after {
-            content: '';
+        .shared-player {
             position: absolute;
-            right: -10px;
-            top: -6px;
-            width: 0;
-            height: 0;
-            border-left: 10px solid #8b5cf6;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-        }
-        
-        .main-title {
-            font-size: 52px;
-            font-weight: bold;
-            color: white;
-            margin: 0 0 20px 0;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .subtitle {
-            font-size: 28px;
-            color: #cbd5e1;
-            margin: 0 0 40px 0;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-        
-        .features {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 3px solid #10b981;
+            border-radius: 16px;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #10b981;
+        }
+        
+        .shared-player:nth-child(2) { top: 0; left: 50%; transform: translateX(-50%); }
+        .shared-player:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); }
+        .shared-player:nth-child(4) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .shared-player:nth-child(5) { top: 50%; left: 0; transform: translateY(-50%); }
+        
+        .connection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, #66c0f4, transparent);
+            transform-origin: center;
+            z-index: 5;
+        }
+        
+        .connection:nth-child(6) { height: 140px; transform: translate(-50%, -50%) rotate(0deg); }
+        .connection:nth-child(7) { height: 140px; transform: translate(-50%, -50%) rotate(90deg); }
+        .connection:nth-child(8) { height: 140px; transform: translate(-50%, -50%) rotate(180deg); }
+        .connection:nth-child(9) { height: 140px; transform: translate(-50%, -50%) rotate(270deg); }
+        
+        .bottom-section {
+            display: flex;
+            justify-content: center;
             gap: 30px;
-            margin-bottom: 40px;
+            padding: 0px 60px 60px 60px;
+            z-index: 2;
         }
         
-        .feature-badge {
-            padding: 12px 24px;
-            border-radius: 30px;
-            background: rgba(59, 130, 246, 0.15);
-            border: 2px solid rgba(59, 130, 246, 0.4);
+        .action-btn {
+            padding: 24px 50px;
+            border-radius: 35px;
+            font-size: 28px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
             color: white;
-            font-size: 16px;
-            font-weight: 600;
-            backdrop-filter: blur(4px);
         }
         
-        .feature-badge:nth-child(2) {
-            background: rgba(139, 92, 246, 0.15);
-            border-color: rgba(139, 92, 246, 0.4);
+        .download-btn {
+            background: #1b2838;
+            border: 2px solid #66c0f4;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
-        .feature-badge:nth-child(3) {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.4);
+        .download-btn:hover {
+            background: #2c3e50;
+            border-color: #8fd3f4;
         }
         
-        .description {
-            font-size: 20px;
-            color: #94a3b8;
-            margin: 20px 0;
-            max-width: 800px;
+        .invite-btn {
+            background: linear-gradient(135deg, #5865f2, #7289da);
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
         }
         
-        .url {
-            font-size: 18px;
-            font-weight: 600;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-top: 20px;
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
+        
         
         .generate-btn {
             margin-top: 20px;
@@ -168,27 +239,56 @@
 <body>
     <div class="og-container" id="ogContainer">
         <div class="bg-pattern"></div>
+        
+        <div class="header">
+            <div class="header-left">
+                <img src="../../assets/branding/logo.png" alt="Logo" class="logo">
+                <h1 class="header-title">Remote Play Inviter</h1>
+            </div>
+        </div>
+        
         <div class="main-content">
-            <div class="icons-container">
-                <div class="icon-box discord-icon">💬</div>
-                <div class="connection-line"></div>
-                <div class="icon-box steam-icon">🎮</div>
+            <div class="left-content">
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-handshake"></i></span>
+                        <span>離れたお友達と簡単にローカルマルチプレイ！</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-coins"></i></span>
+                        <span>一人が持ってたらほかの人はゲーム購入不要</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-rocket"></i></span>
+                        <span>Discord上で自動で招待リンクを発行！</span>
+                    </div>
+                </div>
             </div>
             
-            <h1 class="main-title">Remote Play Inviter</h1>
-            <p class="subtitle">Discord Bot for Steam Remote Play Together</p>
-            
-            <div class="features">
-                <div class="feature-badge">🎮 Easy Invites</div>
-                <div class="feature-badge">🤖 Automated</div>
-                <div class="feature-badge">💰 Free to Use</div>
+            <div class="right-content">
+                <div class="game-share-visual">
+                    <div class="center-player"><i class="fas fa-gamepad"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                </div>
             </div>
-            
-            <p class="description">
-                Invite friends to Steam games through Discord with just one click!
-            </p>
-            
-            <div class="url">steaminviter.app</div>
+        </div>
+        
+        <div class="bottom-section">
+            <a href="#" class="action-btn download-btn">
+                <i class="fas fa-download" style="font-size: 28px;"></i>
+                <span>ダウンロード</span>
+            </a>
+            <a href="#" class="action-btn invite-btn">
+                <i class="fas fa-robot" style="font-size: 28px;"></i>
+                <span>BOTを招待</span>
+            </a>
         </div>
     </div>
     
