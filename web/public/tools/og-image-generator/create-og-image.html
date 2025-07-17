@@ -226,7 +226,6 @@
         
         
         .generate-btn {
-            margin-top: 20px;
             padding: 12px 24px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
@@ -234,6 +233,28 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .lang-btn {
+            padding: 12px 24px;
+            background: #374151;
+            color: white;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .lang-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
         }
     </style>
 </head>
@@ -253,15 +274,15 @@
                 <div class="feature-list">
                     <div class="feature-item">
                         <span class="feature-icon"><i class="fas fa-handshake"></i></span>
-                        <span>離れたお友達と簡単にローカルマルチプレイ！</span>
+                        <span></span>
                     </div>
                     <div class="feature-item">
                         <span class="feature-icon"><i class="fas fa-coins"></i></span>
-                        <span>一人が持ってたらほかの人はゲーム購入不要</span>
+                        <span></span>
                     </div>
                     <div class="feature-item">
                         <span class="feature-icon"><i class="fas fa-rocket"></i></span>
-                        <span>Discord上で自動で招待リンクを発行！</span>
+                        <span></span>
                     </div>
                 </div>
             </div>
@@ -293,9 +314,65 @@
         </div>
     </div>
     
-    <button class="generate-btn" onclick="downloadImage()">Download as PNG</button>
+    <div class="controls">
+        <button class="lang-btn active" onclick="switchLanguage('ja', this)">日本語</button>
+        <button class="lang-btn" onclick="switchLanguage('en', this)">English</button>
+        <button class="generate-btn" onclick="downloadImage()">Download as PNG</button>
+    </div>
     
     <script>
+        const messages = {
+            ja: {
+                title: 'Remote Play Inviter',
+                features: [
+                    '離れたお友達と簡単にローカルマルチプレイ！',
+                    '一人が持ってたらほかの人はゲーム購入不要',
+                    'Discord上で自動で招待リンクを発行！'
+                ],
+                downloadBtn: 'ダウンロード',
+                inviteBtn: 'BOTを招待'
+            },
+            en: {
+                title: 'Remote Play Inviter',
+                features: [
+                    'Easy local multiplayer with distant friends!',
+                    'One purchase, others play free',
+                    'Automatically issue invitation links on Discord!'
+                ],
+                downloadBtn: 'Download',
+                inviteBtn: 'Invite BOT'
+            }
+        };
+        
+        function switchLanguage(lang, clickedButton = null) {
+            // ボタンのアクティブ状態を切り替え
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            } else {
+                // 初期化時は該当する言語ボタンをアクティブにする
+                const targetBtn = document.querySelector(`[onclick="switchLanguage('${lang}')"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+            
+            // コンテンツを更新
+            const msg = messages[lang];
+            document.querySelector('.header-title').textContent = msg.title;
+            
+            const featureItems = document.querySelectorAll('.feature-item span:last-child');
+            featureItems.forEach((item, index) => {
+                item.textContent = msg.features[index];
+            });
+            
+            document.querySelector('.download-btn span').textContent = msg.downloadBtn;
+            document.querySelector('.invite-btn span').textContent = msg.inviteBtn;
+        }
+        
+        // 初期化：日本語を表示
+        document.addEventListener('DOMContentLoaded', function() {
+            switchLanguage('ja');
+        });
+        
         async function downloadImage() {
             const container = document.getElementById('ogContainer');
             
