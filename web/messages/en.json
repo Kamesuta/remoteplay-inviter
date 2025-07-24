@@ -189,7 +189,11 @@
     "license": "Licensed under the MIT License"
   },
   "diagram": {
-    "text1": "Invite Friends on Discord",
-    "text2": "Click to auto-generate invite links!"
+    "text1": "Invite via Discord",
+    "text2": "Auto-generate links!",
+    "multiplayer1": "Remote Friends",
+    "multiplayer2": "Local Multiplayer",
+    "multiplayer3": "No Purchase Required!",
+    "multiplayer4": ""
   }
 }

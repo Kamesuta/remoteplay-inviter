@@ -25,13 +25,31 @@ export default function HeroSection() {
           ja: "参加ボタン押すと自動で招待リンク発行！",
           en: tDiagram('text2')
         }
-      }
+      } as { [key: string]: { ja: string; en: string } }
     },
     {
       src: "/assets/hero/multiplayer-concept.svg", 
       alt: t('slides.1.alt'),
       title: t('slides.1.title'),
-      isLocalizedSvg: false
+      isLocalizedSvg: true,
+      textTranslations: {
+        multiplayer1: {
+          ja: "離れたお友達と",
+          en: tDiagram('multiplayer1')
+        },
+        multiplayer2: {
+          ja: "ローカルマルチプレイ",
+          en: tDiagram('multiplayer2')
+        },
+        multiplayer3: {
+          ja: "参加者",
+          en: tDiagram('multiplayer3')
+        },
+        multiplayer4: {
+          ja: "はゲーム購入不要！",
+          en: tDiagram('multiplayer4')
+        }
+      } as { [key: string]: { ja: string; en: string } }
     }
   ];
 
@@ -110,7 +128,7 @@ export default function HeroSection() {
                           width={600} 
                           height={400}
                           className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
-                          textTranslations={slide.textTranslations}
+                          textTranslations={slide.textTranslations || {}}
                         />
                       ) : (
                         <Image 

@@ -36,7 +36,7 @@ export default function LocalizedSvg({
         let localizedSvg = svgText;
         
         // テキストを置換
-        Object.entries(textTranslations).forEach(([key, translations]) => {
+        Object.entries(textTranslations).forEach(([, translations]) => {
           const japaneseText = translations.ja;
           const translatedText = translations[locale as 'ja' | 'en'];
           
@@ -76,6 +76,27 @@ export default function LocalizedSvg({
           }
         );
         
+        // SVGの幅と高さのみをレスポンシブに変更（他の属性は保持）
+        localizedSvg = localizedSvg.replace(
+          /<svg([^>]*)>/,
+          (match, attributes) => {
+            // 幅と高さのみを変更し、clip-path、viewBox等の重要な属性は保持
+            let newAttributes = attributes
+              .replace(/width="[^"]*"/g, 'width="100%"')
+              .replace(/height="[^"]*"/g, 'height="100%"');
+            
+            // 元々width/heightが無い場合は追加
+            if (!attributes.includes('width=')) {
+              newAttributes += ' width="100%"';
+            }
+            if (!attributes.includes('height=')) {
+              newAttributes += ' height="100%"';
+            }
+            
+            return `<svg${newAttributes}>`;
+          }
+        );
+        
         setSvgContent(localizedSvg);
       })
       .catch(error => {
@@ -86,10 +107,17 @@ export default function LocalizedSvg({
   return (
     <div 
       className={className}
-      style={{ width, height }}
-      dangerouslySetInnerHTML={{ __html: svgContent }}
+      style={{ 
+        width, 
+        height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+      }}
       role="img"
       aria-label={alt}
+      dangerouslySetInnerHTML={{ __html: svgContent }}
     />
   );
 }

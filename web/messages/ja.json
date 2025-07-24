@@ -190,6 +190,10 @@
   },
   "diagram": {
     "text1": "Discordでフレンドを招待",
-    "text2": "参加ボタン押すと自動で招待リンク発行！"
+    "text2": "参加ボタン押すと自動で招待リンク発行！",
+    "multiplayer1": "離れたお友達と",
+    "multiplayer2": "ローカルマルチプレイ",
+    "multiplayer3": "参加者",
+    "multiplayer4": "はゲーム購入不要！"
   }
 }
