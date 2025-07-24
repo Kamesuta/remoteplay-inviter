@@ -1,10 +1,11 @@
 name = "steaminviter"
-main = "src/index.ts"
-compatibility_date = "2024-09-19"
+main = ".open-next/worker.js"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 [assets]
-directory = "out"
 binding = "ASSETS"
+directory = ".open-next/assets"
 
 [observability.logs]
 enabled = true
