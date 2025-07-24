@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import LocalizedSvg from '@/components/LocalizedSvg';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 export default function HeroSection() {
   const t = useTranslations('hero');
   const tDiagram = useTranslations('diagram');
-  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
+  );
+  
+  const [selectedIndex, setSelectedIndex] = useState(0);
   
   // Get slide data - since next-intl doesn't support arrays directly, 
   // we'll access each slide individually
@@ -53,24 +61,36 @@ export default function HeroSection() {
     }
   ];
 
+  const scrollTo = useCallback(
+    (index: number) => {
+      if (emblaApi) emblaApi.scrollTo(index);
+    },
+    [emblaApi]
+  );
+  
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi, setSelectedIndex]);
+  
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+  }, [emblaApi, onSelect]);
 
   return (
-    <section className="relative py-20 px-6">
+    <section className="relative py-8 sm:py-12 md:py-20 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
           <div className="text-center lg:text-left">
             <div className="mb-8">
               <span className="inline-block px-4 py-2 bg-blue-600/20 text-blue-300 rounded-full text-sm font-medium mb-6">
                 {t('badge')}
               </span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 {t('title.0.text')}
               </span>
@@ -87,7 +107,7 @@ export default function HeroSection() {
                 {t('title.4.text')}
               </span>
             </h1>
-            <p className="text-xl text-slate-300 mb-12 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 mb-6 md:mb-8 lg:mb-12 leading-relaxed">
               {t('description')}<br />
               {t('description2')}
             </p>
@@ -95,7 +115,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <a 
                 href="#setup"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center flex items-center justify-center gap-3"
+                className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-center flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 <i className="fas fa-rocket"></i>
                 {t('getStarted')}
@@ -103,7 +123,7 @@ export default function HeroSection() {
               <a 
                 href="https://github.com/Kamesuta/remoteplay-inviter" 
                 target="_blank"
-                className="px-8 py-4 border border-slate-600 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-3"
+                className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 border border-slate-600 text-slate-300 font-semibold rounded-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 <i className="fab fa-github"></i>
                 {t('viewGitHub')}
@@ -111,34 +131,31 @@ export default function HeroSection() {
             </div>
           </div>
           
-          <div className="relative">
-            <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-8 backdrop-blur-sm border border-slate-600/50">
-              {/* Carousel container */}
-              <div className="relative overflow-hidden rounded-lg">
-                <div 
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
+          <div className="relative mt-6 sm:mt-8 lg:mt-0">
+            <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 backdrop-blur-sm border border-slate-600/50">
+              {/* Embla Carousel container */}
+              <div className="embla overflow-hidden rounded-lg" ref={emblaRef}>
+                <div className="embla__container flex">
                   {slides.map((slide, index) => (
-                    <div key={index} className="w-full flex-shrink-0 flex items-center justify-center">
-                      {slide.isLocalizedSvg ? (
-                        <LocalizedSvg 
-                          src={slide.src}
-                          alt={slide.alt}
-                          width={600} 
-                          height={400}
-                          className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
-                          textTranslations={slide.textTranslations || {}}
-                        />
-                      ) : (
-                        <Image 
-                          src={slide.src}
-                          alt={slide.alt}
-                          width={600} 
-                          height={400}
-                          className="rounded-lg shadow-2xl max-w-full h-auto object-contain"
-                        />
-                      )}
+                    <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
+                      <div className="flex items-center justify-center h-full">
+                        {slide.isLocalizedSvg ? (
+                          <LocalizedSvg 
+                            src={slide.src}
+                            alt={slide.alt}
+                            className="rounded-lg shadow-2xl w-full h-auto"
+                            textTranslations={slide.textTranslations || {}}
+                          />
+                        ) : (
+                          <Image 
+                            src={slide.src}
+                            alt={slide.alt}
+                            width={600} 
+                            height={400}
+                            className="rounded-lg shadow-2xl w-full h-auto object-contain"
+                          />
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -148,9 +165,9 @@ export default function HeroSection() {
                   {slides.map((_, index) => (
                     <button
                       key={index}
-                      onClick={() => setCurrentSlide(index)}
+                      onClick={() => scrollTo(index)}
                       className={`w-3 h-3 rounded-full transition-all ${
-                        currentSlide === index 
+                        selectedIndex === index 
                           ? 'bg-blue-500 scale-110' 
                           : 'bg-slate-400 hover:bg-slate-300'
                       }`}
@@ -159,9 +176,9 @@ export default function HeroSection() {
                 </div>
                 
                 {/* Slide title overlay */}
-                <div className="absolute bottom-6 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
-                  <span className="text-white text-sm font-medium">
-                    {slides[currentSlide].title}
+                <div className="absolute bottom-6 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 max-w-[calc(100%-2rem)]">
+                  <span className="text-white text-xs sm:text-sm font-medium truncate block">
+                    {slides[selectedIndex]?.title}
                   </span>
                 </div>
               </div>
