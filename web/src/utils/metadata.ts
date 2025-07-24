@@ -5,7 +5,7 @@ interface Messages {
   description: string;
 }
 
-export function generateMetadata(messages: Messages): Metadata {
+export function generateMetadata(messages: Messages, locale: string = 'en'): Metadata {
   return {
     title: messages.title,
     description: messages.description,
@@ -30,7 +30,7 @@ export function generateMetadata(messages: Messages): Metadata {
       description: messages.description,
       images: [
         {
-          url: "https://steaminviter.app/assets/branding/og-image.png",
+          url: `https://steaminviter.app/assets/branding/og-image-${locale}.png`,
           width: 1200,
           height: 630,
           alt: "Remote Play Inviter",
@@ -43,7 +43,7 @@ export function generateMetadata(messages: Messages): Metadata {
       card: "summary_large_image",
       title: messages.title,
       description: messages.description,
-      images: ["https://steaminviter.app/assets/branding/og-image.png"],
+      images: [`https://steaminviter.app/assets/branding/og-image-${locale}.png`],
     },
   };
 }
