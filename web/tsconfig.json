@@ -26,7 +26,11 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "types": [
+      "./cloudflare-env.d.ts",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",

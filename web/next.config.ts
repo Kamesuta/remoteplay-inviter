@@ -2,11 +2,10 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
-// 開発環境でOpenNext.js初期化
-if (process.env.NODE_ENV === 'development') {
-  initOpenNextCloudflareForDev();
-}
+// added by create cloudflare to enable calling `getCloudflareContext()` in `next dev`
+initOpenNextCloudflareForDev();
 
+// i18n対応のためのプラグイン
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
