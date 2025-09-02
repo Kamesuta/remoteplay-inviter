@@ -137,8 +137,8 @@ export default function HeroSection() {
           <div className="relative mt-6 sm:mt-8 lg:mt-0">
             <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 backdrop-blur-sm border border-slate-600/50">
               {/* Embla Carousel container */}
-              <div className="embla overflow-hidden rounded-lg" ref={emblaRef}>
-                <div className="embla__container flex">
+              <div className="embla overflow-hidden rounded-lg aspect-[1/1] bg-slate-900/50" ref={emblaRef}>
+                <div className="embla__container flex h-full">
                   {slides.map((slide, index) => (
                     <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
                       <div className="flex items-center justify-center h-full">
@@ -146,7 +146,7 @@ export default function HeroSection() {
                           <LocalizedSvg 
                             src={slide.src}
                             alt={slide.alt}
-                            className="rounded-lg shadow-2xl w-full h-auto"
+                            className="rounded-lg shadow-2xl w-full h-full"
                             textTranslations={slide.textTranslations || {}}
                           />
                         ) : (
