@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import FeatureCard from './FeatureCard';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faLink, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 export default function FeaturesSection() {
   const t = useTranslations('features');
@@ -14,21 +16,21 @@ export default function FeaturesSection() {
         
         <div className="grid md:grid-cols-3 gap-8">
           <FeatureCard 
-            icon="fab fa-discord" 
+            icon={faDiscord} 
             iconColor="blue"
             title={t('discord.title')} 
             description={t('discord.description')}
           />
 
           <FeatureCard 
-            icon="fas fa-link" 
+            icon={faLink} 
             iconColor="purple"
             title={t('autoInvite.title')} 
             description={t('autoInvite.description')}
           />
 
           <FeatureCard 
-            icon="fas fa-dollar-sign" 
+            icon={faDollarSign} 
             iconColor="green"
             title={t('free.title')} 
             description={t('free.description')}
