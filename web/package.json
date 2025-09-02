@@ -12,10 +12,14 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-brands-svg-icons": "^7.0.0",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
+    "@fortawesome/react-fontawesome": "^3.0.2",
     "@opennextjs/cloudflare": "^1.6.1",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-		"next": "15.3.5",
+    "next": "15.3.5",
     "next-intl": "^4.3.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
