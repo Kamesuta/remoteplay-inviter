@@ -25,14 +25,14 @@ public:
 		@param gameID The game ID of the game to play.
 		@return The guest ID of the invitee or 0 if the invite failed.
 	*/
-	uint64 SendInvite(CSteamID invitee, CGameID gameID);
+	uint32 SendInvite(CSteamID invitee, CGameID gameID);
 
 	/**
 		@brief Cancel an invite to a friend to join a Remote Play session.
 		@param invitee The Steam ID of the friend to cancel the invite for.
 		@param guestID The guest ID of the invitee.
 	*/
-	void CancelInvite(CSteamID invitee, uint64 guestID);
+	void CancelInvite(CSteamID invitee, uint32 guestID);
 
 private:
 	/**
@@ -43,7 +43,7 @@ private:
 	/**
 		@brief Next guest ID of the invitee.
 	*/
-	uint64 m_remoteGuestID;
+	uint32 m_remoteGuestID;
 
 public:
 	OnRemoteInvited m_onRemoteInvited;

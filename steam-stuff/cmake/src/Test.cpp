@@ -34,15 +34,15 @@ int main()
 		return 1;
 	}
 
-	SteamStuff_SetOnRemoteInvited([](uint64_t invitee, uint64_t guestID, const char* connectURL)
+	SteamStuff_SetOnRemoteInvited([](uint64_t invitee, uint32_t guestID, const char* connectURL)
 		{
 			std::cout << "Invite created for " << invitee << " with URL: " << connectURL << " and guest ID: " << guestID << std::endl;
 		});
-	SteamStuff_SetOnRemoteStarted([](uint64_t invitee, uint64_t guestID)
+	SteamStuff_SetOnRemoteStarted([](uint64_t invitee, uint32_t guestID)
 		{
 			std::cout << "Session started for " << invitee << " with guest ID: " << guestID << std::endl;
 		});
-	SteamStuff_SetOnRemoteStopped([](uint64_t invitee, uint64_t guestID)
+	SteamStuff_SetOnRemoteStopped([](uint64_t invitee, uint32_t guestID)
 		{
 			std::cout << "Session stopped for " << invitee << " with guest ID: " << guestID << std::endl;
 		});

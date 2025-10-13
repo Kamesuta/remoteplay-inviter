@@ -11,7 +11,7 @@ RemotePlayInviteHandler::RemotePlayInviteHandler() :
 {
 }
 
-uint64 RemotePlayInviteHandler::SendInvite(CSteamID invitee, CGameID gameID)
+uint32 RemotePlayInviteHandler::SendInvite(CSteamID invitee, CGameID gameID)
 {
 	RemotePlayPlayer_t rppInvitee = { invitee, m_remoteGuestID++, 0, 0, 0 };
 
@@ -26,10 +26,10 @@ uint64 RemotePlayInviteHandler::SendInvite(CSteamID invitee, CGameID gameID)
 		return 0;
 	}
 
-	return rppInvitee.m_guestID;
+	return rppInvitee.m_unGuestID;
 }
 
-void RemotePlayInviteHandler::CancelInvite(CSteamID invitee, uint64 guestID)
+void RemotePlayInviteHandler::CancelInvite(CSteamID invitee, uint32 guestID)
 {
 	if (GClientContext()->RemoteClientManager()->BIsStreamingSessionActive())
 	{
@@ -45,7 +45,7 @@ void RemotePlayInviteHandler::OnRemotePlayInvited(RemotePlayInviteResult_t* cb)
 		// Call the invite created callback
 		if (m_onRemoteInvited)
 		{
-			m_onRemoteInvited(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_guestID, cb->m_szConnectURL);
+			m_onRemoteInvited(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_unGuestID, cb->m_szConnectURL);
 		}
 	}
 }
@@ -55,7 +55,7 @@ void RemotePlayInviteHandler::OnRemotePlayStarted(StreamingClientConnected_t* cb
 	// Call the session started callback
 	if (m_onRemoteStarted)
 	{
-		m_onRemoteStarted(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_guestID);
+		m_onRemoteStarted(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_unGuestID);
 	}
 }
 
@@ -70,7 +70,7 @@ void RemotePlayInviteHandler::OnRemotePlayStopped(RemoteClientStopStreamSession_
 	// Call the session stopped callback
 	if (m_onRemoteStopped)
 	{
-		m_onRemoteStopped(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_guestID);
+		m_onRemoteStopped(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_unGuestID);
 	}
 }
 
