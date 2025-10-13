@@ -54,6 +54,17 @@ jobs:
           override: true
           profile: minimal
 
+      - name: Set crate version from tag
+        shell: bash
+        env:
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#v}"
+          echo "Detected tag: '$TAG_NAME' -> using version: '$VERSION'"
+          cargo install cargo-edit --version 0.12.0
+          cargo set-version "$VERSION"
+
       - name: Install OpenSSL
         shell: bash
         if: runner.os == 'Linux'
