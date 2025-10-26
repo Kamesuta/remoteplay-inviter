@@ -3,6 +3,7 @@
 
 RemotePlayInviteHandler::RemotePlayInviteHandler() :
 	m_remoteGuestID(1),
+	m_groupID(1),
 	m_remoteInvitedCb(this, &RemotePlayInviteHandler::OnRemotePlayInvited),
 	m_remoteStartedCb(this, &RemotePlayInviteHandler::OnRemotePlayStarted),
 	m_remoteStoppedCb(this, &RemotePlayInviteHandler::OnRemotePlayStopped),
@@ -13,7 +14,7 @@ RemotePlayInviteHandler::RemotePlayInviteHandler() :
 
 uint32 RemotePlayInviteHandler::SendInvite(CSteamID invitee, CGameID gameID)
 {
-	RemotePlayPlayer_t rppInvitee = { invitee, m_remoteGuestID++, 0, 0, 0 };
+	RemotePlayPlayer_t rppInvitee = { invitee, m_remoteGuestID++, m_groupID, 0, 0, 0 };
 
 	if (gameID.IsSteamApp() && gameID.AppID() != m_nonsteamAppID)
 	{
@@ -33,7 +34,7 @@ void RemotePlayInviteHandler::CancelInvite(CSteamID invitee, uint32 guestID)
 {
 	if (GClientContext()->RemoteClientManager()->BIsStreamingSessionActive())
 	{
-		RemotePlayPlayer_t rppInvitee = { invitee, guestID, 0, 0, 0 };
+		RemotePlayPlayer_t rppInvitee = { invitee, guestID, m_groupID, 0, 0, 0 };
 		GClientContext()->RemoteClientManager()->CancelRemotePlayInviteAndSession(rppInvitee);
 	}
 }
@@ -61,12 +62,6 @@ void RemotePlayInviteHandler::OnRemotePlayStarted(StreamingClientConnected_t* cb
 
 void RemotePlayInviteHandler::OnRemotePlayStopped(RemoteClientStopStreamSession_t* cb)
 {
-	//if (!GClientContext()->RemoteClientManager()->BIsStreamingSessionActive())
-	//{
-	//    // Reset the guest ID
-	//    m_remoteGuestID = 1;
-	//}
-
 	// Call the session stopped callback
 	if (m_onRemoteStopped)
 	{

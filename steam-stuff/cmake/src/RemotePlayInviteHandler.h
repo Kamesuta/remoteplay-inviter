@@ -38,12 +38,18 @@ private:
 	/**
 		@brief Non-Steam App ID.
 	*/
-	static const AppId_t m_nonsteamAppID = 480;
+	static const AppId_t m_nonsteamAppID = 0;
 
 	/**
 		@brief Next guest ID of the invitee.
 	*/
 	uint32 m_remoteGuestID;
+
+	/**
+		@brief Group ID for Remote Play Together sessions.
+		Non-zero value prevents whole desktop streaming.
+	*/
+	uint32 m_groupID;
 
 public:
 	OnRemoteInvited m_onRemoteInvited;
