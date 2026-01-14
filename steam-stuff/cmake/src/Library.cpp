@@ -32,7 +32,7 @@ uint64_t SteamStuff_GetRunningGameID()
 
 bool SteamStuff_CanRemotePlayTogether(uint64_t gameID)
 {
-	return GClientContext()->AppManager()->BCanRemotePlayTogether(CGameID(uint64(gameID)).AppID());
+	return true;//GClientContext()->AppManager()->BCanRemotePlayTogether(CGameID(uint64(gameID)).AppID());
 }
 
 void SteamStuff_ShowRemotePlayTogetherUI(uint64_t gameID)
@@ -60,7 +60,7 @@ void SteamStuff_SetOnRemoteInvited(OnRemoteInvited cb)
 
 void SteamStuff_SetOnRemoteStarted(OnRemoteStarted cb)
 {
-	GRemotePlayInviteHandler()->m_onRemoteStarted = cb;
+	// GRemotePlayInviteHandler()->m_onRemoteStarted = cb;
 }
 
 void SteamStuff_SetOnRemoteStopped(OnRemoteStopped cb)

@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "remoteplay-inviter"
-version = "0.1.0"
+version = "0.2.4"
 description = "Invite your friends via Discord and play Steam games together for free!"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

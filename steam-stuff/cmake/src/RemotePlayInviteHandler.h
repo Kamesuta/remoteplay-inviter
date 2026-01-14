@@ -58,7 +58,7 @@ public:
 
 private:
 	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayInvited, RemotePlayInviteResult_t, m_remoteInvitedCb);
-	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStarted, StreamingClientConnected_t, m_remoteStartedCb);
+	// STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStarted, StreamingClientConnected_t, m_remoteStartedCb);
 	STEAM_CALLBACK(RemotePlayInviteHandler, OnRemotePlayStopped, RemoteClientStopStreamSession_t, m_remoteStoppedCb);
 };
 

@@ -5,7 +5,7 @@ RemotePlayInviteHandler::RemotePlayInviteHandler() :
 	m_remoteGuestID(1),
 	m_groupID(1),
 	m_remoteInvitedCb(this, &RemotePlayInviteHandler::OnRemotePlayInvited),
-	m_remoteStartedCb(this, &RemotePlayInviteHandler::OnRemotePlayStarted),
+	// m_remoteStartedCb(this, &RemotePlayInviteHandler::OnRemotePlayStarted),
 	m_remoteStoppedCb(this, &RemotePlayInviteHandler::OnRemotePlayStopped),
 	m_onRemoteInvited(nullptr),
 	m_onRemoteStopped(nullptr)
@@ -51,14 +51,14 @@ void RemotePlayInviteHandler::OnRemotePlayInvited(RemotePlayInviteResult_t* cb)
 	}
 }
 
-void RemotePlayInviteHandler::OnRemotePlayStarted(StreamingClientConnected_t* cb)
-{
-	// Call the session started callback
-	if (m_onRemoteStarted)
-	{
-		m_onRemoteStarted(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_unGuestID);
-	}
-}
+// void RemotePlayInviteHandler::OnRemotePlayStarted(StreamingClientConnected_t* cb)
+// {
+// 	// Call the session started callback
+// 	if (m_onRemoteStarted)
+// 	{
+// 		m_onRemoteStarted(cb->m_player.m_playerID.ConvertToUint64(), cb->m_player.m_unGuestID);
+// 	}
+// }
 
 void RemotePlayInviteHandler::OnRemotePlayStopped(RemoteClientStopStreamSession_t* cb)
 {
