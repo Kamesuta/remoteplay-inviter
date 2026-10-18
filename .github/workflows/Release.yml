@@ -16,30 +16,20 @@ jobs:
         job:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            use-cross: false
-            extension: '.AppImage'
-            suffix: ''
+            artifact: remoteplay-inviter.AppImage
           - os: macos-latest
             target: x86_64-apple-darwin
-            use-cross: false
-            extension: ''
-            suffix: '-macos-intel'
+            artifact: remoteplay-inviter-macos-intel.tar.gz
           - os: macos-latest
             target: aarch64-apple-darwin
-            use-cross: false
-            extension: ''
-            suffix: '-macos'
+            artifact: remoteplay-inviter-macos.tar.gz
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            use-cross: false
-            extension: '.exe'
-            suffix: ''
+            artifact: remoteplay-inviter-windows.zip
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+        uses: actions/checkout@v4
 
       - name: Extract crate information
         shell: bash
@@ -47,12 +37,9 @@ jobs:
           echo "PROJECT_NAME=$(sed -n 's/^name = "\(.*\)"/\1/p' Cargo.toml | head -n1)" >> $GITHUB_ENV
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: nightly-2024-07-27
-          target: ${{ matrix.job.target }}
-          override: true
-          profile: minimal
+          targets: ${{ matrix.job.target }}
 
       - name: Set crate version from tag
         shell: bash
@@ -65,12 +52,12 @@ jobs:
           cargo install cargo-edit --version 0.12.0
           cargo set-version "$VERSION"
 
-      - name: Install OpenSSL
+      - name: Install build dependencies
         shell: bash
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libssl-dev libxcb-xfixes0-dev cmake clang build-essential
+          sudo apt-get install -y libxcb-xfixes0-dev
 
       - name: setup environments
         run: |
@@ -78,32 +65,35 @@ jobs:
           cat .env
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.job.use-cross }}
-          command: build
-          args: --release --target ${{ matrix.job.target }}
+        run: cargo build --release --target ${{ matrix.job.target }}
 
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage-action@master
         if: runner.os == 'Linux'
         env:
+          BUILD_DIR: target/${{ matrix.job.target }}/release
           EXECUTABLE_PATH: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
           UPDATE_INFO: gh-releases-zsync|${{ env.GITHUB_REPOSITORY_OWNER }}|${{ env.PROJECT_NAME }}|latest|*.AppImage.zsync
-          OUTPUT_NAME: ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
+          OUTPUT_NAME: ${{ matrix.job.artifact }}
         with:
           recipe: AppImageBuilder.yml
 
-      - name: Rename artifacts
-        shell: bash
-        if: runner.os != 'Linux'
+      # The Steamworks runtime library must sit next to the executable
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
         run: |
-          mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }} ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
+          tar -czvf ${{ matrix.job.artifact }} -C target/${{ matrix.job.target }}/release ${{ env.PROJECT_NAME }} libsteam_api.dylib
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}.exe, target/${{ matrix.job.target }}/release/steam_api64.dll -DestinationPath ${{ matrix.job.artifact }}
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            ${{ env.PROJECT_NAME }}${{ matrix.job.suffix }}${{ matrix.job.extension }}
+            ${{ matrix.job.artifact }}
