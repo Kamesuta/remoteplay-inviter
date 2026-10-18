@@ -2,6 +2,7 @@ pub mod detector;
 pub mod game_id;
 pub mod helper;
 pub mod helper_main;
+pub mod library;
 pub mod protocol;
 
 use std::{sync::Arc, thread, time::Duration};
@@ -12,8 +13,9 @@ use tokio::sync::{
     watch, Mutex,
 };
 
-pub use game_id::{GameID, GameUID};
+pub use game_id::GameID;
 use helper::HelperProcess;
+pub use helper::InviteLink;
 
 /// How often the running game is checked
 const POLL_INTERVAL: Duration = Duration::from_secs(1);
@@ -24,7 +26,7 @@ const GAME_CHANGE_GRACE: Duration = Duration::from_secs(2);
 #[derive(Debug, Clone)]
 pub enum SessionEvent {
     /// A player joined
-    Joined { steamid: u64, guestid: u32, rpt: bool },
+    Joined { steamid: u64, guestid: u32 },
     /// A player left
     Left { steamid: u64, guestid: u32 },
     /// The game exited, so all sessions are gone
@@ -145,11 +147,11 @@ impl SteamManager {
     }
 
     /// Creates a guest invite link and shows the Remote Play Together UI
-    pub async fn create_invite_link(&self, app_id: u32) -> Result<String> {
+    pub async fn create_invite_link(&self, app_id: u32) -> Result<InviteLink> {
         let helper = self.ensure_helper(app_id).await?;
-        let url = helper.request_link().await?;
+        let link = helper.request_link().await?;
         // The UI is only a convenience for the host
         let _ = helper.show_ui().await;
-        Ok(url)
+        Ok(link)
     }
 }

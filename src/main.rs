@@ -2,7 +2,7 @@ use anyhow::{Context as _, Result};
 use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
-use steam::{detector::SteamStuffDetector, SteamManager};
+use steam::{detector::ProcessDetector, SteamManager};
 use tokio::time::{self, timeout, Duration};
 use tokio_tungstenite::{
     connect_async,
@@ -37,6 +37,18 @@ fn main() -> Result<()> {
     // Per-game helper process (started by this program itself)
     if let Some(app_id) = steam::helper_main::parse_args() {
         return steam::helper_main::run(app_id);
+    }
+
+    // Troubleshooting: print the detected game and exit
+    if std::env::args().any(|arg| arg == "--steam-probe") {
+        use steam::GameDetector as _;
+        let mut detector = steam::detector::ProcessDetector::new()?;
+        let game = detector.running_game();
+        std::println!(
+            "running game: {game:?} (valid app: {})",
+            game.is_valid_app()
+        );
+        return Ok(());
     }
 
     run()
@@ -81,7 +93,7 @@ async fn run() -> Result<()> {
         }
 
         // Connect to Steam
-        let (steam, session_events) = match SteamManager::start(SteamStuffDetector::new)
+        let (steam, session_events) = match SteamManager::start(ProcessDetector::new)
             .context("Failed to connect to Steam Client. Please make sure Steam is running.")
         {
             Ok(steam) => steam,

@@ -21,12 +21,18 @@ pub enum HelperRequest {
 pub enum HelperEvent {
     /// Steam API is initialized and requests can be accepted
     Ready,
-    /// A guest invite link was created
-    Link { url: String },
+    /// A guest invite link was created.
+    /// Guest IDs are assigned in the order the invites are created,
+    /// so `guestid` is the ID the guest will get when they join.
+    Link { url: String, guestid: u32 },
     /// The invite could not be created
     LinkFailed,
     /// A player joined the session
-    Joined { steamid: u64, guestid: u32, rpt: bool },
+    Joined {
+        steamid: u64,
+        guestid: u32,
+        rpt: bool,
+    },
     /// A player left the session
     Left { steamid: u64, guestid: u32 },
     /// A fatal error occurred
@@ -53,7 +59,11 @@ mod tests {
 
     #[test]
     fn request_round_trip() {
-        for req in [HelperRequest::Link, HelperRequest::ShowUi, HelperRequest::Quit] {
+        for req in [
+            HelperRequest::Link,
+            HelperRequest::ShowUi,
+            HelperRequest::Quit,
+        ] {
             assert_eq!(parse_line::<HelperRequest>(&to_line(&req)), Some(req));
         }
         assert_eq!(to_line(&HelperRequest::ShowUi), r#"{"cmd":"show_ui"}"#);
@@ -65,6 +75,7 @@ mod tests {
             HelperEvent::Ready,
             HelperEvent::Link {
                 url: "https://s.team/remoteplay/connect/abc".into(),
+                guestid: 1,
             },
             HelperEvent::LinkFailed,
             HelperEvent::Joined {
@@ -93,7 +104,10 @@ mod tests {
             parse_line::<HelperEvent>("[S_API] SteamAPI_Init(): Loaded 'steamclient' OK."),
             None
         );
-        assert_eq!(parse_line::<HelperEvent>("Setting breakpad minidump AppID = 1"), None);
+        assert_eq!(
+            parse_line::<HelperEvent>("Setting breakpad minidump AppID = 1"),
+            None
+        );
         assert_eq!(parse_line::<HelperEvent>(""), None);
         assert_eq!(parse_line::<HelperEvent>(r#"{"event":"unknown"}"#), None);
         assert_eq!(

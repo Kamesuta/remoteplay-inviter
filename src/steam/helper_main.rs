@@ -85,6 +85,8 @@ fn run_inner(app_id: u32) -> Result<()> {
 
     // Players by session ID (the session details are gone once it disconnects)
     let mut sessions: HashMap<u32, (u64, u32)> = HashMap::new();
+    // Number of guest invites created so far (guest IDs are assigned in this order)
+    let mut invites_created: u32 = 0;
     loop {
         // Handle requests
         while let Ok(req) = req_rx.try_recv() {
@@ -112,7 +114,7 @@ fn run_inner(app_id: u32) -> Result<()> {
         }
 
         // SAFETY: pipe and remote_play stay valid until SteamAPI_Shutdown
-        unsafe { dispatch_callbacks(pipe, remote_play, &mut sessions) };
+        unsafe { dispatch_callbacks(pipe, remote_play, &mut sessions, &mut invites_created) };
 
         thread::sleep(Duration::from_millis(100));
     }
@@ -123,6 +125,7 @@ unsafe fn dispatch_callbacks(
     pipe: sys::HSteamPipe,
     remote_play: *mut sys::ISteamRemotePlay,
     sessions: &mut HashMap<u32, (u64, u32)>,
+    invites_created: &mut u32,
 ) {
     const GUEST_INVITE: i32 = sys::SteamRemotePlayTogetherGuestInvite_t_k_iCallback as i32;
     const CONNECTED: i32 = sys::SteamRemotePlaySessionConnected_t_k_iCallback as i32;
@@ -142,7 +145,11 @@ unsafe fn dispatch_callbacks(
                 let url = CStr::from_ptr(data.m_szConnectURL.as_ptr())
                     .to_string_lossy()
                     .into_owned();
-                emit(&HelperEvent::Link { url });
+                *invites_created += 1;
+                emit(&HelperEvent::Link {
+                    url,
+                    guestid: *invites_created,
+                });
             }
             CONNECTED => {
                 let data = param
@@ -151,7 +158,8 @@ unsafe fn dispatch_callbacks(
                 let id = data.m_unSessionID;
                 let steamid = sys::SteamAPI_ISteamRemotePlay_GetSessionSteamID(remote_play, id);
                 let guestid = sys::SteamAPI_ISteamRemotePlay_GetSessionGuestID(remote_play, id);
-                let rpt = sys::SteamAPI_ISteamRemotePlay_BSessionRemotePlayTogether(remote_play, id);
+                let rpt =
+                    sys::SteamAPI_ISteamRemotePlay_BSessionRemotePlayTogether(remote_play, id);
                 sessions.insert(id, (steamid, guestid));
                 emit(&HelperEvent::Joined {
                     steamid,

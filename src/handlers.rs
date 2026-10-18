@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use clipboard::{ClipboardContext, ClipboardProvider};
 use futures::SinkExt;
 use std::{
-    collections::{BTreeMap, HashMap, VecDeque},
+    collections::{BTreeMap, HashMap},
     sync::Arc,
 };
 use tokio::sync::{mpsc::UnboundedReceiver, Mutex};
@@ -21,8 +21,6 @@ pub struct GuestData {
     pub guest_map: HashMap<u32, String>,
     /// Connected players (key: guest ID, or Steam ID for friends) with their guest ID
     pub players: BTreeMap<u64, u32>,
-    /// Discord user names of invite links that have not been used yet
-    pub pending_claimers: VecDeque<String>,
 }
 
 impl GuestData {
@@ -156,8 +154,8 @@ impl Handler {
                 }
 
                 // Create an invite link
-                let connect_url = match self.steam.create_invite_link(game).await {
-                    Ok(url) => url,
+                let (connect_url, guest_id) = match self.steam.create_invite_link(game).await {
+                    Ok(link) => link,
                     Err(err) => {
                         console::eprintln!("☓ Failed to create an invite link: {err:#}");
                         respond_error(responder, msg.id, ErrorStatus::InviteFailed).await?;
@@ -165,17 +163,19 @@ impl Handler {
                     }
                 };
 
-                // The guest ID is known only when the guest joins
-                let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
-                self.guest_data
-                    .lock()
-                    .await
-                    .pending_claimers
-                    .push_back(claimer.to_string());
+                // Associate the Discord user with guest_id
+                if let Some(user) = &msg.user {
+                    self.guest_data
+                        .lock()
+                        .await
+                        .guest_map
+                        .insert(guest_id, user.name.clone());
+                }
 
                 // Log the output
+                let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                 console::println!(
-                    "-> Create Invite Link : claimer={claimer}, game_id={game}, invite_url={connect_url}",
+                    "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}",
                 );
 
                 // Create the response data
@@ -206,17 +206,7 @@ impl Handler {
                 let mut guest_data = guest_data.lock().await;
                 let _: Result<()> = (|| {
                     match event {
-                        SessionEvent::Joined {
-                            steamid,
-                            guestid,
-                            rpt,
-                        } => {
-                            // Associate the guest with the Discord user who requested the link
-                            if rpt && guestid != 0 && !guest_data.guest_map.contains_key(&guestid) {
-                                if let Some(claimer) = guest_data.pending_claimers.pop_front() {
-                                    guest_data.guest_map.insert(guestid, claimer);
-                                }
-                            }
+                        SessionEvent::Joined { steamid, guestid } => {
                             guest_data
                                 .players
                                 .insert(GuestData::player_key(steamid, guestid), guestid);

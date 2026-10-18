@@ -30,7 +30,10 @@ const LINK_TIMEOUT: Duration = Duration::from_secs(15);
 /// How long to wait for the helper to exit after a quit request
 const QUIT_TIMEOUT: Duration = Duration::from_secs(3);
 
-type PendingLink = Arc<StdMutex<Option<oneshot::Sender<Result<String>>>>>;
+/// An invite link and the guest ID assigned to it
+pub type InviteLink = (String, u32);
+
+type PendingLink = Arc<StdMutex<Option<oneshot::Sender<Result<InviteLink>>>>>;
 
 /// A running helper process bound to one AppID
 pub struct HelperProcess {
@@ -61,9 +64,17 @@ impl HelperProcess {
             const CREATE_NO_WINDOW: u32 = 0x0800_0000;
             command.creation_flags(CREATE_NO_WINDOW);
         }
-        let mut child = command.spawn().context("Failed to start the Steam helper")?;
-        let stdin = child.stdin.take().context("Helper stdin is not available")?;
-        let stdout = child.stdout.take().context("Helper stdout is not available")?;
+        let mut child = command
+            .spawn()
+            .context("Failed to start the Steam helper")?;
+        let stdin = child
+            .stdin
+            .take()
+            .context("Helper stdin is not available")?;
+        let stdout = child
+            .stdout
+            .take()
+            .context("Helper stdout is not available")?;
 
         let pending_link: PendingLink = Arc::default();
         let alive = Arc::new(AtomicBool::new(true));
@@ -86,21 +97,17 @@ impl HelperProcess {
                                 let _ = tx.send(Ok(()));
                             }
                         }
-                        HelperEvent::Link { url } => resolve(&pending_link, Ok(url)),
+                        HelperEvent::Link { url, guestid } => {
+                            resolve(&pending_link, Ok((url, guestid)))
+                        }
                         HelperEvent::LinkFailed => resolve(
                             &pending_link,
                             Err(anyhow!("Steam refused to create the invite")),
                         ),
                         HelperEvent::Joined {
-                            steamid,
-                            guestid,
-                            rpt,
+                            steamid, guestid, ..
                         } => {
-                            let _ = session_tx.send(SessionEvent::Joined {
-                                steamid,
-                                guestid,
-                                rpt,
-                            });
+                            let _ = session_tx.send(SessionEvent::Joined { steamid, guestid });
                         }
                         HelperEvent::Left { steamid, guestid } => {
                             let _ = session_tx.send(SessionEvent::Left { steamid, guestid });
@@ -166,7 +173,7 @@ impl HelperProcess {
     }
 
     /// Creates a guest invite link
-    pub async fn request_link(&self) -> Result<String> {
+    pub async fn request_link(&self) -> Result<InviteLink> {
         let (tx, rx) = oneshot::channel();
         {
             let mut pending = self.pending_link.lock().unwrap();
@@ -212,7 +219,7 @@ impl HelperProcess {
     }
 }
 
-fn resolve(pending: &PendingLink, result: Result<String>) {
+fn resolve(pending: &PendingLink, result: Result<InviteLink>) {
     if let Some(tx) = pending.lock().unwrap().take() {
         let _ = tx.send(result);
     }
