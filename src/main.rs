@@ -37,8 +37,17 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 // Endpoint URL
 const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
 
+fn main() -> Result<()> {
+    // Per-game helper process (started by this program itself)
+    if let Some(app_id) = steam::helper_main::parse_args() {
+        return steam::helper_main::run(app_id);
+    }
+
+    run()
+}
+
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn run() -> Result<()> {
     // Event loop
     'main: {
         console::printdoc! {"

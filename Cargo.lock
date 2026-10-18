@@ -792,6 +792,7 @@ dependencies = [
  "serde",
  "serde_json",
  "steam-stuff",
+ "steamworks-sys",
  "tokio",
  "tokio-tungstenite",
  "toml 0.8.19",
@@ -1006,6 +1007,12 @@ dependencies = [
  "cmake",
  "link-cplusplus",
 ]
+
+[[package]]
+name = "steamworks-sys"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae139f051204a4af015d4f0ed3a1f7a51020d03a44c7cf249168c543d88131e9"
 
 [[package]]
 name = "subtle"

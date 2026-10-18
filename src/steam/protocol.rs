@@ -41,12 +41,10 @@ pub fn to_line<T: Serialize>(msg: &T) -> String {
 
 /// Parses a line, ignoring anything that is not a protocol message.
 /// The Steam API library writes its own log lines to stdout, so those must be skipped.
+/// A message may also be appended to an unterminated log line, so parsing starts at the first `{"`.
 pub fn parse_line<T: for<'de> Deserialize<'de>>(line: &str) -> Option<T> {
-    let line = line.trim();
-    if !line.starts_with('{') {
-        return None;
-    }
-    serde_json::from_str(line).ok()
+    let start = line.find("{\"")?;
+    serde_json::from_str(line[start..].trim_end()).ok()
 }
 
 #[cfg(test)]
@@ -101,6 +99,14 @@ mod tests {
         assert_eq!(
             parse_line::<HelperEvent>("  {\"event\":\"ready\"}\r"),
             Some(HelperEvent::Ready)
+        );
+    }
+
+    #[test]
+    fn message_after_partial_log_line() {
+        assert_eq!(
+            parse_line::<HelperEvent>(r#"[S_API] partial log{"event":"link_failed"}"#),
+            Some(HelperEvent::LinkFailed)
         );
     }
 }
