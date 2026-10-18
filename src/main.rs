@@ -22,6 +22,7 @@ mod console;
 mod handlers;
 mod models;
 mod retry;
+mod steam;
 mod ws_error_handler;
 
 use config::{read_or_generate_config, Config};
