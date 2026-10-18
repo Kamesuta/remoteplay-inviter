@@ -9,8 +9,6 @@ use serde::{Deserialize, Serialize};
 pub enum HelperRequest {
     /// Create a guest invite link
     Link,
-    /// Show the Remote Play Together UI
-    ShowUi,
     /// Shut down the helper
     Quit,
 }
@@ -59,14 +57,10 @@ mod tests {
 
     #[test]
     fn request_round_trip() {
-        for req in [
-            HelperRequest::Link,
-            HelperRequest::ShowUi,
-            HelperRequest::Quit,
-        ] {
+        for req in [HelperRequest::Link, HelperRequest::Quit] {
             assert_eq!(parse_line::<HelperRequest>(&to_line(&req)), Some(req));
         }
-        assert_eq!(to_line(&HelperRequest::ShowUi), r#"{"cmd":"show_ui"}"#);
+        assert_eq!(to_line(&HelperRequest::Link), r#"{"cmd":"link"}"#);
     }
 
     #[test]

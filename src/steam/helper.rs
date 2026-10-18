@@ -198,11 +198,6 @@ impl HelperProcess {
         }
     }
 
-    /// Shows the Remote Play Together UI
-    pub async fn show_ui(&self) -> Result<()> {
-        self.send(HelperRequest::ShowUi).await
-    }
-
     /// Asks the helper to exit, killing it if it does not exit in time.
     /// Only call this after the game has exited: Steam treats the game as closed
     /// as soon as the helper exits.

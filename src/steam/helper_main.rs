@@ -101,10 +101,6 @@ fn run_inner(app_id: u32) -> Result<()> {
                         emit(&HelperEvent::LinkFailed);
                     }
                 }
-                HelperRequest::ShowUi => {
-                    // SAFETY: remote_play is a valid interface pointer
-                    unsafe { sys::SteamAPI_ISteamRemotePlay_ShowRemotePlayTogetherUI(remote_play) };
-                }
                 HelperRequest::Quit => {
                     // SAFETY: the API was initialized above
                     unsafe { sys::SteamAPI_Shutdown() };

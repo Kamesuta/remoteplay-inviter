@@ -146,12 +146,9 @@ impl SteamManager {
         Ok(new)
     }
 
-    /// Creates a guest invite link and shows the Remote Play Together UI
+    /// Creates a guest invite link
     pub async fn create_invite_link(&self, app_id: u32) -> Result<InviteLink> {
         let helper = self.ensure_helper(app_id).await?;
-        let link = helper.request_link().await?;
-        // The UI is only a convenience for the host
-        let _ = helper.show_ui().await;
-        Ok(link)
+        helper.request_link().await
     }
 }
