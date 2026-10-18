@@ -43,11 +43,7 @@ fn main() -> Result<()> {
     if std::env::args().any(|arg| arg == "--steam-probe") {
         use steam::GameDetector as _;
         let mut detector = steam::detector::ProcessDetector::new()?;
-        let game = detector.running_game();
-        std::println!(
-            "running game: {game:?} (valid app: {})",
-            game.is_valid_app()
-        );
+        std::println!("running games: {:?}", detector.running_games());
         return Ok(());
     }
 
@@ -88,7 +84,7 @@ async fn run() -> Result<()> {
                 Options:
                     -v, --version    Display the version of the program
                     -h, --help       Display this help message
-                    --steam-probe    Print the detected running game and exit
+                    --steam-probe    Print the detected running games and exit
             "};
             return Ok(());
         }

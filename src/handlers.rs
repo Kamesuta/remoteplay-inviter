@@ -14,35 +14,43 @@ use crate::{
     steam::{SessionEvent, SteamManager},
 };
 
-/// Players in the Remote Play session
+/// Players in the Remote Play sessions (guest IDs are numbered per game)
 #[derive(Default)]
 pub struct GuestData {
-    /// Discord user names by guest ID
-    pub guest_map: HashMap<u32, String>,
-    /// Connected players (key: guest ID, or Steam ID for friends) with their guest ID
-    pub players: BTreeMap<u64, u32>,
+    /// Discord user names by (AppID, guest ID)
+    pub guest_map: HashMap<(u32, u32), String>,
+    /// Connected players by (AppID, guest ID or Steam ID for friends), with their guest ID
+    pub players: BTreeMap<(u32, u64), u32>,
 }
 
 impl GuestData {
     /// Key to identify a player (friends join with guest ID 0)
-    fn player_key(steamid: u64, guestid: u32) -> u64 {
+    fn player_key(app_id: u32, steamid: u64, guestid: u32) -> (u32, u64) {
         if guestid != 0 {
-            guestid as u64
+            (app_id, guestid as u64)
         } else {
-            steamid
+            (app_id, steamid)
         }
     }
 
-    fn user_name(&self, guestid: u32) -> &str {
-        self.guest_map.get(&guestid).map_or("?", |s| s)
+    fn user_name(&self, app_id: u32, guestid: u32) -> &str {
+        self.guest_map.get(&(app_id, guestid)).map_or("?", |s| s)
     }
 
     fn players_text(&self) -> String {
         self.players
             .iter()
-            .map(|(key, guestid)| format!("[{}]{}", key, self.user_name(*guestid)))
+            .map(|((app_id, key), guestid)| {
+                format!("[{}]{}", key, self.user_name(*app_id, *guestid))
+            })
             .collect::<Vec<String>>()
             .join(", ")
+    }
+
+    /// Forgets everything about a game that exited
+    fn remove_game(&mut self, app_id: u32) {
+        self.guest_map.retain(|(app, _), _| *app != app_id);
+        self.players.retain(|(app, _), _| *app != app_id);
     }
 }
 
@@ -147,8 +155,8 @@ impl Handler {
                     .await?;
             }
             ServerCmd::Link { game } => {
-                // The invite is created for the running game
-                if self.steam.running_game().app_id != game {
+                // The invite can only be created for a running game
+                if !self.steam.is_running(game) {
                     respond_error(responder, msg.id, ErrorStatus::InvalidApp).await?;
                     return Ok(false);
                 }
@@ -169,7 +177,7 @@ impl Handler {
                         .lock()
                         .await
                         .guest_map
-                        .insert(guest_id, user.name.clone());
+                        .insert((game, guest_id), user.name.clone());
                 }
 
                 // Log the output
@@ -206,31 +214,39 @@ impl Handler {
                 let mut guest_data = guest_data.lock().await;
                 let _: Result<()> = (|| {
                     match event {
-                        SessionEvent::Joined { steamid, guestid } => {
+                        SessionEvent::Joined {
+                            app_id,
+                            steamid,
+                            guestid,
+                        } => {
                             guest_data
                                 .players
-                                .insert(GuestData::player_key(steamid, guestid), guestid);
+                                .insert(GuestData::player_key(app_id, steamid, guestid), guestid);
 
                             // Log the output
-                            let user_name = guest_data.user_name(guestid);
+                            let user_name = guest_data.user_name(app_id, guestid);
                             console::println!(
-                                "-> Player Joined        : claimer={user_name}, guest_id={guestid}, steam_id={steamid}",
+                                "-> Player Joined        : claimer={user_name}, guest_id={guestid}, steam_id={steamid}, game_id={app_id}",
                             );
                         }
-                        SessionEvent::Left { steamid, guestid } => {
+                        SessionEvent::Left {
+                            app_id,
+                            steamid,
+                            guestid,
+                        } => {
                             guest_data
                                 .players
-                                .remove(&GuestData::player_key(steamid, guestid));
+                                .remove(&GuestData::player_key(app_id, steamid, guestid));
 
                             // Log the output
-                            let user_name = guest_data.user_name(guestid).to_string();
+                            let user_name = guest_data.user_name(app_id, guestid).to_string();
                             console::println!(
-                                "-> Player Left          : claimer={user_name}, guest_id={guestid}, steam_id={steamid}",
+                                "-> Player Left          : claimer={user_name}, guest_id={guestid}, steam_id={steamid}, game_id={app_id}",
                             );
-                            guest_data.guest_map.remove(&guestid);
+                            guest_data.guest_map.remove(&(app_id, guestid));
                         }
-                        SessionEvent::GameExited => {
-                            *guest_data = GuestData::default();
+                        SessionEvent::GameExited { app_id } => {
+                            guest_data.remove_game(app_id);
                         }
                     }
 

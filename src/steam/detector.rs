@@ -11,7 +11,7 @@ use std::{
 use anyhow::Result;
 use sysinfo::{Pid, ProcessRefreshKind, ProcessesToUpdate, System, UpdateKind};
 
-use super::{library::Library, GameDetector, GameID};
+use super::{library::Library, GameDetector};
 
 /// How often the list of installed games is re-read
 const LIBRARY_RESCAN_INTERVAL: Duration = Duration::from_secs(30);
@@ -21,7 +21,6 @@ pub struct ProcessDetector {
     library: Library,
     last_scan: Instant,
     self_pid: Pid,
-    current: GameID,
 }
 
 impl ProcessDetector {
@@ -31,7 +30,6 @@ impl ProcessDetector {
             library: Library::scan()?,
             last_scan: Instant::now(),
             self_pid: Pid::from_u32(std::process::id()),
-            current: GameID::default(),
         })
     }
 
@@ -49,7 +47,7 @@ impl ProcessDetector {
 }
 
 impl GameDetector for ProcessDetector {
-    fn running_game(&mut self) -> GameID {
+    fn running_games(&mut self) -> Vec<u32> {
         // Pick up newly installed games
         if self.last_scan.elapsed() > LIBRARY_RESCAN_INTERVAL {
             if let Ok(library) = Library::scan() {
@@ -66,21 +64,15 @@ impl GameDetector for ProcessDetector {
                 .with_cmd(UpdateKind::OnlyIfNotSet),
         );
 
-        let running: Vec<u32> = self
+        let mut running: Vec<u32> = self
             .system
             .processes()
             .iter()
             .filter(|(pid, _)| **pid != self.self_pid)
             .filter_map(|(_, process)| self.app_of_process(process))
             .collect();
-
-        // Keep reporting the same game while it is running
-        let app_id = if running.contains(&self.current.app_id) {
-            self.current.app_id
-        } else {
-            running.into_iter().min().unwrap_or(0)
-        };
-        self.current = GameID::new(app_id, 0, 0);
-        self.current
+        running.sort_unstable();
+        running.dedup();
+        running
     }
 }

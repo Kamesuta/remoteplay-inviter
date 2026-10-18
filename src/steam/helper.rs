@@ -37,7 +37,6 @@ type PendingLink = Arc<StdMutex<Option<oneshot::Sender<Result<InviteLink>>>>>;
 
 /// A running helper process bound to one AppID
 pub struct HelperProcess {
-    pub app_id: u32,
     stdin: Mutex<ChildStdin>,
     child: Mutex<Child>,
     pending_link: PendingLink,
@@ -107,10 +106,18 @@ impl HelperProcess {
                         HelperEvent::Joined {
                             steamid, guestid, ..
                         } => {
-                            let _ = session_tx.send(SessionEvent::Joined { steamid, guestid });
+                            let _ = session_tx.send(SessionEvent::Joined {
+                                app_id,
+                                steamid,
+                                guestid,
+                            });
                         }
                         HelperEvent::Left { steamid, guestid } => {
-                            let _ = session_tx.send(SessionEvent::Left { steamid, guestid });
+                            let _ = session_tx.send(SessionEvent::Left {
+                                app_id,
+                                steamid,
+                                guestid,
+                            });
                         }
                         HelperEvent::Error { msg } => match ready_tx.take() {
                             Some(tx) => {
@@ -134,7 +141,6 @@ impl HelperProcess {
         }
 
         let helper = Self {
-            app_id,
             stdin: Mutex::new(stdin),
             child: Mutex::new(child),
             pending_link,
