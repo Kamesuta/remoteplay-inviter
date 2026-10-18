@@ -88,6 +88,7 @@ async fn run() -> Result<()> {
                 Options:
                     -v, --version    Display the version of the program
                     -h, --help       Display this help message
+                    --steam-probe    Print the detected running game and exit
             "};
             return Ok(());
         }
