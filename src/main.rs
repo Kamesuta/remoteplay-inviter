@@ -2,12 +2,8 @@ use anyhow::{Context as _, Result};
 use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
-use std::sync::Arc;
-use steam_stuff::SteamStuff;
-use tokio::{
-    sync::Mutex,
-    time::{self, timeout, Duration},
-};
+use steam::{detector::SteamStuffDetector, SteamManager};
+use tokio::time::{self, timeout, Duration};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{
@@ -84,11 +80,11 @@ async fn run() -> Result<()> {
             return Ok(());
         }
 
-        // Initialize SteamStuff
-        let steam = match SteamStuff::new()
+        // Connect to Steam
+        let (steam, session_events) = match SteamManager::start(SteamStuffDetector::new)
             .context("Failed to connect to Steam Client. Please make sure Steam is running.")
         {
-            Ok(steam) => Arc::new(Mutex::new(steam)),
+            Ok(steam) => steam,
             Err(err) => {
                 console::eprintln!("☓ {}", err);
                 break 'main;
@@ -96,12 +92,10 @@ async fn run() -> Result<()> {
         };
 
         // Create a Handler
-        let mut handler = Handler::new(steam.clone());
+        let mut handler = Handler::new(steam);
 
-        // Set up Steam callbacks
-        handler.setup_steam_callbacks().await;
-        // Start a task to periodically call Steam callbacks
-        handler.run_steam_callbacks();
+        // Track players joining and leaving
+        handler.spawn_session_event_task(session_events);
 
         // Reconnection flag
         let mut reconnect = false;
