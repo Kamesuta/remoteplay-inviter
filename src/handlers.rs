@@ -217,7 +217,7 @@ impl Handler {
                 let mut guest_data = guest_data.lock().await;
                 guest_data.user_set.insert(guest_id);
                 let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                let _: Result<()> = try {
+                let _: Result<()> = (|| {
                     // Log the output
                     console::println!(
                         "-> Player Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
@@ -231,7 +231,8 @@ impl Handler {
                         .collect::<Vec<String>>()
                         .join(", ");
                     console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
-                };
+                    Ok(())
+                })();
             });
         });
         let guest_data = self.guest_data.clone();
@@ -241,7 +242,7 @@ impl Handler {
                 let mut guest_data = guest_data.lock().await;
                 guest_data.user_set.remove(&guest_id);
                 let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                let _: Result<()> = try {
+                let _: Result<()> = (|| {
                     // Log the output
                     console::println!(
                         "-> Player Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
@@ -255,7 +256,8 @@ impl Handler {
                         .collect::<Vec<String>>()
                         .join(", ");
                     console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
-                };
+                    Ok(())
+                })();
             });
         });
         let invite_tx = self.invite_tx.clone();

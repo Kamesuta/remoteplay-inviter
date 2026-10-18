@@ -1,5 +1,3 @@
-#![feature(try_blocks)]
-
 use anyhow::{Context as _, Result};
 use dotenvy_macro::dotenv;
 use futures::SinkExt;
@@ -101,39 +99,7 @@ async fn main() -> Result<()> {
         let mut retry_sec = RetrySec::new();
 
         // URL to connect to
-        let result: Result<String> = try {
-            // Read the endpoint configuration file
-            let endpoint_config = config::read_endpoint_config()?;
-
-            // Read or generate the configuration file (if it doesn't exist)
-            let config = read_or_generate_config(|| Config {
-                uuid: Uuid::new_v4().to_string(),
-            })?;
-
-            // Session ID
-            let session_id: u32 = rand::random();
-
-            // Endpoint URL
-            let endpoint_url = match endpoint_config {
-                Some(e) => {
-                    console::println!("✓ Using custom endpoint URL: {}", e.url);
-                    e.url
-                }
-                None => DEFAULT_URL.to_string(),
-            };
-
-            // Create the URL
-            let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
-            let uri = Builder::from(uri)
-                .path_and_query(format!(
-                    "/ws?v={VERSION}&token={0}&session={session_id}",
-                    config.uuid
-                ))
-                .build()
-                .context("Failed to build URL")?;
-            uri.to_string()
-        };
-        let url = match result {
+        let url = match build_url() {
             Ok(url) => url,
             Err(err) => {
                 console::eprintln!("☓ {}", err);
@@ -142,7 +108,8 @@ async fn main() -> Result<()> {
         };
 
         loop {
-            let result: Result<()> = try {
+            // Run a session until the connection is lost (Ok(true): exit)
+            let result: Result<bool> = async {
                 // Display the reconnection message
                 if reconnect {
                     console::println!("↪ Reconnecting to the server...");
@@ -156,8 +123,8 @@ async fn main() -> Result<()> {
                     Ok((ws_stream, _)) => ws_stream,
                     Err(err) => {
                         handle_ws_error(err)?;
-                        // If OK is returned, break the loop and exit
-                        break 'main;
+                        // If OK is returned, exit
+                        return Ok(true);
                     }
                 };
 
@@ -196,8 +163,8 @@ async fn main() -> Result<()> {
 
                             // Process the message
                             if handler.handle_server_message(msg, &mut write).await? {
-                                // If the exit flag is set, break the loop and exit
-                                break 'main;
+                                // If the exit flag is set, exit
+                                return Ok(true);
                             }
 
                             // Reset the retry seconds
@@ -206,9 +173,13 @@ async fn main() -> Result<()> {
                         _ => (),
                     }
                 }
-            };
-            if let Err(err) = result {
-                console::eprintln!("☓ {}", err);
+                Ok(false)
+            }
+            .await;
+            match result {
+                Ok(true) => break 'main,
+                Ok(false) => (),
+                Err(err) => console::eprintln!("☓ {}", err),
             }
 
             // Reconnect to the server if the connection is lost
@@ -224,4 +195,38 @@ async fn main() -> Result<()> {
     let _ = tokio::signal::ctrl_c().await;
 
     Ok(())
+}
+
+/// Build the URL to connect to
+fn build_url() -> Result<String> {
+    // Read the endpoint configuration file
+    let endpoint_config = config::read_endpoint_config()?;
+
+    // Read or generate the configuration file (if it doesn't exist)
+    let config = read_or_generate_config(|| Config {
+        uuid: Uuid::new_v4().to_string(),
+    })?;
+
+    // Session ID
+    let session_id: u32 = rand::random();
+
+    // Endpoint URL
+    let endpoint_url = match endpoint_config {
+        Some(e) => {
+            console::println!("✓ Using custom endpoint URL: {}", e.url);
+            e.url
+        }
+        None => DEFAULT_URL.to_string(),
+    };
+
+    // Create the URL
+    let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
+    let uri = Builder::from(uri)
+        .path_and_query(format!(
+            "/ws?v={VERSION}&token={0}&session={session_id}",
+            config.uuid
+        ))
+        .build()
+        .context("Failed to build URL")?;
+    Ok(uri.to_string())
 }
