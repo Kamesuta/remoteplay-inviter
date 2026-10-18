@@ -48,7 +48,7 @@ impl HelperProcess {
     pub async fn spawn(app_id: u32, session_tx: UnboundedSender<SessionEvent>) -> Result<Self> {
         // Use the executable itself (not the AppImage, which would open a terminal)
         let exe = std::env::current_exe().context("Failed to get the executable path")?;
-        let mut command = Command::new(exe);
+        let mut command = std::process::Command::new(exe);
         command
             .arg(HELPER_FLAG)
             .arg(app_id.to_string())
@@ -56,14 +56,22 @@ impl HelperProcess {
             .env("SteamGameId", app_id.to_string())
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
-            .kill_on_drop(true);
+            .stderr(Stdio::null());
+        // The helper outlives this process until its game exits (Steam treats the game as
+        // closed when the helper exits), so it is not killed with this process and is kept
+        // out of the terminal's process group (Ctrl+C, closing the terminal)
+        #[cfg(unix)]
+        {
+            use std::os::unix::process::CommandExt;
+            command.process_group(0);
+        }
         #[cfg(windows)]
         {
+            use std::os::windows::process::CommandExt;
             const CREATE_NO_WINDOW: u32 = 0x0800_0000;
             command.creation_flags(CREATE_NO_WINDOW);
         }
-        let mut child = command
+        let mut child = Command::from(command)
             .spawn()
             .context("Failed to start the Steam helper")?;
         let stdin = child

@@ -33,6 +33,9 @@ winresource = "0.1.17"
 [target."cfg(windows)".dependencies]
 winreg = "0.55"
 
+[target."cfg(unix)".dependencies]
+libc = "0.2"
+
 [package.metadata.winresource]
 OriginalFilename = "remoteplay-inviter.exe"
 FileDescription = "Remote Play Inviter Client"

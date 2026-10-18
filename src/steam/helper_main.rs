@@ -1,21 +1,31 @@
 //! Entry point of the per-game helper process (`--steam-helper <appid>`).
 //!
 //! The Steamworks API binds a process to a single AppID, so the main process starts one
-//! helper per running game. The helper must keep running until the game exits.
+//! helper per running game. Steam treats the game as closed as soon as the helper exits,
+//! so the helper keeps running until its game exits, even if the main process is gone.
 
 use std::{
     collections::HashMap,
     ffi::CStr,
     io::{BufRead, Write},
-    sync::mpsc,
+    sync::mpsc::{self, TryRecvError},
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 use anyhow::{bail, Result};
 use steamworks_sys as sys;
 
-use super::protocol::{parse_line, to_line, HelperEvent, HelperRequest};
+use super::{
+    detector::ProcessDetector,
+    protocol::{parse_line, to_line, HelperEvent, HelperRequest},
+    GameDetector,
+};
+
+/// How often the helper checks that its game is still running
+const GAME_CHECK_INTERVAL: Duration = Duration::from_secs(1);
+/// How long the game must be gone before the helper exits
+const GAME_EXIT_GRACE: Duration = Duration::from_secs(2);
 
 /// Command line flag that starts the helper
 pub const HELPER_FLAG: &str = "--steam-helper";
@@ -47,6 +57,14 @@ pub fn run(app_id: u32) -> Result<()> {
 }
 
 fn run_inner(app_id: u32) -> Result<()> {
+    // Keep running when the terminal of the main process is closed or interrupted
+    #[cfg(unix)]
+    // SAFETY: only changes the signal dispositions of this process
+    unsafe {
+        libc::signal(libc::SIGHUP, libc::SIG_IGN);
+        libc::signal(libc::SIGINT, libc::SIG_IGN);
+    }
+
     std::env::set_var("SteamAppId", app_id.to_string());
     std::env::set_var("SteamGameId", app_id.to_string());
 
@@ -78,8 +96,13 @@ fn run_inner(app_id: u32) -> Result<()> {
                 }
             }
         }
-        let _ = req_tx.send(HelperRequest::Quit);
     });
+
+    // Watches the game so that the helper can exit on its own
+    let mut detector = ProcessDetector::new().ok();
+    let mut last_check = Instant::now();
+    let mut last_seen = Instant::now();
+    let mut main_process_gone = false;
 
     emit(&HelperEvent::Ready);
 
@@ -89,7 +112,15 @@ fn run_inner(app_id: u32) -> Result<()> {
     let mut invites_created: u32 = 0;
     loop {
         // Handle requests
-        while let Ok(req) = req_rx.try_recv() {
+        loop {
+            let req = match req_rx.try_recv() {
+                Ok(req) => req,
+                Err(TryRecvError::Empty) => break,
+                Err(TryRecvError::Disconnected) => {
+                    main_process_gone = true;
+                    break;
+                }
+            };
             match req {
                 HelperRequest::Link => {
                     // SAFETY: remote_play is a valid interface pointer
@@ -111,6 +142,26 @@ fn run_inner(app_id: u32) -> Result<()> {
 
         // SAFETY: pipe and remote_play stay valid until SteamAPI_Shutdown
         unsafe { dispatch_callbacks(pipe, remote_play, &mut sessions, &mut invites_created) };
+
+        // Exit once the game has exited
+        if last_check.elapsed() >= GAME_CHECK_INTERVAL {
+            last_check = Instant::now();
+            let game_exited = match detector.as_mut() {
+                Some(detector) => {
+                    if detector.running_games().contains(&app_id) {
+                        last_seen = Instant::now();
+                    }
+                    last_seen.elapsed() >= GAME_EXIT_GRACE
+                }
+                // Without a detector, rely on the main process
+                None => main_process_gone,
+            };
+            if game_exited {
+                // SAFETY: the API was initialized above
+                unsafe { sys::SteamAPI_Shutdown() };
+                return Ok(());
+            }
+        }
 
         thread::sleep(Duration::from_millis(100));
     }
