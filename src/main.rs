@@ -1,15 +1,9 @@
-#![feature(try_blocks)]
-
 use anyhow::{Context as _, Result};
 use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
-use std::sync::Arc;
-use steam_stuff::SteamStuff;
-use tokio::{
-    sync::Mutex,
-    time::{self, timeout, Duration},
-};
+use steam::{detector::ProcessDetector, SteamManager};
+use tokio::time::{self, timeout, Duration};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{
@@ -24,6 +18,7 @@ mod console;
 mod handlers;
 mod models;
 mod retry;
+mod steam;
 mod ws_error_handler;
 
 use config::{read_or_generate_config, Config};
@@ -38,8 +33,25 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 // Endpoint URL
 const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
 
+fn main() -> Result<()> {
+    // Per-game helper process (started by this program itself)
+    if let Some(app_id) = steam::helper_main::parse_args() {
+        return steam::helper_main::run(app_id);
+    }
+
+    // Troubleshooting: print the detected game and exit
+    if std::env::args().any(|arg| arg == "--steam-probe") {
+        use steam::GameDetector as _;
+        let mut detector = steam::detector::ProcessDetector::new()?;
+        std::println!("running games: {:?}", detector.running_games());
+        return Ok(());
+    }
+
+    run()
+}
+
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn run() -> Result<()> {
     // Event loop
     'main: {
         console::printdoc! {"
@@ -72,15 +84,16 @@ async fn main() -> Result<()> {
                 Options:
                     -v, --version    Display the version of the program
                     -h, --help       Display this help message
+                    --steam-probe    Print the detected running games and exit
             "};
             return Ok(());
         }
 
-        // Initialize SteamStuff
-        let steam = match SteamStuff::new()
+        // Connect to Steam
+        let (steam, session_events) = match SteamManager::start(ProcessDetector::new)
             .context("Failed to connect to Steam Client. Please make sure Steam is running.")
         {
-            Ok(steam) => Arc::new(Mutex::new(steam)),
+            Ok(steam) => steam,
             Err(err) => {
                 console::eprintln!("☓ {}", err);
                 break 'main;
@@ -88,12 +101,10 @@ async fn main() -> Result<()> {
         };
 
         // Create a Handler
-        let mut handler = Handler::new(steam.clone());
+        let mut handler = Handler::new(steam);
 
-        // Set up Steam callbacks
-        handler.setup_steam_callbacks().await;
-        // Start a task to periodically call Steam callbacks
-        handler.run_steam_callbacks();
+        // Track players joining and leaving
+        handler.spawn_session_event_task(session_events);
 
         // Reconnection flag
         let mut reconnect = false;
@@ -101,39 +112,7 @@ async fn main() -> Result<()> {
         let mut retry_sec = RetrySec::new();
 
         // URL to connect to
-        let result: Result<String> = try {
-            // Read the endpoint configuration file
-            let endpoint_config = config::read_endpoint_config()?;
-
-            // Read or generate the configuration file (if it doesn't exist)
-            let config = read_or_generate_config(|| Config {
-                uuid: Uuid::new_v4().to_string(),
-            })?;
-
-            // Session ID
-            let session_id: u32 = rand::random();
-
-            // Endpoint URL
-            let endpoint_url = match endpoint_config {
-                Some(e) => {
-                    console::println!("✓ Using custom endpoint URL: {}", e.url);
-                    e.url
-                }
-                None => DEFAULT_URL.to_string(),
-            };
-
-            // Create the URL
-            let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
-            let uri = Builder::from(uri)
-                .path_and_query(format!(
-                    "/ws?v={VERSION}&token={0}&session={session_id}",
-                    config.uuid
-                ))
-                .build()
-                .context("Failed to build URL")?;
-            uri.to_string()
-        };
-        let url = match result {
+        let url = match build_url() {
             Ok(url) => url,
             Err(err) => {
                 console::eprintln!("☓ {}", err);
@@ -142,7 +121,8 @@ async fn main() -> Result<()> {
         };
 
         loop {
-            let result: Result<()> = try {
+            // Run a session until the connection is lost (Ok(true): exit)
+            let result: Result<bool> = async {
                 // Display the reconnection message
                 if reconnect {
                     console::println!("↪ Reconnecting to the server...");
@@ -156,8 +136,8 @@ async fn main() -> Result<()> {
                     Ok((ws_stream, _)) => ws_stream,
                     Err(err) => {
                         handle_ws_error(err)?;
-                        // If OK is returned, break the loop and exit
-                        break 'main;
+                        // If OK is returned, exit
+                        return Ok(true);
                     }
                 };
 
@@ -196,8 +176,8 @@ async fn main() -> Result<()> {
 
                             // Process the message
                             if handler.handle_server_message(msg, &mut write).await? {
-                                // If the exit flag is set, break the loop and exit
-                                break 'main;
+                                // If the exit flag is set, exit
+                                return Ok(true);
                             }
 
                             // Reset the retry seconds
@@ -206,9 +186,13 @@ async fn main() -> Result<()> {
                         _ => (),
                     }
                 }
-            };
-            if let Err(err) = result {
-                console::eprintln!("☓ {}", err);
+                Ok(false)
+            }
+            .await;
+            match result {
+                Ok(true) => break 'main,
+                Ok(false) => (),
+                Err(err) => console::eprintln!("☓ {}", err),
             }
 
             // Reconnect to the server if the connection is lost
@@ -224,4 +208,38 @@ async fn main() -> Result<()> {
     let _ = tokio::signal::ctrl_c().await;
 
     Ok(())
+}
+
+/// Build the URL to connect to
+fn build_url() -> Result<String> {
+    // Read the endpoint configuration file
+    let endpoint_config = config::read_endpoint_config()?;
+
+    // Read or generate the configuration file (if it doesn't exist)
+    let config = read_or_generate_config(|| Config {
+        uuid: Uuid::new_v4().to_string(),
+    })?;
+
+    // Session ID
+    let session_id: u32 = rand::random();
+
+    // Endpoint URL
+    let endpoint_url = match endpoint_config {
+        Some(e) => {
+            console::println!("✓ Using custom endpoint URL: {}", e.url);
+            e.url
+        }
+        None => DEFAULT_URL.to_string(),
+    };
+
+    // Create the URL
+    let uri: Uri = endpoint_url.parse().context("Failed to parse URL")?;
+    let uri = Builder::from(uri)
+        .path_and_query(format!(
+            "/ws?v={VERSION}&token={0}&session={session_id}",
+            config.uuid
+        ))
+        .build()
+        .context("Failed to build URL")?;
+    Ok(uri.to_string())
 }

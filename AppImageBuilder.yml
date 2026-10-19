@@ -8,6 +8,8 @@ script:
   # Make usr and icons dirs
   # Copy the application code into the AppDir
   - cp {{EXECUTABLE_PATH}} $TARGET_APPDIR
+  # Steamworks runtime library (looked up next to the executable)
+  - cp {{BUILD_DIR}}/libsteam_api.so $TARGET_APPDIR
   # Copy resources
   - mkdir -p $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps
   - cp resources/app.svg $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps/remoteplay-inviter.svg
@@ -30,7 +32,6 @@ AppDir:
     - /bin/bash
     - /usr/lib/x86_64-linux-gnu/libdl.so.2
     - /usr/lib/x86_64-linux-gnu/librt.so.1
-    - /usr/lib/x86_64-linux-gnu/libstdc++.so.6
     exclude:
     - usr/share/man
     - usr/share/doc/*/README.*

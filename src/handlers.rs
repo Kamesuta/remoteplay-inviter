@@ -2,30 +2,56 @@ use anyhow::{Context, Result};
 use clipboard::{ClipboardContext, ClipboardProvider};
 use futures::SinkExt;
 use std::{
-    collections::{BTreeSet, HashMap},
+    collections::{BTreeMap, HashMap},
     sync::Arc,
-    time::Duration,
 };
-use steam_stuff::{GameID, GameUID};
-use tokio::{
-    sync::{
-        mpsc::{channel, Receiver, Sender},
-        Mutex,
-    },
-    task,
-    time::interval,
-};
+use tokio::sync::{mpsc::UnboundedReceiver, Mutex};
 use tokio_tungstenite::tungstenite::{protocol::Message, Error as WsError};
 
-use crate::SteamStuff;
 use crate::{
     console,
     models::{ClientCmd, ClientMessage, ErrorStatus, ServerCmd, ServerMessage},
+    steam::{SessionEvent, SteamManager},
 };
 
+/// Players in the Remote Play sessions (guest IDs are numbered per game)
+#[derive(Default)]
 pub struct GuestData {
-    pub guest_map: HashMap<u64, String>,
-    pub user_set: BTreeSet<u64>,
+    /// Discord user names by (AppID, guest ID)
+    pub guest_map: HashMap<(u32, u32), String>,
+    /// Connected players by (AppID, guest ID or Steam ID for friends), with their guest ID
+    pub players: BTreeMap<(u32, u64), u32>,
+}
+
+impl GuestData {
+    /// Key to identify a player (friends join with guest ID 0)
+    fn player_key(app_id: u32, steamid: u64, guestid: u32) -> (u32, u64) {
+        if guestid != 0 {
+            (app_id, guestid as u64)
+        } else {
+            (app_id, steamid)
+        }
+    }
+
+    fn user_name(&self, app_id: u32, guestid: u32) -> &str {
+        self.guest_map.get(&(app_id, guestid)).map_or("?", |s| s)
+    }
+
+    fn players_text(&self) -> String {
+        self.players
+            .iter()
+            .map(|((app_id, key), guestid)| {
+                format!("[{}]{}", key, self.user_name(*app_id, *guestid))
+            })
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
+
+    /// Forgets everything about a game that exited
+    fn remove_game(&mut self, app_id: u32) {
+        self.guest_map.retain(|(app, _), _| *app != app_id);
+        self.players.retain(|(app, _), _| *app != app_id);
+    }
 }
 
 pub trait MessageResponder {
@@ -49,23 +75,15 @@ impl<T: SinkExt<Message, Error = WsError> + Unpin> MessageResponder for T {
 }
 
 pub struct Handler {
-    steam: Arc<Mutex<SteamStuff>>,
-    invite_tx: Sender<(u64, String)>,
-    invite_rx: Receiver<(u64, String)>,
+    steam: Arc<SteamManager>,
     guest_data: Arc<Mutex<GuestData>>,
 }
 
 impl Handler {
-    pub fn new(steam: Arc<Mutex<SteamStuff>>) -> Self {
-        let (invite_tx, invite_rx) = channel::<(u64, String)>(32);
+    pub fn new(steam: Arc<SteamManager>) -> Self {
         Self {
             steam,
-            invite_tx,
-            invite_rx,
-            guest_data: Arc::new(Mutex::new(GuestData {
-                guest_map: HashMap::<u64, String>::new(),
-                user_set: BTreeSet::<u64>::new(),
-            })),
+            guest_data: Arc::default(),
         }
     }
 
@@ -106,37 +124,19 @@ impl Handler {
                 }
             }
             ServerCmd::GameId => {
-                let game_id = self.steam.lock().await.get_running_game_id();
+                let game_id = self.steam.running_game();
 
                 if !game_id.is_valid_app() {
                     // If the game is not running
-                    // Create the response data
-                    responder
-                        .send_response(ClientMessage {
-                            id: msg.id,
-                            cmd: ClientCmd::Error {
-                                code: ErrorStatus::InvalidApp,
-                            },
-                        })
-                        .await?;
+                    respond_error(responder, msg.id, ErrorStatus::InvalidApp).await?;
                     return Ok(false);
                 }
 
                 let app_id = game_id.app_id;
-                let game_uid: GameUID = game_id.into();
 
-                if !self.steam.lock().await.can_remote_play_together(game_uid) {
-                    // If the game is not supported for Remote Play Together
-                    // Create the response data
-                    responder
-                        .send_response(ClientMessage {
-                            id: msg.id,
-                            cmd: ClientCmd::Error {
-                                code: ErrorStatus::UnsupportedApp,
-                            },
-                        })
-                        .await?;
-                    return Ok(false);
+                // Start the helper early so that the invite link is created quickly
+                if let Err(err) = self.steam.ensure_helper(app_id).await {
+                    console::eprintln!("☓ {err:#}");
                 }
 
                 // Log the output
@@ -155,13 +155,21 @@ impl Handler {
                     .await?;
             }
             ServerCmd::Link { game } => {
-                // Get the game ID
-                let game_uid: GameUID = GameID::new(game, 0, 0).into();
+                // The invite can only be created for a running game
+                if !self.steam.is_running(game) {
+                    respond_error(responder, msg.id, ErrorStatus::InvalidApp).await?;
+                    return Ok(false);
+                }
 
                 // Create an invite link
-                let recv = self.invite_rx.recv();
-                self.steam.lock().await.send_invite(0, game_uid);
-                let (guest_id, connect_url) = recv.await.unwrap();
+                let (connect_url, guest_id) = match self.steam.create_invite_link(game).await {
+                    Ok(link) => link,
+                    Err(err) => {
+                        console::eprintln!("☓ Failed to create an invite link: {err:#}");
+                        respond_error(responder, msg.id, ErrorStatus::InviteFailed).await?;
+                        return Ok(false);
+                    }
+                };
 
                 // Associate the Discord user with guest_id
                 if let Some(user) = &msg.user {
@@ -169,13 +177,13 @@ impl Handler {
                         .lock()
                         .await
                         .guest_map
-                        .insert(guest_id, user.name.clone());
+                        .insert((game, guest_id), user.name.clone());
                 }
 
                 // Log the output
                 let claimer = msg.user.as_ref().map_or_else(|| "?", |s| &s.name);
                 console::println!(
-                    "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}", 
+                    "-> Create Invite Link : claimer={claimer}, guest_id={guest_id}, game_id={game}, invite_url={connect_url}",
                 );
 
                 // Create the response data
@@ -191,103 +199,79 @@ impl Handler {
                 return Ok(true);
             }
             ServerCmd::Invalid => {
-                // Create the response data
-                responder
-                    .send_response(ClientMessage {
-                        id: msg.id,
-                        cmd: ClientCmd::Error {
-                            code: ErrorStatus::InvalidCmd,
-                        },
-                    })
-                    .await?;
+                respond_error(responder, msg.id, ErrorStatus::InvalidCmd).await?;
             }
         };
 
         Ok(false)
     }
 
-    // Set up SteamStuff callbacks
-    pub async fn setup_steam_callbacks(&self) {
-        // Register callbacks
-        let steam = self.steam.lock().await;
+    // Track players joining and leaving
+    pub fn spawn_session_event_task(&self, mut events: UnboundedReceiver<SessionEvent>) {
         let guest_data = self.guest_data.clone();
-        steam.set_on_remote_started(move |invitee, guest_id| {
-            let guest_data = guest_data.clone();
-            tokio::spawn(async move {
+        tokio::spawn(async move {
+            while let Some(event) = events.recv().await {
                 let mut guest_data = guest_data.lock().await;
-                guest_data.user_set.insert(guest_id);
-                let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                let _: Result<()> = try {
-                    // Log the output
-                    console::println!(
-                        "-> Player Joined        : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
-                    );
+                let _: Result<()> = (|| {
+                    match event {
+                        SessionEvent::Joined {
+                            app_id,
+                            steamid,
+                            guestid,
+                        } => {
+                            guest_data
+                                .players
+                                .insert(GuestData::player_key(app_id, steamid, guestid), guestid);
+
+                            // Log the output
+                            let user_name = guest_data.user_name(app_id, guestid);
+                            console::println!(
+                                "-> Player Joined        : claimer={user_name}, guest_id={guestid}, steam_id={steamid}, game_id={app_id}",
+                            );
+                        }
+                        SessionEvent::Left {
+                            app_id,
+                            steamid,
+                            guestid,
+                        } => {
+                            guest_data
+                                .players
+                                .remove(&GuestData::player_key(app_id, steamid, guestid));
+
+                            // Log the output
+                            let user_name = guest_data.user_name(app_id, guestid).to_string();
+                            console::println!(
+                                "-> Player Left          : claimer={user_name}, guest_id={guestid}, steam_id={steamid}, game_id={app_id}",
+                            );
+                            guest_data.guest_map.remove(&(app_id, guestid));
+                        }
+                        SessionEvent::GameExited { app_id } => {
+                            guest_data.remove_game(app_id);
+                        }
+                    }
 
                     // Display the user list
-                    let users_text = guest_data
-                        .user_set
-                        .iter()
-                        .map(|id| format!("[{}]{}", id, guest_data.guest_map.get(&id).map_or_else(|| "?", |s| s)))
-                        .collect::<Vec<String>>()
-                        .join(", ");
-                    console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
-                };
-            });
-        });
-        let guest_data = self.guest_data.clone();
-        steam.set_on_remote_stopped(move |invitee, guest_id| {
-            let guest_data = guest_data.clone();
-            tokio::spawn(async move {
-                let mut guest_data = guest_data.lock().await;
-                guest_data.user_set.remove(&guest_id);
-                let user_name = guest_data.guest_map.get(&guest_id).map_or_else(|| "?", |s| s);
-                let _: Result<()> = try {
-                    // Log the output
-                    console::println!(
-                        "-> Player Left          : claimer={user_name}, guest_id={guest_id}, steam_id={invitee}",
+                    console::print_update!(
+                        "★ Players({}): {}",
+                        guest_data.players.len(),
+                        guest_data.players_text()
                     );
-
-                    // Display the user list
-                    let users_text = guest_data
-                        .user_set
-                        .iter()
-                        .map(|id| format!("[{}]{}", id, guest_data.guest_map.get(&id).map_or_else(|| "?", |s| s)))
-                        .collect::<Vec<String>>()
-                        .join(", ");
-                    console::print_update!("★ Players({}): {users_text}", guest_data.user_set.len());
-                };
-            });
-        });
-        let invite_tx = self.invite_tx.clone();
-        let steam_data = self.steam.clone();
-        steam.set_on_remote_invited(move |_invitee, guest_id, connect_url| {
-            // Send the invite link
-            let invite_tx = invite_tx.clone();
-            let connect_url = String::from(connect_url);
-            let steam_data = steam_data.clone();
-            tokio::spawn(async move {
-                invite_tx.send((guest_id, connect_url)).await.unwrap();
-
-                // Show the Remote Play Together UI
-                let steam = steam_data.lock().await;
-                let game_id = steam.get_running_game_id();
-                if game_id.is_valid_app() {
-                    let game_uid: GameUID = game_id.into();
-                    steam.show_remote_play_together_ui(game_uid);
-                }
-            });
-        });
-    }
-
-    // Start a task to periodically call SteamStuff_RunCallbacks
-    pub fn run_steam_callbacks(&self) {
-        let steam_clone = self.steam.clone();
-        task::spawn(async move {
-            let mut interval = interval(Duration::from_millis(200));
-            loop {
-                interval.tick().await;
-                steam_clone.lock().await.run_callbacks();
+                    Ok(())
+                })();
             }
         });
     }
+}
+
+async fn respond_error(
+    responder: &mut impl MessageResponder,
+    id: String,
+    code: ErrorStatus,
+) -> Result<()> {
+    responder
+        .send_response(ClientMessage {
+            id,
+            cmd: ClientCmd::Error { code },
+        })
+        .await
 }

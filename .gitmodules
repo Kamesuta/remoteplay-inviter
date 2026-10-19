@@ -1,3 +1,0 @@
-[submodule "steam-stuff/cmake/open-steamworks"]
-	path = steam-stuff/cmake/open-steamworks
-	url = https://github.com/Kamesuta/open-steamworks.git
