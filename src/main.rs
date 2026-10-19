@@ -3,7 +3,7 @@ use dotenvy_macro::dotenv;
 use futures::SinkExt;
 use futures_util::stream::StreamExt;
 use steam::{detector::ProcessDetector, SteamManager};
-use tokio::time::{self, timeout, Duration};
+use tokio::time::{self, timeout, timeout_at, Duration, Instant, MissedTickBehavior};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{
@@ -32,6 +32,11 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Endpoint URL
 const DEFAULT_URL: &str = dotenv!("ENDPOINT_URL");
+
+// Interval between pings sent to the server
+const PING_INTERVAL: Duration = Duration::from_secs(30);
+// Time without any message from the server before the connection is considered lost
+const RECEIVE_TIMEOUT: Duration = Duration::from_secs(60);
 
 fn main() -> Result<()> {
     // Per-game helper process (started by this program itself)
@@ -151,14 +156,40 @@ async fn run() -> Result<()> {
                     console::println!("✓ Connected to the server!");
                 }
 
+                // Ping the server regularly to keep the connection alive
+                let mut ping_interval = time::interval(PING_INTERVAL);
+                ping_interval.set_missed_tick_behavior(MissedTickBehavior::Delay);
+                // The first tick completes immediately
+                ping_interval.tick().await;
+                // The connection is considered lost if nothing arrives by this time
+                let mut deadline = Instant::now() + RECEIVE_TIMEOUT;
+
                 // Loop to process messages received from the server
-                while let Some(message) = timeout(Duration::from_secs(60), read.next())
-                    .await
-                    .context("Connection timed out")?
-                {
+                loop {
+                    let message = tokio::select! {
+                        message = timeout_at(deadline, read.next()) => {
+                            message.context("Connection timed out")?
+                        }
+                        _ = ping_interval.tick() => {
+                            write
+                                .send(Message::Ping(Vec::new()))
+                                .await
+                                .context("Failed to send ping message to the server")?;
+                            continue;
+                        }
+                    };
+                    let Some(message) = message else {
+                        break;
+                    };
+                    deadline = Instant::now() + RECEIVE_TIMEOUT;
+
                     // Process each message
                     match message.context("Failed to receive message from the server")? {
                         Message::Close(_) => break,
+                        Message::Pong(_) => {
+                            // Reset the retry seconds
+                            retry_sec.reset();
+                        }
                         Message::Ping(ping) => {
                             // Send a Pong message
                             write
