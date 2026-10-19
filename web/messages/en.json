@@ -271,5 +271,107 @@
       "toastName": "Xbox 360 Controller",
       "k2": "Steam sees an Xbox 360 controller!"
     }
+  },
+  "guide": {
+    "nav": {
+      "t1": "Before you start",
+      "t2": "Steps",
+      "t3": "Key map",
+      "t4": "Troubleshooting",
+      "t5": "x360ce website"
+    },
+    "hero": {
+      "t1": "For anyone without a controller",
+      "h11": "Turn your keyboard<br></br>into a <span0>controller</span0>.",
+      "p1": "The free tool <b0>x360ce</b0> lets you use your keyboard as an Xbox controller, so you can join Steam Remote Play Together as a \"controller\" even if you don't have one.",
+      "t2": "See the steps",
+      "t3": "x360ce website"
+    },
+    "when": {
+      "h21": "When it <span0>helps</span0>",
+      "t1": "No controller…",
+      "t2": "Your keyboard stands in for a controller.",
+      "t3": "The keyboard doesn't work…",
+      "t4": "Join games where only 1P can use the keyboard and everyone else needs a controller.",
+      "t5": "Rather play on PC than phone",
+      "t6": "Join from your PC, with a big screen and a keyboard."
+    },
+    "ready": {
+      "t1": "What you need",
+      "t2": "A Windows PC",
+      "t3": "x360ce runs on Windows.",
+      "t4": "A keyboard",
+      "t5": "The one you always use is fine.",
+      "t6": "x360ce (free)",
+      "t7": "You'll download it from the official site in step 1."
+    },
+    "steps": {
+      "h21": "Set it up in <span0>5 steps</span0>.",
+      "t1": "You only do this once. After that, just turn it ON as in step 5.",
+      "t2": "Download and extract",
+      "li1": "Open the official site and, in the top row, press <b1>DOWNLOAD FOR ALL GAMES</b1> for Version 4 on the <b0>far left</b0>.",
+      "t3": "The two on the right (32-BIT / 64-BIT GAMES) are Version 3, which works differently. Don't press them.",
+      "li2": "Right-click the downloaded <b0>x360ce.zip</b0> and choose Extract All. Any folder is fine.",
+      "li3": "You'll use <b0>x360ce.exe</b0> inside it.",
+      "t4": "Open the x360ce website",
+      "t5": "Start it and check Issues",
+      "li4": "Start <b0>x360ce.exe</b0>.",
+      "li5": "If the <b0>Issues</b0> tab at the top shows a grey check mark, go straight to step 3.",
+      "li6": "If it shows ⚠, open it and press <b0>Install</b0> (or Download and Install) on the right.",
+      "li7": "You're done when <b0>All OK. No issues were found.</b0> appears at the bottom.",
+      "div1": "<b0>Did it freeze after pressing Install?</b0><br></br>Wait about 15 seconds, then force-quit x360ce and start it again.",
+      "t6": "Add your keyboard",
+      "li8": "On the <b0>Controller 1</b0> tab, press <b1>+ Add...</b1> at the top right.",
+      "li9": "In the Map Device To Controller list, pick your <b0>keyboard</b0>.",
+      "li10": "Press <b0>Add Selected Device</b0> and the keyboard is added.",
+      "t7": "Set all the keys at once",
+      "t8": "Recommended preset",
+      "attr1": "W A S D for the left stick, K L J I for the A B X Y buttons",
+      "li11": "Press <b0>Copy preset</b0> above.",
+      "li12": "Press <b0>Paste Preset</b0> at the bottom of x360ce, and every key is assigned at once.",
+      "li13": "Save with <b0>Save All</b0> at the top right.",
+      "t9": "Turn it ON and check",
+      "li14": "Tick <b0>Enable 1 Mapped Device</b0> at the top left to turn it ON. Untick it to turn it OFF.",
+      "li15": "If Steam is running, it shows \"Controller connected: <b0>Xbox 360 Controller</b0>\" at the bottom right. You're all set.",
+      "li16": "If Steam shows nothing, open <b0>Game Controllers...</b0> at the bottom left and check that <b1>Controller (XBOX 360 For Windows)</b1> says OK.",
+      "t10": "Now just join from the Steam invite link. When you're done playing, untick it to turn it OFF.",
+      "t11": "Recommended key map",
+      "t12": "This is the map that the preset in step 4 sets up: move with WASD on your left hand, press buttons with IJKL on your right. It works for most games.",
+      "t13": "Left stick",
+      "div2": "<b0>K</b0>A button",
+      "div3": "<b0>L</b0>B button",
+      "div4": "<b0>J</b0>X button",
+      "div5": "<b0>I</b0>Y button",
+      "t14": "What's in the recommended preset (what step 4 copies)",
+      "t15": "In the format x360ce's Paste Preset reads.",
+      "t16": "Preset for Overcooked! 2 (move with the D-pad)",
+      "t17": "J throws, K picks up, L dashes. WASD is mapped to the D-pad.",
+      "t18": "Troubleshooting",
+      "t19": "It froze after pressing Install",
+      "t20": "Installing Virtual Device Driver can hang. Wait about 15 seconds, then force-quit x360ce and start it again.",
+      "t21": "It isn't recognized as a controller",
+      "t22": "Check whether the Issues tab shows ⚠. If it does, install as in step 2. Also make sure Enable 1 Mapped Device is ticked.",
+      "t23": "Issues lists Visual C++",
+      "t24": "Press Download and Install on the right to install what's needed.",
+      "t25": "I want to change a button",
+      "t26": "Choose Record in the drop-down next to the button you want to change, then press the key you want. When a red ● blinks on the controller picture in the middle, it's assigned. Finish with Save All.",
+      "t27": "When I'm done playing?",
+      "t28": "Untick Enable 1 Mapped Device to turn it OFF, and your keyboard goes back to normal.",
+      "h22": "Once you're ready,<br></br>join from the invite link.",
+      "t29": "Press \"Join the game\" in Discord and play as usual.",
+      "t30": "Back to Remote Play Inviter",
+      "t31": "x360ce is software by Jocys.com and is not affiliated with Remote Play Inviter. Screens are simplified for this guide.",
+      "t32": "x360ce website",
+      "copy": {
+        "preset": "Copy preset",
+        "short": "Copy",
+        "copied": "Copied",
+        "selected": "Selected. Press Ctrl+C to copy"
+      }
+    },
+    "meta": {
+      "title": "Use your keyboard as a controller (x360ce) - Remote Play Inviter",
+      "description": "How to use your keyboard as an Xbox controller with the free tool x360ce, so you can join Steam Remote Play Together without a controller."
+    }
   }
 }
