@@ -33,6 +33,10 @@ database_name = "remoteplay-inviter"
 database_id = "71cbff76-acf3-4ff6-bed0-3406ebeea3cb"
 migrations_dir = "migrations"
 
+# Hourly statistics
+[triggers]
+crons = ["0 * * * *"]
+
 # Locale files are bundled as text
 [[rules]]
 type = "Text"
