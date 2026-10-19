@@ -216,6 +216,60 @@
       "t12": "Haru posted an invite panel",
       "t13": "Connecting to Haru's PC…",
       "t14": "Playing as 2P"
+    },
+    "kmp": {
+      "attr1": "Pressing W, A, S and D on the keyboard moves the controller's left stick, and pressing K, L, J and I presses the A, B, X and Y buttons",
+      "t1": "Left stick ↑",
+      "t2": "Left stick ←",
+      "t3": "Left stick ↓",
+      "t4": "Left stick →",
+      "t5": "A button",
+      "t6": "B button",
+      "t7": "X button",
+      "t8": "Y button",
+      "t9": "Your keyboard is now a controller!"
+    },
+    "gdl": {
+      "attr1": "On the official x360ce site, press DOWNLOAD FOR ALL GAMES for Version 4 on the left, not the two Version 3 buttons on the right. x360ce.zip downloads, and Extract All from the right-click menu gives you x360ce.exe",
+      "t1": "Skip the two on the right",
+      "t2": "Press this one, on the far left!",
+      "t3": "Download complete",
+      "t4": "Downloads",
+      "t5": "Open",
+      "t6": "Extract All..."
+    },
+    "x360": {
+      "keyboard": "Keyboard",
+      "mouse": "Mouse",
+      "driverNeeded": "Virtual Driver is required"
+    },
+    "gis": {
+      "label": "If the Issues tab in x360ce shows a warning, open it and press Install for Virtual Device Driver until it says All OK. No issues were found.",
+      "k1": "Press it if it shows ⚠",
+      "k2": "Press Install",
+      "k3": "Done when it says All OK!"
+    },
+    "gad": {
+      "label": "On the Controller 1 tab in x360ce, press Add..., pick the keyboard in Map Device To Controller and press Add Selected Device to add the keyboard",
+      "k1": "Press + Add...",
+      "k2": "Pick the keyboard",
+      "k3": "Added!"
+    },
+    "gps": {
+      "label": "Press Copy preset on this page, press Paste Preset in x360ce to fill every button field with values like Button 37, then save with Save All",
+      "card": "Recommended preset",
+      "copy": "Copy preset",
+      "copied": "Copied",
+      "k1": "① Copy it on this page",
+      "k2": "② Paste Preset fills in every key",
+      "k3": "③ Save with Save All"
+    },
+    "gck": {
+      "label": "Ticking Enable 1 Mapped Device in x360ce makes Steam show the notification Controller connected: Xbox 360 Controller",
+      "k1": "Tick it to turn it ON",
+      "toastTitle": "Controller connected",
+      "toastName": "Xbox 360 Controller",
+      "k2": "Steam sees an Xbox 360 controller!"
     }
   }
 }

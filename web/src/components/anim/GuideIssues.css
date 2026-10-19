@@ -1,0 +1,25 @@
+/* step 2: issues */
+.gis .cur{transform:translate(720px,480px)}
+.gis.p1 .r1,.gis.p2 .r2{animation:xa-ripple .45s var(--eo)}
+.gis .pg-is{opacity:0}
+.gis.iss .pg-c1{opacity:0}
+.gis.iss .pg-is{opacity:1}
+.gis .ic-ok{opacity:0;transition:opacity .2s var(--eo)}
+.gis.ok .ic-ok{opacity:1}
+.gis.ok .ic-warn{opacity:0}
+.gis .irow{transition:opacity .25s var(--eo)}
+.gis.ok .irow{opacity:0}
+.gis .aok{opacity:0;transform:translateY(6px);transition:opacity .25s var(--eo),transform .4s var(--eo)}
+.gis.ok .aok{opacity:1;transform:none}
+.gis .insb{transition:transform .12s var(--eo)}
+.gis.p2 .insb{transform:scale(.94)}
+.gis .insb .ib{position:absolute;inset:0;opacity:0}
+.gis.ins .insb .il{opacity:0}
+.gis.ins .insb .ib{opacity:1}
+/* click targets */
+.gis.c1 .cur{transform:translate(426px,70px);opacity:1}
+.gis .r1{left:430px;top:74px}
+.gis.c2 .cur{transform:translate(625px,147px);opacity:1}
+.gis .r2{left:629px;top:151px}
+.gis.c3 .cur{transform:translate(556px,296px);opacity:1}
+.gis .r3{left:560px;top:300px}

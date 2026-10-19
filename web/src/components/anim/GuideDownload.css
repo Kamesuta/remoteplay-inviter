@@ -1,0 +1,33 @@
+/* step 1: download from the official site and extract
+   The site is drawn at its real size (px from the page, minus 72 on x) and scaled to .6 */
+.gdl .cur{transform:translate(720px,440px)}
+.gdl.c1 .cur{transform:translate(262px,166px);opacity:1}
+.gdl.c2 .cur{transform:translate(256px,252px);opacity:1}
+.gdl.c3 .cur{transform:translate(338px,306px);opacity:1}
+.gdl.p1 .r1,.gdl.p2 .r2,.gdl.p3 .r3{animation:xa-ripple .45s var(--eo)}
+.gdl .r1{left:266px;top:170px}
+.gdl .r2{left:260px;top:256px}
+.gdl .r3{left:342px;top:310px}
+.gdl .site{position:absolute;left:0;top:0;width:1147px;height:597px;transform:scale(.6);transform-origin:0 0;font-family:var(--font-roboto), Arial, sans-serif;background:radial-gradient(ellipse 30% 45% at 18% 85%,#4cc0ec 0,transparent 100%),radial-gradient(ellipse 28% 40% at 88% 30%,#35a6e0 0,transparent 100%),linear-gradient(160deg,#0b4a86,#1a76b6 50%,#0d5794)}
+.gdl .site .s{position:absolute}
+.gdl .sb{left:8px;top:4px;width:153px;height:248px;border-radius:14px;background:#2a3a52}
+.gdl .si{left:26px;width:115px;height:22px;background:#1f3a66;border:1px solid #5d8fd8;font-family:var(--font-vt323), monospace;font-size:23px;line-height:20px;color:#a9cdff;-webkit-text-stroke:.4px #a9cdff;padding-left:28px;white-space:nowrap}
+.gdl .si.on{background:#6fa8f5;color:#10305e;-webkit-text-stroke-color:#10305e}
+.gdl .si::before{content:"";position:absolute;left:5px;top:3px;width:16px;height:14px;border:2px solid currentColor;opacity:.7}
+.gdl .pl{top:57px;height:24px;line-height:24px;padding:0 8px;border-radius:4px;background:#53a1f6;color:#ffffff;font-size:14px;white-space:nowrap}
+.gdl .th{height:30px;line-height:30px;background:#2b3b54;color:#77acff;font-size:15px;text-align:center;white-space:nowrap}
+.gdl .tb{height:35px;background:#2b3b54}
+.gdl .td{height:22px;line-height:18px;background:#bbbbbb;color:#111111;font-family:Verdana,sans-serif;font-size:9px;text-align:center;white-space:nowrap}
+.gdl .db{top:155px;height:29px;background:#e0e0e0;display:flex;align-items:center;gap:8px;overflow:hidden;font-family:var(--font-vt323), monospace;font-size:23px;letter-spacing:1px;color:#111111;-webkit-text-stroke:.5px #111111;white-space:nowrap;transition:transform .12s var(--eo)}
+.gdl .db b{display:inline-block;font-weight:400;transform:scaleX(.7);transform-origin:0 50%}
+.gdl .db i{width:26px;height:29px;background:#c4c4c4;display:grid;place-items:center;font-style:normal;font-size:18px;-webkit-text-stroke:0}
+.gdl.p1 .d4{transform:scale(.95)}
+.gdl .ring{left:194px;top:138px;width:143px;height:63px;border:3px solid #a4d007;border-radius:8px;box-shadow:0 0 0 4px rgba(164,208,7,.25);opacity:0;transform:scale(1.12);transition:opacity .3s var(--eo),transform .45s var(--sp)}
+.gdl .dim{left:335px;top:143px;width:284px;height:53px;background:rgba(221,221,221,.78);opacity:0;transition:opacity .3s var(--eo)}
+.gdl.sp .ring{opacity:1;transform:none}
+.gdl.sp .dim{opacity:1}
+.gdl.sp .x-sp,.gdl.z1 .x-z1,.gdl.e1 .x-e1,.gdl.m1 .x-m1,.gdl.x1 .x-x1{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--eo),transform .45s var(--sp),visibility 0s}
+.gdl .hl{border:3px solid #1a9fff;border-radius:10px;opacity:0;transform:scale(1.15);transition:opacity .3s var(--eo),transform .45s var(--sp)}
+.gdl.hl .hl{opacity:1;transform:none}
+.gdl .exp.en{transform:translateY(24px)}
+.gdl.e1 .exp.x-e1{transform:none;transition:opacity .25s var(--eo),transform .5s var(--eo),visibility 0s}

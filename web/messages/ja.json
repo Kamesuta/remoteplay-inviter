@@ -216,6 +216,60 @@
       "t5": "これで",
       "t6": "が使えます",
       "t7": "#雑談 へメッセージを送信"
+    },
+    "kmp": {
+      "attr1": "キーボードの W・A・S・D を押すとコントローラーの左スティックが動き、K・L・J・I を押すと A・B・X・Y ボタンが押される様子",
+      "t1": "左スティック ↑",
+      "t2": "左スティック ←",
+      "t3": "左スティック ↓",
+      "t4": "左スティック →",
+      "t5": "A ボタン",
+      "t6": "B ボタン",
+      "t7": "X ボタン",
+      "t8": "Y ボタン",
+      "t9": "キーボードが、そのままコントローラーに！"
+    },
+    "gdl": {
+      "attr1": "x360ce の公式サイトで、右の Version 3 の 2 つではなく、左の Version 4 の DOWNLOAD FOR ALL GAMES を押すと x360ce.zip がダウンロードされ、右クリックの「すべて展開」で x360ce.exe が出てくる様子",
+      "t1": "右の 2 つは押さない",
+      "t2": "押すのは、いちばん左のこれ！",
+      "t3": "ダウンロード完了",
+      "t4": "ダウンロード",
+      "t5": "開く",
+      "t6": "すべて展開..."
+    },
+    "x360": {
+      "keyboard": "キーボード",
+      "mouse": "マウス",
+      "driverNeeded": "Virtual Driver が必要です"
+    },
+    "gis": {
+      "label": "x360ce の Issues タブに警告の印が出ていたら押し、Virtual Device Driver の Install を押すと、All OK. No issues were found. と出る様子",
+      "k1": "⚠ になっていたら押す",
+      "k2": "Install を押す",
+      "k3": "All OK と出れば完了！"
+    },
+    "gad": {
+      "label": "x360ce の Controller 1 タブで Add... を押し、Map Device To Controller の一覧からキーボードを選んで Add Selected Device を押すと、キーボードが追加される様子",
+      "k1": "+ Add... を押す",
+      "k2": "キーボード を選ぶ",
+      "k3": "追加された！"
+    },
+    "gps": {
+      "label": "このページで「プリセットをコピー」を押し、x360ce の Paste Preset を押すと各ボタンの欄に Button 37 などがまとめて入り、Save All で保存する様子",
+      "card": "おすすめプリセット",
+      "copy": "プリセットをコピー",
+      "copied": "コピーしました",
+      "k1": "① このページでコピー",
+      "k2": "② Paste Preset で、キーがまとめて入る",
+      "k3": "③ Save All で保存"
+    },
+    "gck": {
+      "label": "x360ce の Enable 1 Mapped Device にチェックを入れると、Steam に「コントローラが接続されました Xbox 360コントローラー」と通知が出る様子",
+      "k1": "チェックを入れて ON",
+      "toastTitle": "コントローラが接続されました",
+      "toastName": "Xbox 360コントローラー",
+      "k2": "Steam が Xbox 360 コントローラーとして認識！"
     }
   }
 }
