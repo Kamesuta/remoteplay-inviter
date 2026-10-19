@@ -1,26 +1,88 @@
-@import "tailwindcss";
+/* The designs assume the browser's default styles, so Tailwind's preflight reset is left out */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
+/* Night theme */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --t-bg: #0f1a28;
+  --t-grid: rgba(255, 255, 255, 0.045);
+  --t-ink: #ffffff;
+  --t-sub: #c6d4df;
+  --t-card: #18263a;
+  --t-card-line: #26384f;
+  --t-bw: 1px;
+  --t-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  --t-hl: #1a9fff;
+  --t-mark: rgba(26, 159, 255, 0.3);
+  --t-band: #132233;
+  --t-panel: #00244f;
+  --t-panel-ink: #ffffff;
+  --t-nav: rgba(23, 26, 33, 0.88);
+  --t-nav-ink: #dcdedf;
+  --t-nav-line: #2a3a4d;
+  --t-tag: #1a9fff;
+  --t-tag-ink: #071a2e;
+  --t-word: rgba(255, 255, 255, 0.06);
+  --t-dl: #a4d007;
+  --t-dl-ink: #16210a;
+  --t-dl-shadow: #6f8d05;
+  --t-foot: #0a121c;
+  --t-foot-ink: #a3b6c7;
+  --t-frame: #18263a;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-zen), "Hiragino Sans", sans-serif;
+  --font-display: var(--font-dela), sans-serif;
+  --font-pixel: var(--font-dot), monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--t-bg);
+}
+
+summary { cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+details[open] .faq-plus { transform: rotate(45deg); }
+.pre-dk { scrollbar-color: #3d4f62 transparent; }
+.rpa { --eo: cubic-bezier(0.23, 1, 0.32, 1); --eio: cubic-bezier(0.77, 0, 0.175, 1); --sp: cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* page motion */
+.pill { transition: transform .15s cubic-bezier(0.23, 1, 0.32, 1), box-shadow .15s cubic-bezier(0.23, 1, 0.32, 1); }
+.pill:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+.lift { transition: transform .2s cubic-bezier(0.23, 1, 0.32, 1); }
+.ptop .eyes { transition: transform .2s cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover { transform: translateY(-2px); }
+  .lift:hover { transform: translateY(-4px); }
+  .ptop:hover .eyes { transform: translateY(-4px); }
+}
+@keyframes bob { 50% { transform: translateY(-7px); } }
+@keyframes hop { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-16px); } }
+@keyframes rv-in { from { opacity: 0; transform: translateY(28px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .bob { animation: bob 2.6s ease-in-out infinite; }
+  .hop { animation: hop 1.6s cubic-bezier(0.23, 1, 0.32, 1) infinite; }
+  @supports (animation-timeline: view()) {
+    .rv { animation: rv-in linear both; animation-timeline: view(); animation-range: entry 0% entry 30%; }
+  }
+}
+
+/* fixed-size animations shrink on small screens */
+@media (max-width: 1100px) { .zf-hero { zoom: .8; } }
+@media (max-width: 1000px) { .zf-kmp { zoom: .8; } }
+@media (max-width: 880px) { .zf-hero { zoom: .62; } .zf-cmp { zoom: .7; } }
+@media (max-width: 780px) { .zf-kmp { zoom: .6; } .zf-wd { zoom: .8; } }
+@media (max-width: 760px) { .nav-links { display: none !important; } .buddies { zoom: .6; } .deco { display: none; } }
+@media (max-width: 640px) {
+  .zf-hero { zoom: .34; } .zf-cmp { zoom: .38; } .zf-stp { zoom: .5; }
+  .zf-kmp { zoom: .38; } .zf-st { zoom: .55; } .zf-wd { zoom: .44; }
+}
+@media (max-width: 480px) { .zf-phn { zoom: .72; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rpa * { transition-duration: .01s !important; animation: none !important; }
 }
