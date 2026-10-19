@@ -49,7 +49,7 @@ export class UserStore {
   }
 
   /**
-   * Link a Discord user to a client (replacing any user linked to it before)
+   * Link a Discord user to a client (the client must not be linked to another user)
    * @param user Discord user
    * @param user.id user ID
    * @param user.name user name
@@ -63,19 +63,15 @@ export class UserStore {
     locale: string,
     daemonVersion: string | null,
   ): Promise<void> {
-    await this._db.batch([
-      this._db
-        .prepare('DELETE FROM UserData WHERE daemonId = ? AND userId <> ?')
-        .bind(daemonId, user.id),
-      this._db
-        .prepare(
-          `INSERT INTO UserData (userId, name, locale, daemonId, daemonVersion) VALUES (?, ?, ?, ?, ?)
+    await this._db
+      .prepare(
+        `INSERT INTO UserData (userId, name, locale, daemonId, daemonVersion) VALUES (?, ?, ?, ?, ?)
            ON CONFLICT (userId) DO UPDATE SET
              name = excluded.name, locale = excluded.locale,
              daemonId = excluded.daemonId, daemonVersion = excluded.daemonVersion`,
-        )
-        .bind(user.id, user.name, locale, daemonId, daemonVersion),
-    ]);
+      )
+      .bind(user.id, user.name, locale, daemonId, daemonVersion)
+      .run();
   }
 
   /**

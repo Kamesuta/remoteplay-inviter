@@ -9,6 +9,9 @@ setup_command:
       The client is currently offline.
       Please download and launch the Steam Remote Play Inviter client from the following link and try again.
       {{{daemon_download_url}}}
+    already_linked: |-
+      This client is already linked to another Discord account.
+      To use it with this account, delete `remoteplay-inviter.config.toml` next to the client and restart the client to get a new client ID.
   setup_message: |-
     Remote Play Inviter client and Discord account have been linked!
     To invite friends, type `/steam invite`.

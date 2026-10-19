@@ -27,7 +27,7 @@ export interface DaemonHandle {
 /** What the command handlers use (replaced with fakes in tests) */
 export interface Services {
   /** Links between Discord users and clients */
-  users: Pick<UserStore, 'findDaemonId' | 'link'>;
+  users: Pick<UserStore, 'findDaemonId' | 'findByDaemonId' | 'link'>;
   /** Get a client by ID */
   daemon(daemonId: string): DaemonHandle;
   /** Discord API */

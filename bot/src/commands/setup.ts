@@ -32,6 +32,12 @@ export async function handleSetup(
     );
   }
 
+  // A client linked to someone else cannot be taken over
+  const linked = await services.users.findByDaemonId(clientId);
+  if (linked && linked.userId !== user.id) {
+    return ephemeral(i18n.t(locale, 'setup_command.error.already_linked'));
+  }
+
   await services.users.link(
     { id: user.id, name: user.username },
     clientId,

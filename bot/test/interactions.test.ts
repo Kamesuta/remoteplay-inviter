@@ -39,6 +39,8 @@ function fake(options: {
   status?: DaemonStatus;
   responses?: Record<string, DaemonResult<unknown>>;
   game?: GameInfo;
+  /** User the client `client` is already linked to */
+  linkedTo?: string;
 }): Services & { calls: unknown[][]; done(): Promise<void> } {
   const calls: unknown[][] = [];
   const pending: Promise<unknown>[] = [];
@@ -64,6 +66,17 @@ function fake(options: {
       await Promise.all(pending);
     },
     users: {
+      findByDaemonId: (daemonId) =>
+        Promise.resolve(
+          options.linkedTo && daemonId === 'client'
+            ? {
+                userId: options.linkedTo,
+                name: 'other',
+                locale: 'en',
+                daemonId,
+              }
+            : undefined,
+        ),
       findDaemonId: (userId) =>
         Promise.resolve(userId === HOST.id ? options.daemonId : undefined),
       link: (...args) => {
@@ -344,6 +357,39 @@ describe('/steam setup', () => {
       '0.3.1',
     ]);
     expect(services.calls[1]![0]).toBe('sendMessage');
+  });
+
+  it('refuses a client linked to another user', async () => {
+    const services = fake({ status: ONLINE, linkedTo: '999' });
+    const response = (await handleInteraction(
+      command('setup', [
+        {
+          name: 'client_id',
+          type: ApplicationCommandOptionType.String,
+          value: 'client',
+        },
+      ]),
+      services,
+    )) as APIInteractionResponseChannelMessageWithSource;
+    expect(response.data.content).toBe(
+      i18n.t('en', 'setup_command.error.already_linked'),
+    );
+    expect(services.calls).toEqual([]);
+  });
+
+  it('relinks a client already linked to the same user', async () => {
+    const services = fake({ status: ONLINE, linkedTo: HOST.id });
+    await handleInteraction(
+      command('setup', [
+        {
+          name: 'client_id',
+          type: ApplicationCommandOptionType.String,
+          value: 'client',
+        },
+      ]),
+      services,
+    );
+    expect(services.calls[0]![0]).toBe('link');
   });
 
   it('links to the download page when the client is offline', async () => {
