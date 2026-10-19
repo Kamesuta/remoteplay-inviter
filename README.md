@@ -10,7 +10,7 @@ Steam の Remote Play Together の招待を、Discord から行えるように�
 | フォルダ | 内容 |
 |---|---|
 | [`client/`](client/) | ホストの PC で動かすクライアント(Rust)。Steam と連携し、招待リンクを作ります。 |
-| [`bot/`](bot/) | Discord Bot。`/steam` コマンドと招待ボタンを受け付け、WebSocket でクライアントに指示を送ります。 |
+| [`bot/`](bot/) | Discord Bot(Cloudflare Workers)。`/steam` コマンドと招待ボタンを受け付け、WebSocket でクライアントに指示を送ります。 |
 | [`web/`](web/) | 公式サイト(Next.js、Cloudflare Workers)。 |
 
 使い方とビルド方法は、各フォルダの README を見てください。
@@ -21,6 +21,7 @@ GitHub Actions は手動で起動します。
 
 - `Check.yml`: クライアントの fmt / clippy / test(Windows・macOS・Linux)
 - `Release.yml`: クライアントのビルドと配布物の作成。`v*` のタグを push するとリリースを作ります。
+- `bot-check.yml`: Bot の整形・型検査・lint・テスト
 
 ## ライセンス
 

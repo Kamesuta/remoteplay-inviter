@@ -1,79 +1,119 @@
-import { Client, Events } from 'discord.js';
-import 'dotenv/config';
+import { APIInteraction } from 'discord-api-types/v10';
+import { handleInteraction } from './commands/index.js';
+import { Services } from './commands/services.js';
+import { checkConnection, refuseConnection } from './daemon/connect.js';
+import { DiscordApi } from './discord/api.js';
+import { verifyInteraction } from './discord/verify.js';
+import { logStatistics } from './statistics.js';
+import { fetchGameInfo } from './steam.js';
+import { UserStore } from './users.js';
 
-import { logger } from './utils/log.js';
-import CommandHandler from './commands/CommandHandler.js';
-import { nowait } from './utils/utils.js';
-import commands from './commands/commands.js';
-import { DaemonServer } from './daemon/DaemonServer.js';
-import { DaemonManager } from './daemon/DaemonManager.js';
-import { DISCORD_TOKEN, PORT } from './env.js';
-import { PrismaClient } from '@prisma/client';
-import { logStatistics } from './utils/statistics.js';
-import { scheduleJob } from 'node-schedule';
-
-// -----------------------------------------------------------------------------------------------------------
-// Setup
-// -----------------------------------------------------------------------------------------------------------
+export { DaemonObject } from './daemon/DaemonObject.js';
 
 /**
- * Database Client
+ * Connect a client to its Durable Object
+ * @param request WebSocket upgrade request
+ * @param env bindings
+ * @returns 101 response, or 400 with the reason in X-Error
  */
-export const prisma = new PrismaClient();
+async function connectDaemon(request: Request, env: Env): Promise<Response> {
+  const result = checkConnection(
+    new URL(request.url),
+    env.DAEMON_REQUIRED_VERSION,
+    env.DAEMON_DOWNLOAD_URL,
+  );
+  if (!result.ok) return refuseConnection(result.error);
+
+  const { connection } = result;
+  const stub = env.DAEMON.get(env.DAEMON.idFromName(connection.daemonId));
+  const forwarded = new Request(request);
+  forwarded.headers.set('X-Daemon-Connection', JSON.stringify(connection));
+  return stub.fetch(forwarded);
+}
 
 /**
- * Daemon Manager
+ * Services backed by the bindings
+ * @param env bindings
+ * @param ctx execution context
+ * @returns services
  */
-export const daemonManager = new DaemonManager();
+function services(env: Env, ctx: ExecutionContext): Services {
+  return {
+    users: new UserStore(env.DB),
+    daemon: (daemonId) => env.DAEMON.get(env.DAEMON.idFromName(daemonId)),
+    discord: new DiscordApi({ applicationId: env.DISCORD_APPLICATION_ID }),
+    gameInfo: (gameId, language) => fetchGameInfo(gameId, language),
+    waitUntil: (promise) => ctx.waitUntil(promise),
+    downloadUrl: env.DAEMON_DOWNLOAD_URL,
+  };
+}
 
 /**
- * Daemon Server
+ * Handle an interaction request from Discord
+ * @param request interaction request
+ * @param env bindings
+ * @param ctx execution context
+ * @returns interaction response
  */
-export const daemonServer = new DaemonServer(daemonManager);
+async function interactions(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
+  const body = await verifyInteraction(request, env.DISCORD_PUBLIC_KEY);
+  if (body === undefined)
+    return new Response('Bad request signature', { status: 401 });
+
+  const interaction = JSON.parse(body) as APIInteraction;
+  return Response.json(
+    await handleInteraction(interaction, services(env, ctx)),
+  );
+}
 
 /**
- * Discord Client
+ * Route a request to the Worker
+ * @param request request
+ * @param env bindings
+ * @param ctx execution context
+ * @returns response
  */
-export const client: Client = new Client({
-  // Gateway Intents and Partials used by the bot
-  intents: [],
-});
+async function route(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
+  const url = new URL(request.url);
+  if (request.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
+    return connectDaemon(request, env);
+  }
+  if (request.method === 'POST' && url.pathname === '/interactions') {
+    return interactions(request, env, ctx);
+  }
+  if (request.method === 'GET' && url.pathname === '/') {
+    return Response.redirect(env.DAEMON_DOWNLOAD_URL, 302);
+  }
+  return new Response('Not Found', { status: 404 });
+}
 
 /**
- * Command Handler
+ * Hourly job: log usage statistics
+ * @param _controller cron trigger
+ * @param env bindings
  */
-const commandHandler = new CommandHandler(commands);
+async function hourly(
+  _controller: ScheduledController,
+  env: Env,
+): Promise<void> {
+  const discord = new DiscordApi({
+    applicationId: env.DISCORD_APPLICATION_ID,
+    token: env.DISCORD_TOKEN,
+  });
+  await logStatistics(discord, new UserStore(env.DB));
+}
 
-// -----------------------------------------------------------------------------------------------------------
-// Register interaction handlers
-// -----------------------------------------------------------------------------------------------------------
-client.on(
-  Events.ClientReady,
-  nowait(async () => {
-    logger.info(`Started as ${client.user?.username ?? 'Unknown'}!`);
-
-    // Register commands for event handlers
-    await commandHandler.registerCommands();
-
-    logger.info(`Interaction registration completed`);
-
-    // Log statistics
-    await logStatistics();
-    // Every hour
-    scheduleJob('0 * * * *', nowait(logStatistics));
-  }),
-);
-client.on(
-  Events.InteractionCreate,
-  nowait(commandHandler.onInteractionCreate.bind(commandHandler)),
-);
-
-// -----------------------------------------------------------------------------------------------------------
-// Start the bot
-// -----------------------------------------------------------------------------------------------------------
-
-// Log in to Discord
-await client.login(DISCORD_TOKEN);
-
-// Start the daemon server
-daemonServer.startListen(PORT);
+export default {
+  /** Client connections, Discord interactions and the download redirect */
+  fetch: route,
+  /** Cron trigger */
+  scheduled: hourly,
+} satisfies ExportedHandler<Env>;
