@@ -1,0 +1,76 @@
+.jph *{box-sizing:border-box}
+.jph .sc{position:absolute;inset:0;transition:opacity .4s var(--eo)}
+.jph.fading .sc{opacity:0}
+/* steps on the right */
+.jph .steps{position:absolute;left:392px;top:44px;width:224px;display:flex;flex-direction:column;gap:10px}
+.jph .chip{align-self:flex-start;background:#06dec5;color:#0b1520;font-weight:900;font-size:14px;padding:3px 12px;border-radius:999px}
+.jph .st{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:15px;font-weight:700;line-height:1.35;color:#8fa3b6;transition:background-color .25s var(--eo),color .25s var(--eo)}
+.jph .st b{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #3d4f62;display:grid;place-items:center;font-size:14px;transition:background-color .25s var(--eo),border-color .25s var(--eo),color .25s var(--eo)}
+.jph.s1 .st1,.jph.s2 .st2,.jph.s3 .st3{background:#1f2a38;color:#ffffff}
+.jph.s1 .st1 b,.jph.s2 .st2 b,.jph.s3 .st3 b{background:#06dec5;border-color:#06dec5;color:#0b1520}
+/* phone */
+.jph .ph{position:absolute;left:110px;top:22px;width:180px;height:356px;border-radius:28px;background:#0b0f14;border:3px solid #2a3a4d;transition:transform .8s var(--eio)}
+.jph.p3 .ph{transform:rotate(-90deg)}
+.jph .scr{position:absolute;inset:9px;border-radius:21px;overflow:hidden;background:#313338}
+.jph .ly{position:absolute;inset:0;transition:opacity .3s var(--eo),transform .4s var(--eo)}
+/* A: Discord */
+.jph .dh{height:34px;padding:10px 10px 0;background:#2b2d31;font-size:11px;font-weight:700;color:#f2f3f5}
+.jph .dh em{font-style:normal;color:#949ba4;margin-right:4px}
+.jph .ep{position:absolute;left:8px;right:8px;top:50px;padding:10px;border-radius:10px;background:#2b2d31;border-left:3px solid #248046}
+.jph .ep small{display:block;font-size:9px;color:#949ba4}
+.jph .ep strong{display:block;margin-top:2px;font-size:12.5px;font-weight:900;color:#ffffff}
+.jph .gb{margin-top:10px;height:32px;border-radius:5px;background:#4e5058;color:#ffffff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .12s var(--eo)}
+.jph.k1 .gb{transform:scale(.94)}
+.jph .ep code{display:block;margin-top:8px;font-family:ui-monospace,monospace;font-size:8.5px;color:#949ba4;white-space:nowrap;overflow:hidden}
+/* B: Steam page in the browser */
+.jph .lb{background:#1b2838;opacity:0;transform:translateX(30px)}
+.jph.b1 .lb{opacity:1;transform:none}
+.jph.b1 .la{opacity:0;transition-delay:.3s}
+.jph.p3 .lb{opacity:0}
+.jph .url{height:30px;padding:8px 10px 0;background:#e8eaed;font-size:9px;color:#3c4043;white-space:nowrap}
+.jph .url span{display:block;background:#ffffff;border-radius:999px;padding:2px 8px}
+.jph .sh{padding:8px 12px 0;font-family:var(--font-dela), sans-serif;font-size:12px;color:#c6d4df;letter-spacing:.06em}
+.jph .bn{margin:8px 10px 0;height:56px;border-radius:6px;background:#dfeec2;display:grid;place-items:center;font-family:var(--font-dot), monospace;font-size:15px;color:#3f8a2a;letter-spacing:.06em}
+.jph .lb p{margin:10px 12px 0;font-size:11.5px;line-height:1.5;color:#dcdedf}
+.jph .lb p b{color:#66c0f4}
+.jph .jb{margin:14px 12px 0;height:38px;border-radius:4px;background:#1a9fff;color:#071a2e;font-size:14px;font-weight:900;display:grid;place-items:center;transition:transform .12s var(--eo)}
+.jph.k2 .jb{transform:scale(.94)}
+.jph .lb small{display:block;margin:10px 12px 0;font-size:9px;color:#8fa3b6}
+/* C: Steam Link */
+.jph .lc{background:#171a21;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0}
+.jph.c1 .lc{opacity:1}
+.jph.d1 .lc{opacity:0}
+.jph .ring{width:52px;height:52px;border-radius:50%;border:4px solid #1a9fff;display:grid;place-items:center}
+.jph .ring i{width:14px;height:14px;border-radius:50%;background:#1a9fff;display:block}
+.jph .lc b{font-size:15px;color:#ffffff}
+.jph .lc small{font-size:10px;color:#8fa3b6}
+.jph .pg{width:110px;height:5px;border-radius:3px;background:#2a3442;overflow:hidden}
+.jph .pg i{display:block;height:100%;background:#1a9fff;transform-origin:left;transform:scaleX(0)}
+.jph.c1 .pg i{transform:scaleX(1);transition:transform 1s linear}
+/* D: game, drawn landscape */
+.jph .gm{position:absolute;left:50%;top:50%;width:338px;height:162px;margin:-81px 0 0 -169px;transform:rotate(90deg);background:#dfeec2;overflow:hidden;opacity:0;transition:opacity .4s var(--eo)}
+.jph.d1 .gm{opacity:1}
+.jph .gm .tt{position:absolute;left:12px;top:8px;font-family:var(--font-dot), monospace;font-size:13px;color:#3f8a2a}
+.jph .gr{position:absolute;left:0;right:0;bottom:0;height:28px;background:#3f8a2a}
+.jph .pf{position:absolute;height:11px;background:#7a5a3a}
+.jph .pl{position:absolute;bottom:28px;width:18px;height:18px;border-radius:3px}
+.jph .pl::before,.jph .pl::after{content:"";position:absolute;top:5px;width:4px;height:4px;background:#111d2c}
+.jph .pl::before{left:4px}
+.jph .pl::after{right:4px}
+.jph.d1 .pl{animation:jph-hop .7s var(--eo) infinite alternate}
+.jph .pad{position:absolute;inset:0;opacity:0;transition:opacity .4s var(--eo)}
+.jph.d2 .pad{opacity:1}
+.jph .dp{position:absolute;left:20px;bottom:18px;width:48px;height:48px}
+.jph .dp i{position:absolute;background:rgba(255,255,255,.75);border-radius:4px;display:block}
+.jph .ab{position:absolute;right:20px;bottom:20px;display:flex;gap:9px;align-items:flex-end}
+.jph .ab i{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.75);display:block}
+.jph .ab i:last-child{margin-bottom:14px}
+/* taps and the result badge */
+.jph .tp{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:rgba(255,255,255,.45);opacity:0;transform:scale(.4);z-index:4}
+.jph .tp1{left:81px;top:116px}
+.jph .tp2{left:81px;top:197px}
+.jph.k1 .tp1,.jph.k2 .tp2{animation:jph-tap .5s var(--eo)}
+.jph .bd{position:absolute;left:118px;top:334px;width:164px;height:34px;border-radius:999px;background:#06dec5;color:#0b1520;font-weight:900;font-size:14px;display:grid;place-items:center;opacity:0;transform:translateY(10px) scale(.95);transition:opacity .25s var(--eo),transform .45s var(--sp)}
+.jph.d3 .bd{opacity:1;transform:none}
+@keyframes jph-tap{0%{opacity:1;transform:scale(.4)}100%{opacity:0;transform:scale(1.4)}}
+@keyframes jph-hop{to{transform:translateY(-9px)}}

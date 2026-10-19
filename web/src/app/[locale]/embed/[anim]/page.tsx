@@ -9,6 +9,8 @@ import GuideDownload from "@/components/anim/GuideDownload";
 import GuideIssues from "@/components/anim/GuideIssues";
 import GuidePaste from "@/components/anim/GuidePaste";
 import InviteFlow from "@/components/anim/InviteFlow";
+import JoinPC from "@/components/anim/JoinPC";
+import JoinPhone from "@/components/anim/JoinPhone";
 import KeyMap from "@/components/anim/KeyMap";
 import Phone from "@/components/anim/Phone";
 import Setup from "@/components/anim/Setup";
@@ -27,6 +29,8 @@ const ANIMS: Record<string, ComponentType> = {
   "guide-add": GuideAdd,
   "guide-paste": GuidePaste,
   "guide-check": GuideCheck,
+  "join-phone": JoinPhone,
+  "join-pc": JoinPC,
 };
 
 export const dynamicParams = false;

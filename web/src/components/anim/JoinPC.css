@@ -1,0 +1,84 @@
+.jpc *{box-sizing:border-box}
+.jpc .sc{position:absolute;inset:0;transition:opacity .4s var(--eo)}
+.jpc.fading .sc{opacity:0}
+/* steps on the right */
+.jpc .steps{position:absolute;left:408px;top:44px;width:212px;display:flex;flex-direction:column;gap:10px}
+.jpc .chip{align-self:flex-start;background:#1a9fff;color:#071a2e;font-weight:900;font-size:14px;padding:3px 12px;border-radius:999px}
+.jpc .st{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:15px;font-weight:700;line-height:1.35;color:#8fa3b6;transition:background-color .25s var(--eo),color .25s var(--eo)}
+.jpc .st b{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #3d4f62;display:grid;place-items:center;font-size:14px;transition:background-color .25s var(--eo),border-color .25s var(--eo),color .25s var(--eo)}
+.jpc.s1 .st1,.jpc.s2 .st2,.jpc.s3 .st3{background:#1f2a38;color:#ffffff}
+.jpc.s1 .st1 b,.jpc.s2 .st2 b,.jpc.s3 .st3 b{background:#1a9fff;border-color:#1a9fff;color:#071a2e}
+/* monitor */
+.jpc .mon{position:absolute;left:24px;top:34px;width:360px;height:220px;border-radius:12px;background:#0b0f14;border:2px solid #2a3a4d}
+.jpc .neck{position:absolute;left:186px;top:254px;width:36px;height:22px;background:#2a3a4d}
+.jpc .foot{position:absolute;left:150px;top:274px;width:108px;height:8px;border-radius:4px;background:#2a3a4d}
+.jpc .scr{position:absolute;left:32px;top:42px;width:344px;height:204px;border-radius:6px;overflow:hidden;background:#313338}
+.jpc .ly{position:absolute;inset:0;transition:opacity .3s var(--eo),transform .35s var(--eo)}
+/* A: Discord */
+.jpc .side{position:absolute;left:0;top:0;bottom:0;width:40px;background:#1e1f22;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:10px}
+.jpc .side i{width:24px;height:24px;border-radius:50%;background:#2b2d31;display:block}
+.jpc .side i:first-child{background:#5865f2}
+.jpc .dh{position:absolute;left:40px;right:0;top:0;height:26px;padding:6px 10px 0;background:#2b2d31;font-size:10px;font-weight:700;color:#f2f3f5}
+.jpc .dh em{font-style:normal;color:#949ba4;margin-right:4px}
+.jpc .ep{position:absolute;left:56px;top:34px;width:260px;padding:9px 12px 10px;border-radius:8px;background:#2b2d31;border-left:3px solid #248046}
+.jpc .ep small{display:block;font-size:8.5px;color:#949ba4}
+.jpc .ep strong{display:block;margin-top:2px;font-size:12px;font-weight:900}
+.jpc .gb{margin-top:8px;width:150px;height:26px;border-radius:4px;background:#4e5058;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .12s var(--eo)}
+.jpc.k1 .gb{transform:scale(.94)}
+/* B: browser with the Steam page */
+.jpc .lb{background:#1b2838;opacity:0;transform:translateY(14px) scale(.98)}
+.jpc.b1 .lb{opacity:1;transform:none}
+.jpc.b1 .la{opacity:0;transition-delay:.3s}
+.jpc.d1 .lb{opacity:0}
+.jpc .tab{height:18px;background:#dadce0;display:flex;align-items:flex-end;padding-left:8px}
+.jpc .tab span{height:14px;width:110px;border-radius:5px 5px 0 0;background:#e8eaed;font-size:8px;color:#3c4043;padding:2px 6px;white-space:nowrap;overflow:hidden}
+.jpc .url{height:20px;padding:3px 8px;background:#e8eaed}
+.jpc .url span{display:block;height:14px;border-radius:999px;background:#ffffff;font-size:8px;color:#3c4043;padding:1px 8px}
+.jpc .sh{position:absolute;left:12px;top:44px;font-family:var(--font-dela), sans-serif;font-size:11px;color:#c6d4df;letter-spacing:.06em}
+.jpc .bn{position:absolute;left:12px;top:66px;width:130px;height:64px;border-radius:5px;background:#dfeec2;display:grid;place-items:center;font-family:var(--font-dot), monospace;font-size:13px;color:#3f8a2a}
+.jpc .lb p{position:absolute;left:154px;top:62px;right:12px;margin:0;font-size:11px;line-height:1.5;color:#dcdedf}
+.jpc .lb p b{color:#66c0f4}
+.jpc .jb{position:absolute;left:154px;top:108px;width:170px;height:30px;border-radius:4px;background:#1a9fff;color:#071a2e;font-size:13px;font-weight:900;display:grid;place-items:center;transition:transform .12s var(--eo)}
+.jpc.k2 .jb{transform:scale(.94)}
+.jpc .lb small{position:absolute;left:12px;right:12px;top:150px;font-size:8.5px;color:#8fa3b6}
+/* C: Steam Link */
+.jpc .lc{background:#171a21;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0}
+.jpc.cl .lc{opacity:1}
+.jpc.d1 .lc{opacity:0}
+.jpc .ring{width:44px;height:44px;border-radius:50%;border:4px solid #1a9fff;display:grid;place-items:center}
+.jpc .ring i{width:12px;height:12px;border-radius:50%;background:#1a9fff;display:block}
+.jpc .lc b{font-size:13px}
+.jpc .lc small{font-size:9.5px;color:#8fa3b6}
+.jpc .pg{width:120px;height:5px;border-radius:3px;background:#2a3442;overflow:hidden}
+.jpc .pg i{display:block;height:100%;background:#1a9fff;transform-origin:left;transform:scaleX(0)}
+.jpc.cl .pg i{transform:scaleX(1);transition:transform 1s linear}
+/* D: game */
+.jpc .gm{background:#dfeec2;opacity:0}
+.jpc.d1 .gm{opacity:1}
+.jpc .gm .tt{position:absolute;left:12px;top:8px;font-family:var(--font-dot), monospace;font-size:13px;color:#3f8a2a}
+.jpc .gr{position:absolute;left:0;right:0;bottom:0;height:34px;background:#3f8a2a}
+.jpc .pf{position:absolute;height:12px;background:#7a5a3a}
+.jpc .pl{position:absolute;bottom:34px;width:20px;height:20px;border-radius:3px}
+.jpc .pl::before,.jpc .pl::after{content:"";position:absolute;top:6px;width:4px;height:4px;background:#111d2c}
+.jpc .pl::before{left:4px}
+.jpc .pl::after{right:4px}
+.jpc.d1 .pl{animation:jpc-hop .7s var(--eo) infinite alternate}
+/* mouse cursor + click ring */
+.jpc .cur{position:absolute;left:0;top:0;width:22px;height:22px;z-index:6;opacity:0;transform:translate(330px,300px);transition:transform .55s var(--eio),opacity .3s var(--eo);filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.jpc.m1 .cur{transform:translate(159px,137px);opacity:1}
+.jpc.m2 .cur{transform:translate(267px,161px);opacity:1}
+.jpc .rg{position:absolute;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:2px solid #ffffff;opacity:0;transform:scale(.4);z-index:5}
+.jpc .r1{left:163px;top:141px}
+.jpc .r2{left:271px;top:165px}
+.jpc.k1 .r1,.jpc.k2 .r2{animation:jpc-ring .45s var(--eo)}
+/* controller + badge */
+.jpc .pad{position:absolute;left:56px;top:300px;width:120px;height:92px;opacity:0;transform:translateY(16px);transition:opacity .3s var(--eo),transform .5s var(--sp)}
+.jpc.ct1 .pad{opacity:1;transform:none}
+.jpc.d1 .pad{animation:jpc-wiggle .5s var(--eo) 2}
+.jpc .ok{position:absolute;left:186px;top:330px;height:28px;padding:0 12px;border-radius:999px;background:#06dec5;color:#0b1520;font-size:13px;font-weight:900;display:flex;align-items:center;gap:6px;opacity:0;transform:scale(.85);transition:opacity .25s var(--eo),transform .4s var(--sp)}
+.jpc.ct2 .ok{opacity:1;transform:none}
+.jpc .bd{position:absolute;left:96px;top:214px;width:216px;height:32px;border-radius:999px;background:#06dec5;color:#0b1520;font-weight:900;font-size:14px;display:grid;place-items:center;z-index:4;opacity:0;transform:translateY(8px) scale(.95);transition:opacity .25s var(--eo),transform .45s var(--sp)}
+.jpc.d2 .bd{opacity:1;transform:none}
+@keyframes jpc-ring{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.4)}}
+@keyframes jpc-hop{to{transform:translateY(-10px)}}
+@keyframes jpc-wiggle{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}

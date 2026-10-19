@@ -270,6 +270,39 @@
       "toastTitle": "Controller connected",
       "toastName": "Xbox 360 Controller",
       "k2": "Steam sees an Xbox 360 controller!"
+    },
+    "jph": {
+      "attr1": "Joining from a phone: press \"Join the game\" in Discord, press \"Join Game\" on the Steam page that opens, and Steam Link connects you to the game in landscape",
+      "div1": "<em0>#</em0>game-night",
+      "t1": "Only you can see this",
+      "t2": "Your invite link is ready!",
+      "t3": "Join the game",
+      "p1": "<b0>Haru</b0> invited you to play POCO PARK 2",
+      "t4": "Join Game",
+      "t5": "No Steam Link yet? Get it from this page",
+      "t6": "Connecting to Haru's PC…",
+      "t7": "Playing as 2P!",
+      "t8": "Join from a phone",
+      "div2": "<b0>1</b0>Press \"Join the game\"",
+      "div3": "<b0>2</b0>Press \"Join Game\" on the Steam page",
+      "div4": "<b0>3</b0>Turn sideways and play"
+    },
+    "jpc": {
+      "attr1": "Joining from a PC: connect a controller, press \"Join the game\" in Discord, then press \"Join Game\" on the Steam page that opens to join the game",
+      "div1": "<em0>#</em0>game-night",
+      "t1": "Only you can see this",
+      "t2": "Your invite link is ready!",
+      "t3": "Join the game",
+      "p1": "<b0>Haru</b0> invited you to play POCO PARK 2",
+      "t4": "Join Game",
+      "t5": "No Steam? Get Steam Link from this page",
+      "t6": "Connecting to Haru's PC…",
+      "t7": "Playing as 2P!",
+      "t8": "Controller connected",
+      "t9": "Join from a PC",
+      "div2": "<b0>1</b0>Connect a controller",
+      "div3": "<b0>2</b0>Press \"Join the game\"",
+      "div4": "<b0>3</b0>Press \"Join Game\" on the Steam page"
     }
   },
   "guide": {
