@@ -25,6 +25,54 @@
 
 このツールは非公式です。Remote Play Together は Steam の公式機能ですが、Remote Play Inviter は Valve とは関係ありません。
 
+## 仕組み
+
+ホストの PC で動くクライアントが、BOT に WebSocket でつないで待ち受けます。参加者がボタンを押すと、BOT がクライアントに招待リンクの発行を頼み、Steam が発行したリンクを参加者だけに届けます。
+
+```mermaid
+sequenceDiagram
+    actor ホスト
+    actor 参加者
+    participant Discord
+    participant BOT
+    participant クライアント
+    participant Steam
+
+    rect rgb(221, 221, 255)
+    note over ホスト, Discord: 1. 招待パネルの作成
+    ホスト->>Discord: /steam invite コマンドを実行
+    Discord->>BOT: コマンドを転送
+    activate BOT
+    BOT->>Discord: 招待パネル (参加ボタン付き) を作成
+    deactivate BOT
+    end
+
+    rect rgb(221, 255, 221)
+    note over 参加者, BOT: 2. 参加者がゲームに参加
+    参加者->>Discord: 「参加」ボタンをクリック
+    Discord->>BOT: ボタンクリックを通知
+    activate BOT
+
+    BOT->>クライアント: 招待リンクの生成をリクエスト
+    activate クライアント
+    クライアント->>Steam: Remote Play Together の招待リンクを要求
+    activate Steam
+    Steam-->>クライアント: 招待リンクを返却
+    deactivate Steam
+    クライアント-->>BOT: 招待リンクを転送
+    deactivate クライアント
+
+    BOT->>Discord: 参加者に招待リンクを送信 (一時的なメッセージ)
+    Discord-->>参加者: 招待リンクを表示
+    deactivate BOT
+    end
+
+    rect rgb(255, 221, 221)
+    note over 参加者, Steam: 3. 参加者がSteamに参加
+    参加者->>Steam: 招待リンクを使用してゲームに接続
+    end
+```
+
 ## 構成
 
 | フォルダ | 内容 |
