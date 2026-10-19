@@ -256,6 +256,28 @@ describe('/steam invite', () => {
   });
 });
 
+describe('/steam invite errors', () => {
+  it('still tells the error when deleting the reply fails', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      responses: { game: { ok: false, phrase: 'error.daemon_invalid_app' } },
+    });
+    services.discord.deleteOriginal = () =>
+      Promise.reject(new Error('404 Unknown Message'));
+    await handleInteraction(command('invite'), services);
+    await services.done();
+    expect(services.calls.at(-1)).toEqual([
+      'followUp',
+      'token',
+      {
+        content: i18n.t('en', 'error.daemon_invalid_app'),
+        flags: MessageFlags.Ephemeral,
+      },
+    ]);
+  });
+});
+
 describe('invite button', () => {
   it('refuses a panel from an earlier session', async () => {
     const response = (await handleInteraction(

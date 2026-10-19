@@ -61,8 +61,11 @@ export async function handleInvite(
 
   const token = interaction.token;
   // Delete the public message first so that the error is visible only to the user
+  // (if the deletion fails, the follow-up replaces the "thinking" message instead)
   const fail = async (phrase: string): Promise<void> => {
-    await services.discord.deleteOriginal(token);
+    await services.discord.deleteOriginal(token).catch((err: unknown) => {
+      console.error('Failed to delete the reply', err);
+    });
     await services.discord.followUp(token, {
       content: i18n.t(locale, phrase),
       flags: MessageFlags.Ephemeral,
