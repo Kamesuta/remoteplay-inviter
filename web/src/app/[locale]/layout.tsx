@@ -1,8 +1,9 @@
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { routing } from "@/i18n/routing";
 import { generateMetadata as createMetadata } from "@/utils/metadata";
 import "../globals.css";
 
@@ -22,15 +23,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
   return createMetadata({
     title: (messages as { title: string }).title,
     description: (messages as { description: string }).description,
-  }, locale);
+    locale,
+  });
 }
 
 export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'ja' }];
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
@@ -41,13 +43,15 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  // Lets the pages under this layout render statically
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
     <html lang={locale} className="scroll-smooth">
-      <head>
-        <GoogleAnalytics />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
