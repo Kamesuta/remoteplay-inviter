@@ -14,6 +14,9 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.job.os }}
+    defaults:
+      run:
+        working-directory: client
     strategy:
       matrix:
         job:
@@ -75,24 +78,26 @@ jobs:
         uses: AppImageCrafters/build-appimage-action@master
         if: runner.os == 'Linux'
         env:
-          BUILD_DIR: target/${{ matrix.job.target }}/release
-          EXECUTABLE_PATH: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
+          SOURCE_DIR: client
+          BUILD_DIR: client/target/${{ matrix.job.target }}/release
+          EXECUTABLE_PATH: client/target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
           UPDATE_INFO: gh-releases-zsync|${{ env.GITHUB_REPOSITORY_OWNER }}|${{ env.PROJECT_NAME }}|latest|*.AppImage.zsync
           OUTPUT_NAME: ${{ matrix.job.artifact }}
         with:
-          recipe: AppImageBuilder.yml
+          recipe: client/AppImageBuilder.yml
 
+      # Packages are written to the repository root, where the AppImage action puts its output
       # The Steamworks runtime library must sit next to the executable
       - name: Package (macOS)
         if: runner.os == 'macOS'
         run: |
-          tar -czvf ${{ matrix.job.artifact }} -C target/${{ matrix.job.target }}/release ${{ env.PROJECT_NAME }} libsteam_api.dylib
+          tar -czvf ../${{ matrix.job.artifact }} -C target/${{ matrix.job.target }}/release ${{ env.PROJECT_NAME }} libsteam_api.dylib
 
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Compress-Archive -Path target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}.exe, target/${{ matrix.job.target }}/release/steam_api64.dll -DestinationPath ${{ matrix.job.artifact }}
+          Compress-Archive -Path target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}.exe, target/${{ matrix.job.target }}/release/steam_api64.dll -DestinationPath ../${{ matrix.job.artifact }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -12,11 +12,11 @@ script:
   - cp {{BUILD_DIR}}/libsteam_api.so $TARGET_APPDIR
   # Copy resources
   - mkdir -p $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps
-  - cp resources/app.svg $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps/remoteplay-inviter.svg
+  - cp {{SOURCE_DIR}}/resources/app.svg $TARGET_APPDIR/usr/share/icons/hicolor/scalable/apps/remoteplay-inviter.svg
   # Copy run script
-  - cp scripts/run.sh $TARGET_APPDIR
+  - cp {{SOURCE_DIR}}/scripts/run.sh $TARGET_APPDIR
   - chmod +x $TARGET_APPDIR/run.sh
-  - cp scripts/i3-sensible-terminal.sh $TARGET_APPDIR
+  - cp {{SOURCE_DIR}}/scripts/i3-sensible-terminal.sh $TARGET_APPDIR
   - chmod +x $TARGET_APPDIR/i3-sensible-terminal.sh
 AppDir:
   path: AppDir
