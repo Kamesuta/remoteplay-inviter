@@ -1,0 +1,43 @@
+name = "remoteplay-inviter-bot"
+main = "src/index.ts"
+account_id = "0dd5f97404193421823c79e7e0b608cc"
+compatibility_date = "2026-10-01"
+
+# The production endpoint the clients connect to
+routes = [{ pattern = "gateway.steaminviter.app", custom_domain = true }]
+
+# Secrets (set with `wrangler secret put`, or in .dev.vars for local development):
+#   DISCORD_TOKEN       Bot token (used for statistics and command registration)
+#   DISCORD_PUBLIC_KEY  Public key used to verify interaction requests
+
+[vars]
+DISCORD_APPLICATION_ID = "1252429340780527714"
+# Clients older than this are asked to update
+DAEMON_REQUIRED_VERSION = "0.3.1"
+# Download page shown to clients that need an update
+DAEMON_DOWNLOAD_URL = "https://steaminviter.app/download"
+
+# One Durable Object per client, holding its WebSocket connection
+[[durable_objects.bindings]]
+name = "DAEMON"
+class_name = "DaemonObject"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DaemonObject"]
+
+# Links between Discord users and clients
+[[d1_databases]]
+binding = "DB"
+database_name = "remoteplay-inviter"
+database_id = "71cbff76-acf3-4ff6-bed0-3406ebeea3cb"
+migrations_dir = "migrations"
+
+# Locale files are bundled as text
+[[rules]]
+type = "Text"
+globs = ["**/*.yml"]
+fallthrough = true
+
+[observability.logs]
+enabled = true
