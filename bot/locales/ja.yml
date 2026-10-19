@@ -84,3 +84,6 @@ error:
   daemon_invalid_app: Steamのゲームを起動していません。ゲームを起動してから再度お試しください。
   daemon_game_not_supported: このゲームはRemote Play Togetherに対応していません。
   daemon_invite_failed: 招待主のクライアントで招待リンクを作成できませんでした。招待主がゲームを起動したままか確認して、もう一度お試しください。
+  request_timeout: 招待主のクライアントから時間内に応答がありませんでした。もう一度お試しください。
+  daemon_disconnected: 招待主のクライアントとの接続が切れました。もう一度お試しください。
+  internal: 問題が発生しました。もう一度お試しください。
