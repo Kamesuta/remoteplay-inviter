@@ -1,0 +1,86 @@
+steam_command:
+  description: Steam Remote Play Together 招待リンク作成コマンド
+
+setup_command:
+  description: クライアントIDを入力し、DiscordアカウントとRemote Play Inviterクライアントをリンクします。
+  description_client_id: Remote Play InviterクライアントのクライアントID
+  error:
+    daemon_offline: |-
+      クライアントがオフラインです。
+      以下から Steam Remote Play Inviter クライアントをダウンロードし、起動した上で再度お試しください。
+      {{{daemon_download_url}}}
+  setup_message: |-
+    Remote Play InviterクライアントとDiscordアカウントがリンクされました！
+    友達を招待するには `/steam invite` と入力してください。
+
+invite_command:
+  description: Steam Remote Play Together を使用して起動中のゲームに招待します。
+  description_game_id: ゲームID (通常は指定する必要はありません)
+  error:
+    daemon_not_linked: まずは `/steam setup` コマンドでクライアントIDを登録してください。
+    daemon_offline: クライアントがオフラインです。Steam Remote Play Inviter クライアントを起動してから再度お試しください。
+    game_info_failed: ゲーム情報が取得できませんでした。
+    game_not_supported: このゲームはRemote Play Togetherに対応していません。
+
+invite_panel:
+  steam_language: japanese
+  title: '{{name}} を無料で一緒に遊びましょう！'
+  description: |-
+    参加したい人はあらかじめ以下の参加手順に沿って部屋に入っておいてください。
+    (順番になったら、こっちで勝手にコントローラーを割り当てます)
+  features:
+    name: 特徴
+    value: |-
+      - ゲームを**持っていなくても**無料で参加できます
+      - PCだけでなく、**スマホでも**参加できます！
+      - Steamアカウントはなくてもプレイできます
+
+invite_button:
+  label: ゲームに参加するための招待リンクを取得する！
+  error:
+    daemon_not_linked: 招待主がクライアントIDを登録していません。
+    daemon_offline: 招待主がオフラインです。
+    invalid_session: この招待パネルは有効期限切れです。もう一度招待主に `/steam invite` を入力してもらってください。
+    request_failed: 招待リクエストが失敗しました。招待主がゲームを起動していない可能性があります。
+  invite_message: |-
+    招待リンクを作成しました！
+    {{{link}}}
+    リンクを踏んでゲームに参加してください～
+  how_to_join_mobile:
+    name: 参加手順 (スマホの場合)
+    value: |-
+      1. ↑のリンクを踏んでください
+      2. ページ内の iOS/Android リンクを押してSteam Linkアプリをインストールしてください
+      3. ページ内の「ゲームに参加」ボタンを押して、アプリを開きます
+  how_to_join_pc:
+    name: 参加手順 (PCの場合)
+    value: |-
+      1. ↑のリンクを踏んでください
+      2. (Steamクライアントが入っていない人は) ページ内の Windows/macOS/Linux リンクを押してSteam Linkアプリをインストールしてください
+      3. コントローラー(Proコン、Joyコン、PlayStationコン、Xboxコンなど)をPCに接続してください
+        ない人は [x360ceインストール手順](https://bit.ly/x360ce-tutorial) に沿ってコントローラーエミュレーターをインストールしてください
+        x360ceがうまくいかない場合は、スマホでプレイできるので、そっちをお試しください
+      4. ページ内の「ゲームに参加」ボタンを押して、Steam Linkアプリを開きます
+  join_button: クリックしてゲームに参加！
+
+daemon:
+  welcome_message: |-
+    ようこそ、 {{username}} さん！
+    友達を招待するには `/steam invite` と入力してください。
+  link_message: |-
+    Discordアカウントをリンクするには `/steam setup client_id:{{client_id}}` と入力してください。
+    クリップボードにコピーしておきましたので、Discordのチャットに貼り付けてください
+  bind_message: |-
+    {{username}} さんとリンクされました！
+    友達を招待するには `/steam invite` と入力してください。
+
+error:
+  invalid_response_type: 招待主のクライアントから予期しないレスポンスタイプが返されました。
+  invalid_response_message: 招待主のクライアントから予期しないレスポンスメッセージが返されました。
+  invalid_response_json: 招待主のクライアントから予期しないJSONが返されました。
+  send_request_failed: 招待リンク取得リクエストの送信に失敗しました。
+  daemon_unknown: 招待主のクライアントで不明なエラーが発生しました。
+  daemon_invalid_cmd: 招待主のクライアントがサーバーから送信されるリクエストのタイプに対応していません。クライアントが最新バージョンであることを確認してください。
+  daemon_invalid_app: Steamのゲームを起動していません。ゲームを起動してから再度お試しください。
+  daemon_game_not_supported: このゲームはRemote Play Togetherに対応していません。
+  daemon_invite_failed: 招待主のクライアントで招待リンクを作成できませんでした。招待主がゲームを起動したままか確認して、もう一度お試しください。
