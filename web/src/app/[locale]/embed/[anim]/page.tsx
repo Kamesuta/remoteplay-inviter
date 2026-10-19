@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
+import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import OgCard from "@/components/OgCard";
@@ -36,8 +37,6 @@ const ANIMS: Record<string, ComponentType> = {
   "og-card": OgCard,
 };
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) => Object.keys(ANIMS).map((anim) => ({ locale, anim })));
 }
@@ -49,7 +48,9 @@ export const metadata: Metadata = {
 export default async function EmbedPage({ params }: { params: Promise<{ locale: string; anim: string }> }) {
   const { locale, anim } = await params;
   setRequestLocale(locale);
+  // Unknown names 404 here rather than with dynamicParams, which OpenNext can't serve without a cache
   const Anim = ANIMS[anim];
+  if (!Anim) notFound();
   return (
     <div style={{ display: "inline-block", fontFamily: "var(--font-zen), 'Hiragino Sans', sans-serif", fontSize: "16px", lineHeight: 1.8, color: "#ffffff" }}>
       <Anim />
