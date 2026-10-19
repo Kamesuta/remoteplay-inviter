@@ -4,137 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-Steam Remote Play TogetherをDiscordで簡単に招待できるBOTツールのランディングページ。Next.js App Routerで構築された静的サイトで、日本語・英語の多言語対応を実装している。
+Steam Remote Play Together に Discord から招待できる BOT「Remote Play Inviter」の Web サイト(https://steaminviter.app)。Next.js 15(App Router)+ next-intl で日本語・英語に対応し、OpenNext で Cloudflare Workers に置いている。
 
 ## 開発コマンド
 
 ```bash
-# 開発サーバー起動（Turbopack使用）
-npm run dev
-
-# 本番ビルド（静的エクスポート）
-npm run build
-
-# リント実行
-npm run lint
-
-# Cloudflareにデプロイ
-npm run deploy
+npm run dev       # 開発サーバー(Turbopack)
+npm run build     # 本番ビルド
+npm run lint      # ESLint
+npm run preview   # OpenNext でビルドし、Workers と同じ環境で確かめる
+npm run deploy    # 本番に出す(CLOUDFLARE_ACCOUNT_ID が要る)
+npm run record    # Discord 用の GIF と OG 画像を撮り直す(下記)
 ```
 
-## アーキテクチャ
+## ページ
 
-### 静的サイト生成設定
-- `next.config.ts`で`output: 'export'`を設定
-- 画像最適化無効（`images.unoptimized: true`）
-- ビルド出力: `out/`ディレクトリ
-- Cloudflare Workers/Pagesでホスティング
+| URL | 中身 |
+|---|---|
+| `/en` `/ja` | LP(`src/app/[locale]/(site)/page.tsx`) |
+| `/en/guide/x360ce` `/ja/guide/x360ce` | キーボードをコントローラーにする手順 |
+| `/[locale]/embed/<name>` | アニメ 1 本だけを舞台の大きさで出す録画用のページ。noindex、sitemap に載せない、GA なし |
 
-### 国際化（i18n）実装
-next-intlを使用した国際化システムを採用：
+- `/` は middleware が Accept-Language などで `/en` か `/ja` に振り分ける。
+- `(site)` グループのページだけが Google Analytics を読む。
+- ページはすべて `generateStaticParams` + `setRequestLocale` で静的に作る。新しいページにも `setRequestLocale(locale)` を入れる。
 
-- **next-intl**: 公式のNext.js国際化ライブラリ
-- **メッセージファイル**: `messages/ja.json`, `messages/en.json`
-- **翻訳関数**: 
-  - `useTranslations(namespace)`: 文字列翻訳
-  - `useLocale()`: 現在のロケール取得
-- **ルーティング**: `src/i18n/routing.ts`でロケール設定
+## 作り
 
-### ルーティング戦略
-- `/`: デフォルトページ（英語コンテンツ）
-- `/ja`, `/en`: 言語別アクセス時に`/`にリダイレクト
-- `middleware.ts`でリダイレクト処理とCookie設定
-
-### コンポーネント構造
 ```
-src/components/
-├── HomePageContent.tsx      # メインコンテンツコンテナ
-├── LanguageSwitcher.tsx     # 言語切り替えUI
-├── LocalizedSvg.tsx         # SVGのi18n対応コンポーネント
-└── sections/                # セクション別コンポーネント
-    ├── Navigation.tsx       # ナビゲーション
-    ├── HeroSection.tsx      # ヒーローセクション
-    ├── FeaturesSection.tsx  # 機能紹介
-    └── ... (8個の他セクション)
+src/
+├── app/
+│   ├── fonts.ts                 # next/font(Dela Gothic One・DotGothic16・Zen Kaku Gothic New・VT323・Roboto)
+│   ├── globals.css              # ナイト配色の CSS 変数(--t-*)、ページ共通の動き、スマホで縮める zoom の段階
+│   └── [locale]/...
+├── components/
+│   ├── home/                    # LP の各節(サーバー部品)
+│   ├── guide/                   # 説明ページの各節、CopyButton、presets.ts
+│   ├── anim/                    # アニメ(クライアント部品 + 同じ名前の CSS)
+│   │   ├── useLoopAnimation.ts  # アニメの再生の仕組み
+│   │   └── X360Window.tsx       # 説明ページの手順 2〜5 で使う x360ce の画面部品
+│   ├── PageShell.tsx            # 背景と基本の文字
+│   ├── LanguageLink.tsx         # 同じページの別の言語へ
+│   └── OgCard.tsx               # OG 画像のカード
+└── utils/metadata.ts            # メタデータ(canonical・hreflang・OGP)
 ```
 
-## 重要な技術選択
+### スタイル
+- 見た目はデザインのマークアップをそのまま写しているので、ほとんどがインラインの `style`。色は `var(--t-…)`、字体は `var(--font-…)` を使う。
+- Tailwind はテーマとユーティリティだけを読み込む(preflight は読まない)。デザインがブラウザ標準の見た目(見出しの太さ、`ol` の番号など)を前提にしているため。
 
-### 静的エクスポート + next-intl
-next-intlを使用した国際化システム：
-- 静的エクスポートとの互換性
-- 型安全な翻訳機能
-- App Routerとの統合
+### アニメ
+- 各アニメは外枠 `.rpa.<接頭辞>`(例 `.rpa.ifl`)の `className` に付け外しするクラスで場面を進め、動きはすべて CSS の transition。接頭辞でほかの CSS とぶつからないようにする。
+- 進め方は `LOOP = { beats: [[ms, 付けるクラス, 外すクラス], …], period, finalFlags }` で書き、`useLoopAnimation(ref, LOOP)` に渡す。React は再描画しない。画面外では止まり、reduced motion のときは `finalFlags` の場面を静止で見せる。
+- 動かすのは transform と opacity だけ。スマホ幅では `globals.css` の `.zf-*` で縮める。
+- アニメの中の文字は `messages/*.json` の `anim.<接頭辞>`。ブラウザに送るメッセージは `anim` だけ(`[locale]/layout.tsx`)。
 
-### メタデータ管理
-- `src/utils/metadata.ts`: 共通メタデータ生成関数
-- 言語別OGP対応
-- Twitter Card設定済み
+### 国際化
+- `messages/ja.json` と `messages/en.json` は同じキーにそろえる。名前空間は `home.*`(LP)、`guide.*`(説明ページ)、`anim.*`(アニメ)、`title`/`description`(LP のメタデータ)。
+- 太字やリンクを含む文は `t.rich("key", { b0: (c) => <b>{c}</b> })` のようにタグで書く。キー名(`t1`、`h21` など)はデザインから移したときの通し番号。
+- 内部リンクは `@/i18n/routing` の `Link` を使う(言語が付く)。
 
-### スタイリング
-- Tailwind CSS 4使用
-- Steamブランドカラー（`#1B2838`, `#66C0F4`等）
-- Discordテーマカラー（`#5865F2`）
-- Font Awesome（CDN経由）
+## Discord 用の GIF と OG 画像
+- Bot の招待リンクの返信は `public/assets/discord/{en,ja}/join-{phone,pc}-v<N>.gif` を表示する。
+- 作り直すとき:`npm run build && npm start` のあと、別のターミナルで `npm run record -- http://localhost:3000`。Google Chrome と ffmpeg が要る。
+- GIF を変えたら、`scripts/record-gif.mjs` の版を上げて新しい名前にし、Bot の参照先も直す(Discord は URL ごとに画像をキャッシュする)。
 
-### SVGのi18n対応
-`LocalizedSvg`コンポーネントでSVG内テキストの翻訳を実現：
-- SVGファイルを動的に読み込み、テキスト要素を置換
-- `textTranslations`プロパティで翻訳マッピングを定義
-- `useLocale()`で現在のロケールを取得し、適切な翻訳を適用
-- SVG内の相対パス（`xlink:href`、`href`）を絶対パスに自動変換
-- `concept-diagram.svg`でDiscordとSteamの使用フローを多言語化
-
-## 開発時の注意点
-
-### メッセージファイル編集
-`messages/*.json`でコンテンツを編集する際：
-- `useTranslations(namespace)`で名前空間を指定
-- 文字列メッセージは`t(key)`で取得
-- 両言語ファイルの構造を同期保持
-- SVGのi18n対応では`diagram`セクションで画像内テキストを管理
-
-### 静的エクスポート制約
-- Dynamic Routes は事前定義必要
-- Server-side機能（API Routes等）使用不可
-- 画像最適化は無効化済み
-
-### デプロイフロー
-1. `npm run build`で静的ファイル生成
-2. `out/`ディレクトリがCloudflare Workersにアップロード
-3. `wrangler.toml`設定でアセット配信
-
-## ファイル構造の特徴
-
-### App Router構造
-```
-src/app/
-├── layout.tsx           # ルートレイアウト（デフォルト言語）
-├── page.tsx            # ホームページ
-└── globals.css         # Tailwind CSSインポート
-```
-
-### 国際化メッセージ構造
-各言語ファイルに以下のセクションが含まれる：
-- `hero`: ヒーローセクション（タイトル配列、スライド配列）
-- `nav`: ナビゲーション
-- `features`: 機能紹介
-- `setup`: セットアップ手順
-- `faq`: よくある質問
-- `footer`: フッター情報
-- `diagram`: SVG内テキストの翻訳（LocalizedSvgコンポーネント用）
-
-## デバッグとトラブルシューティング
-
-### よくある問題
-1. **翻訳キーエラー**: `useTranslations(namespace)`の名前空間確認
-2. **言語切り替え反映されない**: `useLocale()`の実装確認
-3. **静的エクスポートエラー**: Dynamic機能の使用有無確認
-4. **メタデータ未反映**: `metadata.ts`の引数確認
-5. **SVGのi18n未動作**: `LocalizedSvg`コンポーネントの`textTranslations`プロパティ確認
-6. **SVG内画像が表示されない**: `LocalizedSvg`コンポーネントが相対パスを絶対パスに自動変換するため、SVG内の相対パスが原因の可能性を確認
-
-### TypeScript設定
-- Strict mode有効
-- パスエイリアス: `@/*` → `./src/*`
-- ES2017ターゲット
+## 外部の URL
+- BOT の追加:`https://discord.com/oauth2/authorize?client_id=1252429340780527714`
+- ダウンロード:`https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter-windows.zip`(ほかの OS は releases/latest)
