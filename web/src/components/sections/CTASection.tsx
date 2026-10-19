@@ -24,7 +24,7 @@ export default function CTASection() {
             {t('inviteBot')}
           </a>
           <a 
-            href="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
+            href="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter-windows.zip" 
             target="_blank"
             className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all text-center flex items-center justify-center gap-2"
           >

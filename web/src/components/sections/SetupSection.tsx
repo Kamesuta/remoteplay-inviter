@@ -32,7 +32,7 @@ export default function SetupSection() {
             imageSrc="/assets/setup/client-interface.png"
             imageAlt={t('media.altText.clientScreen')}
             buttonText={t('step2.button')} 
-            buttonHref="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter.exe" 
+            buttonHref="https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter-windows.zip" 
             buttonColor="purple"
             buttonIcon="fas fa-download"
           />
