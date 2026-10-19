@@ -1,215 +1,92 @@
 {
   "title": "Remote Play Inviter - Discord Bot for Steam Remote Play Together Invitations",
   "description": "Easily invite friends to Steam Remote Play Together through Discord for free!",
-  "hero": {
-    "badge": "Enjoy Steam games with friends for free!",
-    "title": [
-      {
-        "text": "Steam Remote Play Together",
-        "style": "gradient"
+  "home": {
+    "nav": {
+      "t1": "What it does",
+      "t2": "Features",
+      "t3": "Get started",
+      "t4": "FAQ",
+      "t5": "Add to Discord",
+      "t6": "Download"
+    },
+    "hero": {
+      "t1": "For whoever hosts game night",
+      "h11": "Only <span0>one person</span0><br></br>needs to own the game.",
+      "p1": "Post an invite panel in Discord, and everyone who presses the join button automatically gets a <b0>Steam Remote Play Together</b0> invite link. Your friends can play along without buying the game.",
+      "t2": "Add to Discord",
+      "t3": "Download for Windows",
+      "p2": "Free and open source · <a0>macOS and Linux</a0>"
+    },
+    "worry": {
+      "t1": "Calling all hosts",
+      "h21": "Sound <span0>familiar?</span0>",
+      "t2": "Making links is a chore…",
+      "t3": "Every time a friend shows up, open Steam, make an invite link, copy, paste.",
+      "t4": "It falls apart as more join…",
+      "t5": "Third guest, fourth guest… The host is stuck handing out links and the game never starts.",
+      "t6": "They don't own the game…",
+      "t7": "The friend you want to invite doesn't have the game you want to play.",
+      "t8": "Inviting with Steam alone looks like this, for every guest",
+      "h22": "Remote Play Inviter<br></br><span0>fixes all of it!</span0>",
+      "t9": "Post the panel once. After that, each person who presses the button gets a link of their own.",
+      "t10": "Here is what it looks like for a guest",
+      "attr1": "A real recording: a guest presses the button on the Discord invite panel, an invite link arrives only for them, and the Steam invite page opens",
+      "figcaption1": "<span0>Real recording</span0> Press the button → a link only you can see → the Steam invite page"
+    },
+    "features": {
+      "h21": "Easy on <span0>your guests</span0>.",
+      "t1": "From anywhere",
+      "t2": "Join from a phone",
+      "t3": "With the Steam Link app, guests can play on a phone or tablet. No PC needed.",
+      "t4": "Free for guests",
+      "t5": "Only the host needs to own the game. Guests don't even need a Steam account.",
+      "t6": "Any supported game",
+      "t7": "Anything that supports Remote Play Together works. The bot tells you when a game doesn't.",
+      "t8": "Add it to yourself, use it anywhere",
+      "t9": "Add the bot to your own account and you can post invite panels in servers without the bot, in DMs and in group DMs.",
+      "t10": "Windows, macOS and Linux",
+      "t11": "Only the host installs the client. Guests don't need to install anything.",
+      "t12": "Open source",
+      "t13": "Published on GitHub under the MIT license. Forks and pull requests are welcome.",
+      "t14": "View on GitHub"
+    },
+    "start": {
+      "h21": "Get started in <span0>3 steps</span0>.",
+      "t1": "Only the host has to set anything up. Guests just open the link they receive.",
+      "t2": "Add the bot",
+      "t3": "We recommend adding it to your own account, so you can use it in servers without the bot and in DMs too.",
+      "t4": "Add to Discord",
+      "t5": "Start the client and link it",
+      "t6": "Open it while Steam is running and a link command is copied for you. Just paste it into Discord and send.",
+      "t7": "Download",
+      "t8": "Post an invite panel",
+      "p1": "Start a game that supports Remote Play Together and type <code0>/steam invite</code0> wherever you want to invite people.",
+      "t9": "FAQ",
+      "t10": "Is it really free?",
+      "t11": "Yes. Only the host needs to buy the game. Guests play for free.",
+      "t12": "Do guests need to install anything?",
+      "t13": "No. Only the host needs the client.",
+      "t14": "How long does an invite panel work?",
+      "t15": "Until you close the client. After restarting it, post a new panel.",
+      "t16": "It says the invite link is invalid",
+      "t17": "Invite links work only once. If you get disconnected, press the button again to get a new link.",
+      "t18": "Can I use it in servers without the bot, or in DMs?",
+      "t19": "Yes. Add the bot to your own account and you can use it in servers without the bot, in DMs and in group DMs. It won't work in servers that don't allow \"Use External Apps\".",
+      "faqController": {
+        "q": "Can I join without a controller?",
+        "a": "Yes. On a phone, you can play with the on-screen buttons in Steam Link. On a PC, follow <link>the guide to turn your keyboard into a controller</link>."
       },
-      {
-        "text": " ",
-        "style": "white"
-      },
-      {
-        "text": "Easy",
-        "style": "white"
-      },
-      {
-        "text": " Discord",
-        "style": "discord"
-      },
-      {
-        "text": " Invites",
-        "style": "white"
-      }
-    ],
-    "description": "A Discord bot that makes Steam Remote Play Together invitations easy.",
-    "description2": "If one person owns the game, participants can join for free!",
-    "getStarted": "Get Started",
-    "viewGitHub": "View on GitHub",
-    "slides": [
-      {
-        "alt": "Remote Play Inviter Concept Diagram",
-        "title": "Easy Invitation System"
-      },
-      {
-        "alt": "Local Multiplayer with Remote Friends",
-        "title": "Multiplayer Support"
-      }
-    ]
-  },
-  "nav": {
-    "features": "Features",
-    "setup": "Setup",
-    "download": "Download",
-    "github": "GitHub"
-  },
-  "problemSolution": {
-    "title": "Why Remote Play Inviter?",
-    "problem": {
-      "title": "With Official Steam Client...",
-      "point1": "Host must manually generate invite links one by one",
-      "point2": "Tedious copy-paste process",
-      "point3": "More participants = more complexity"
-    },
-    "solution": {
-      "title": "With Remote Play Inviter",
-      "point1": "Create invite panel once on Discord",
-      "point2": "Automatic invite link generation when participants click",
-      "point3": "Host does nothing - fully automated!"
-    },
-    "media": {
-      "videoCaption": {
-        "without": "Traditional Method: Manual Link Generation",
-        "with": "Remote Play Inviter: Automated Invitations"
-      },
-      "videoFallback": "Your browser does not support video playback."
+      "t20": "Is this an official Steam tool?",
+      "t21": "No. Remote Play Together is an official Steam feature, but this tool is unofficial.",
+      "h22": "Try it at<br></br>tonight's game night.",
+      "t22": "Only the host needs to set it up. Guests just press a button.",
+      "t23": "Add to Discord",
+      "t24": "Download",
+      "t25": "This is an unofficial tool not affiliated with Valve. Steam and Remote Play Together are trademarks of Valve Corporation.",
+      "t26": "All downloads",
+      "attr1": "Back to top"
     }
-  },
-  "features": {
-    "title": "Key Features",
-    "discord": {
-      "title": "Discord BOT",
-      "description": "Convenient bot that simplifies invite link generation and sharing through Discord"
-    },
-    "autoInvite": {
-      "title": "Auto Invite Links",
-      "description": "Invite links are automatically generated when participants click the button"
-    },
-    "free": {
-      "title": "Completely Free",
-      "description": "Uses Steam's official features. Participants play for free if one person owns the game"
-    }
-  },
-  "setup": {
-    "title": "Easy 3-Step Setup",
-    "step1": {
-      "title": "Invite the Bot",
-      "description": "Click \"Add to Server\" to install the Remote Play Inviter bot to your Discord server",
-      "button": "Invite Bot"
-    },
-    "step2": {
-      "title": "Download Client",
-      "description": "Download the Remote Play Inviter client, launch it, and copy the client_id",
-      "button": "Download"
-    },
-    "step3": {
-      "title": "Link Bot & Client",
-      "description": "In Discord, type `/steam invite client_id:~~~` to link the bot and client"
-    },
-    "media": {
-      "altText": {
-        "botInvite": "Bot Invitation Screen",
-        "clientScreen": "Client Screen",
-        "setupScreen": "Setup Screen"
-      }
-    }
-  },
-  "howToUse": {
-    "title": "How to Use",
-    "subtitle": "Check the actual operation steps in the video",
-    "videoTitle": "Invitation & Participation Demo Video",
-    "videoDescription": "See all steps from hosting to joining in one video",
-    "step1": {
-      "title": "Host: Create Invite Panel",
-      "description": "Type `/steam invite` to send an invite panel. You can send it privately via DM or recruit participants on a large scale through group DMs or server channels."
-    },
-    "step2": {
-      "title": "Participants: Click Join Button",
-      "description": "Click the \"Join Game Now!\" button to automatically generate your personal invite link."
-    },
-    "step3": {
-      "title": "Participants: Open Steam",
-      "description": "When the invite link is generated, click \"Click to Join Game!\" to open the Steam Remote Play Together page. Then just follow Steam's instructions and enjoy the game!"
-    },
-    "media": {
-      "videoFallback": "Your browser does not support video playback.",
-      "altText": {
-        "discordPanel": "Discord Invitation Panel",
-        "joinButton": "Join Button Clicked Screen",
-        "steamScreen": "Steam Remote Play Together Screen"
-      }
-    }
-  },
-  "media": {
-    "videoFallback": "Your browser does not support video playback.",
-    "videoCaption": {
-      "without": "Traditional Method: Manual Link Generation",
-      "with": "Remote Play Inviter: Automated Invitations"
-    },
-    "altText": {
-      "botInvite": "Bot Invitation Screen",
-      "clientScreen": "Client Screen",
-      "setupScreen": "Setup Screen",
-      "discordPanel": "Discord Invitation Panel",
-      "joinButton": "Join Button Clicked Screen",
-      "steamScreen": "Steam Remote Play Together Screen"
-    }
-  },
-  "faq": {
-    "title": "Frequently Asked Questions",
-    "q1": {
-      "question": "Q. Is this tool free?",
-      "answer": "Yes, it's free. However, the host needs to purchase the game on Steam. Participants can play completely for free."
-    },
-    "q2": {
-      "question": "Q. Which OS is supported?",
-      "answer": "The client supports Windows/Mac/Linux. However, only the host needs to download the client. Participants don't need the client and can join games just by receiving invite links."
-    },
-    "q3": {
-      "question": "Q. How long is the invite panel valid?",
-      "answer": "It's valid until you close the client. When you restart the client, the invite panel becomes invalid, so please create a new invite panel."
-    },
-    "q4": {
-      "question": "Q. Is this tool an official Steam feature?",
-      "answer": "No. \"Steam Remote Play Together\" is an official Steam feature, but this tool \"Remote Play Inviter\" is not official. This tool is an unofficial utility that automates the invite link generation for \"Remote Play Together\"."
-    },
-    "q5": {
-      "question": "Q. It says the invite link is invalid.",
-      "answer": "Invite links are single-use and become invalid once used. If disconnected, please click the \"Generate Invite Link\" button again to regenerate the link."
-    },
-    "q6": {
-      "question": "Q. Which games can I use this with?",
-      "answer": "You can use it with any game that supports Steam Remote Play Together."
-    },
-    "q7": {
-      "question": "Q. Can I use this on any Discord server?",
-      "answer": "Yes, it works on any server. However, it won't work on Discord servers where \"Use External Apps\" is not permitted."
-    },
-    "q8": {
-      "question": "Q. Is the source code publicly available?",
-      "answer": "Yes, it's available on GitHub. You're free to modify and use it. Pull requests are welcome."
-    },
-    "q9": {
-      "question": "Q. Can I play without a controller?",
-      "answer": "You can use software called x360ce to emulate a gamepad with your keyboard. Please see here for detailed instructions."
-    }
-  },
-  "cta": {
-    "title": "Get Started Now!",
-    "description": "Start your fun gaming experience with friends using Remote Play Inviter",
-    "inviteBot": "Invite Bot",
-    "downloadClient": "Download Client"
-  },
-  "footer": {
-    "description": "This tool is an unofficial tool unrelated to Steam.",
-    "description2": " official features more convenient to use",
-    "sourceCode": {
-      "client": "Source Code (Client)",
-      "bot": "Source Code (Bot)",
-      "web": "Source Code (Web)"
-    },
-    "license": "Licensed under the MIT License"
-  },
-  "diagram": {
-    "text1": "Invite via Discord",
-    "text2": "Auto-generate links!",
-    "multiplayer1": "Remote Friends",
-    "multiplayer2": "Local Multiplayer",
-    "multiplayer3": "No Purchase Required!",
-    "multiplayer4": ""
   },
   "anim": {
     "ifl": {

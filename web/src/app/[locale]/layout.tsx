@@ -38,12 +38,13 @@ export default async function LocaleLayout({
   }
   // Lets the pages under this layout render statically
   setRequestLocale(locale);
-  const messages = await getMessages();
+  // Client components only read the animation copy, so only that goes to the browser
+  const { anim } = (await getMessages()) as { anim: Record<string, unknown> };
 
   return (
     <html lang={locale} className="scroll-smooth">
       <body className={`${fontVariables} antialiased`}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={{ anim }}>
           {children}
         </NextIntlClientProvider>
       </body>
