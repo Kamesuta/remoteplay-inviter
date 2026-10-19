@@ -1,6 +1,6 @@
 # Steam Remoteplay Inviter BOT
 
-このリポジトリは、「[Steam Remoteplay Inviter](https://github.com/Kamesuta/remoteplay-inviter-web)」ツールのバックエンドとして機能するDiscord BOTのソースコードを管理しています。
+「[Steam Remoteplay Inviter](https://steaminviter.app)」のバックエンドとして動く Discord BOT です。Cloudflare Workers で動きます。
 
 ## 概要
 
@@ -11,98 +11,80 @@
 *   **スラッシュコマンド**: Discordの `/steam` コマンド群を提供し、直感的な操作を実現します。
 *   **招待パネル**: ゲームへの参加ボタンが付いた招待パネルをDiscord上に作成します。
 *   **招待リンクの自動発行**: 参加ボタンが押されると、BOTがホストのクライアントと連携し、自動で招待リンクを発行して参加者に通知します。
-*   **多言語対応**: i18nを利用し、日本語と英語に対応しています。
+*   **多言語対応**: 日本語と英語に対応しています（`locales/`）。
 
-## セットアップ方法
+## 構成
+
+| 部分 | 役割 |
+| --- | --- |
+| Worker (`src/index.ts`) | Discord の Interactions Endpoint (`POST /interactions`)、クライアントの WebSocket 接続、`GET /` のダウンロードページへのリダイレクト |
+| Durable Object (`src/daemon/DaemonObject.ts`) | クライアント 1 台につき 1 つ。WebSocket Hibernation API で接続を持ち、クライアントへの問い合わせを中継します |
+| D1 (`migrations/`) | Discord ユーザーとクライアントの紐づけ (`UserData`) |
+| Cron Trigger | 1 時間ごとに利用状況をログに出します |
+
+- Discord とは Gateway ではなく HTTP の Interactions で通信します。3 秒以内に応答し、時間のかかる処理は応答後に続けます。
+- 接続を保つための ping はクライアントが送ります（Workers の実行環境が自動で Pong を返します）。
+- クライアントとの通信の形式は `src/daemon/models.ts` と `client/src/models.rs` にあります。
+
+## 開発
 
 ### 前提条件
 
-*   [Node.js](https://nodejs.org/) (v22.x)
-*   データベース (MySQL)
+*   [Node.js](https://nodejs.org/) (v22 以上)
+*   Cloudflare アカウント（`npx wrangler login` でログイン）
 
-### 1. インストール
-
-リポジトリをクローンし、依存パッケージをインストールします。
+依存パッケージを追加・更新するときは npm 11 以上を使ってください（npm 10 では依存の解決に失敗することがあります。`npm ci` は npm 10 でも動きます）。
 
 ```bash
-git clone https://github.com/Kamesuta/remoteplay-inviter-bot.git
-cd remoteplay-inviter-bot
-npm install
+npm ci
 ```
 
-### 2. 環境変数の設定
-
-`.env.sample` ファイルをコピーして `.env` ファイルを作成します。
+### ローカルで動かす
 
 ```bash
-cp .env.sample .env
+cp .dev.vars.example .dev.vars   # DISCORD_TOKEN と DISCORD_PUBLIC_KEY を書く
+npx wrangler d1 migrations apply remoteplay-inviter --local
+npm run dev
 ```
 
-次に、`.env` ファイルをエディタで開き、以下の各項目を設定してください。
+クライアントを `ws://localhost:8787` につなぐには、実行ファイルの隣に `remoteplay-inviter.endpoint.toml`（`url = "ws://localhost:8787"`）を置きます。開発版のクライアントは版が `0.1.0` なので、`npm run dev -- --var DAEMON_REQUIRED_VERSION:0.1.0` で起動してください。
 
-| 変数名                      | 説明                                                                                             | 例                                                 |
-| --------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
-| `DISCORD_TOKEN`             | **(必須)** あなたのDiscordボットのトークン。                                                     | `M...`                                             |
-| `DATABASE_URL`              | **(必須)** Prismaが使用するデータベースの接続URL。                                               | `mysql://user:password@localhost:3306/mydb`   |
-| `PORT`                      | クライアントアプリ（デーモン）からの接続を待ち受けるためのポート番号です。                                  | `8000`                                             |
-| `DAEMON_REQUIRED_VERSION`   | **(必須)** 要求するクライアントアプリの最低バージョン。                                          | `1.0.0`                                            |
-| `DAEMON_DOWNLOAD_URL`       | **(必須)** クライアントアプリのバージョンが古い場合に表示するダウンロードURL。                   | `https://github.com/Kamesuta/remoteplay-inviter/releases/latest` |
-
-
-## 実行方法
-
-### 1. データベースのマイグレーション
-
-以下のコマンドを実行して、データベースのスキーマをセットアップします。
+### 確認
 
 ```bash
-npx prisma migrate deploy
+npm run typecheck
+npm run lint
+npm test
 ```
 
-### 2. Discordコマンドの登録
+### 設定
 
-BOTが使用するスラッシュコマンドをDiscordに登録します。
+| 名前 | 種類 | 説明 |
+| --- | --- | --- |
+| `DISCORD_APPLICATION_ID` | vars | Discord アプリケーションの ID |
+| `DAEMON_REQUIRED_VERSION` | vars | 接続を受け付けるクライアントの最低バージョン |
+| `DAEMON_DOWNLOAD_URL` | vars | 更新が必要なクライアントに案内するページ |
+| `DISCORD_TOKEN` | secret | BOT のトークン（統計とコマンド登録に使う） |
+| `DISCORD_PUBLIC_KEY` | secret | Interactions の署名検証に使う公開鍵 |
+
+vars は `wrangler.toml` に、secret は `npx wrangler secret put <名前>` で設定します。
+
+## デプロイ
 
 ```bash
-npm run register
+npx wrangler d1 migrations apply remoteplay-inviter --remote
+npm run deploy
 ```
 
-### 3. BOTの起動 (開発環境)
+Discord Developer Portal の「Interactions Endpoint URL」には `https://<Worker のホスト名>/interactions` を設定します。
 
-以下のコマンドでBOTを起動します。`tsx`によりTypeScriptコードが直接実行されます。
+### コマンドの登録
+
+コマンドの定義（`src/discord/commands.ts`）を変えたときだけ実行します。
 
 ```bash
-npm start
+DISCORD_TOKEN=<BOT のトークン> npm run register
 ```
-
-### 4. 本番環境向けのビルドと起動
-
-まず、TypeScriptをJavaScriptにビルドします。
-
-```bash
-npm run build
-```
-
-ビルドが完了すると、`dist` ディレクトリにファイルが生成されます。以下のコマンドでビルドされたコードを実行します。
-
-```bash
-node dist/index.js
-```
-
-## 開発向け情報
-
-### リンターとフォーマッター
-
-コードの品質を保つため、ESLintとPrettierを使用しています。
-
-*   **リンターの実行**: `npm run lint`
-*   **フォーマッターの実行**: `npm run prettier`
-
-## 関連リポジトリ
-
-*   **[remoteplay-inviter-web](https://github.com/Kamesuta/remoteplay-inviter-web)**: プロジェクトの公式ウェブサイト
-*   **[remoteplay-inviter](https://github.com/Kamesuta/remoteplay-inviter)**: ホストのPCで実行されるクライアントアプリケーション
-*   **[remoteplay-inviter-bot](https://github.com/Kamesuta/remoteplay-inviter-bot)**: このリポジトリ
 
 ## シーケンス図
 
