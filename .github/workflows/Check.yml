@@ -8,6 +8,9 @@ on:
 jobs:
   check:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: client
     strategy:
       fail-fast: false
       matrix:

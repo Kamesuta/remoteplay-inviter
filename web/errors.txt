@@ -1,0 +1,351 @@
+Error: In HTML, <html> cannot be a child of <body>.
+This will cause a hydration error.
+
+  ...
+    <HotReload assetPrefix="" globalError={[...]}>
+      <AppDevOverlay state={{nextId:1, ...}} globalError={[...]}>
+        <AppDevOverlayErrorBoundary globalError={[...]} onError={function bound dispatchSetState}>
+          <ReplaySsrOnlyErrors>
+          <DevRootHTTPAccessFallbackBoundary>
+            <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+              <HTTPAccessFallbackErrorBoundary pathname="/ja/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <Head>
+                    <script>
+                    <script>
+                    <RootLayout>
+                      <html>
+>                       <body>
+                          ...
+                            <InnerLayoutRouter url="/ja/" tree={[...]} cacheNode={{lazyData:null, ...}} ...>
+                              <link>
+                              <script>
+                              <script>
+                              <LocaleLayout>
+>                               <html lang="ja" className="scroll-smooth">
+                    ...
+        ...
+
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at validateDOMNesting (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:4095:211)
+    at resolveSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12601:34)
+    at completeWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8350:124)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at completeUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10308:23)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10245:28)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10135:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10118:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9877:56)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10826:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:1982:64)
+    at html (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?7:226:263)
+
+
+
+    Error: <body> cannot contain a nested <html>.
+See this log for the ancestor stack trace.
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:4097:21
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at validateDOMNesting (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:4096:178)
+    at resolveSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12601:34)
+    at completeWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8350:124)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at completeUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10308:23)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10245:28)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10135:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10118:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9877:56)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10826:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:1982:64)
+    at body (<anonymous>)
+    at RootLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C_6f1103e4._.js?0:16:270)
+
+
+    Error: You are mounting a new html component when a previous one has not first unmounted. It is an error to render more than one html component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <html> and if you need to mount a new one, ensure any previous ones have unmounted first.
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at acquireSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12623:21)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at commitHostSingletonAcquisition (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8864:13)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9017:50)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9020:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9020:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at html (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?7:226:263)
+
+
+Error: You are mounting a new body component when a previous one has not first unmounted. It is an error to render more than one body component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <body> and if you need to mount a new one, ensure any previous ones have unmounted first.
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at acquireSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12623:21)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at commitHostSingletonAcquisition (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8864:13)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9017:50)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9020:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9020:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9020:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9057:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8980:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at commitLayoutEffectOnFiber (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8984:17)
+    at recursivelyTraverseLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9451:105)
+    at body (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?6:244:264)
+
+
+Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload assetPrefix="" globalError={[...]}>
+      <AppDevOverlay state={{nextId:1, ...}} globalError={[...]}>
+        <AppDevOverlayErrorBoundary globalError={[...]} onError={function bound dispatchSetState}>
+          <ReplaySsrOnlyErrors>
+          <DevRootHTTPAccessFallbackBoundary>
+            <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+              <HTTPAccessFallbackErrorBoundary pathname="/ja/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <Head>
+                    <script>
+                    <script>
+                    <RootLayout>
+                      <html
+-                       lang="ja"
+-                       className="scroll-smooth"
+                      >
+                        <body
+-                         className="geist_e531dabc-module__QGiZLq__variable geist_mono_68a01160-module__YLcDdW__varia..."
+                        >
+                          ...
+                            <link>
+                            <script>
+                            <script>
+                            <LocaleLayout>
+                              <html lang="ja" className="scroll-smooth">
+                                <head>
++                                 <link
++                                   rel="stylesheet"
++                                   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
++                                 >
+-                                 <meta charset="utf-8">
+                                ...
+                    ...
+        ...
+
+    at throwOnHydrationMismatch (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:5037:56)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8209:918)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10243:97)
+    at workLoopConcurrentByScheduler (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10239:58)
+    at renderRootConcurrent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10221:71)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9853:176)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:10826:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:1982:64)
+    at link (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?4:231:278)
+
+
+Error: You are mounting a new html component when a previous one has not first unmounted. It is an error to render more than one html component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <html> and if you need to mount a new one, ensure any previous ones have unmounted first.
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at acquireSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12623:21)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at commitHostSingletonAcquisition (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8864:13)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9516:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9519:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9519:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at html (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?7:226:263)
+
+
+
+Error: You are mounting a new body component when a previous one has not first unmounted. It is an error to render more than one body component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <body> and if you need to mount a new one, ensure any previous ones have unmounted first.
+    at createConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:882:71)
+    at handleConsoleError (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1058:54)
+    at console.error (http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_8f19e6fb._.js:1223:57)
+    at acquireSingletonInstance (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:12623:21)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:3073:74)
+    at commitHostSingletonAcquisition (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:8864:13)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9516:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9519:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9519:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9519:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9547:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9496:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at reappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9500:17)
+    at recursivelyTraverseReappearLayoutEffects (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_2ce9398a._.js:9553:68)
+    at body (<anonymous>)
+    at LocaleLayout (rsc://React/Server/D:%5Csoftdata%5Cgit%5Cremoteplay-inviter-web%5Cout%5Cserver%5Cchunks%5Cssr%5C%5Broot-of-the-server%5D__d952ece6._.js?6:244:264)
