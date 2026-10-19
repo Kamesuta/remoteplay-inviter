@@ -9,7 +9,8 @@
     "lint": "next lint",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
+    "record": "node scripts/record-gif.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.1",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.3",
+    "playwright-core": "^1.48.2",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.26.0"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ComponentType } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import OgCard from "@/components/OgCard";
 import Compare from "@/components/anim/Compare";
 import GuideAdd from "@/components/anim/GuideAdd";
 import GuideCheck from "@/components/anim/GuideCheck";
@@ -16,7 +17,8 @@ import Phone from "@/components/anim/Phone";
 import Setup from "@/components/anim/Setup";
 import Worry from "@/components/anim/Worry";
 
-// One animation alone at its stage size, for recording GIFs (Discord can't play the page's animations)
+// One animation alone at its stage size, for recording GIFs (Discord can't play the page's animations),
+// and the card recorded into the social media image
 const ANIMS: Record<string, ComponentType> = {
   "invite-flow": InviteFlow,
   worry: Worry,
@@ -31,6 +33,7 @@ const ANIMS: Record<string, ComponentType> = {
   "guide-check": GuideCheck,
   "join-phone": JoinPhone,
   "join-pc": JoinPC,
+  "og-card": OgCard,
 };
 
 export const dynamicParams = false;
