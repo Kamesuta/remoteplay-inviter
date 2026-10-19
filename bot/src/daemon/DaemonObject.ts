@@ -22,6 +22,12 @@ export interface DaemonStatus {
   sessionId?: number;
 }
 
+/** State kept with each connection (survives hibernation) */
+interface ConnectionAttachment extends DaemonConnection {
+  /** When the connection was accepted (ms) */
+  connectedAt: number;
+}
+
 /** Request waiting for a response */
 interface PendingRequest {
   /** Connection the request was sent on */
@@ -55,8 +61,13 @@ export class DaemonObject extends DurableObject<Env> {
       request.headers.get('X-Daemon-Connection') ?? '{}',
     ) as DaemonConnection;
 
-    // Replace any previous connection of the same client
+    // A reconnect from the same client process replaces its old connection.
+    // Another process with the same client ID (e.g. started twice) keeps its connection and the
+    // newest one is used: closing it would make the processes keep reconnecting to each other.
     for (const ws of this.ctx.getWebSockets()) {
+      const attachment =
+        ws.deserializeAttachment() as ConnectionAttachment | null;
+      if (attachment?.sessionId !== connection.sessionId) continue;
       this._settleRequests(ws, 'error.daemon_disconnected');
       try {
         ws.close(CLOSE_REPLACED, 'Replaced by a new connection');
@@ -68,7 +79,10 @@ export class DaemonObject extends DurableObject<Env> {
     const pair = new WebSocketPair();
     const [client, server] = [pair[0], pair[1]];
     this.ctx.acceptWebSocket(server);
-    server.serializeAttachment(connection);
+    server.serializeAttachment({
+      ...connection,
+      connectedAt: Date.now(),
+    } satisfies ConnectionAttachment);
 
     await this._greet(server, connection).catch((err: unknown) => {
       console.error(`Failed to greet client ${connection.daemonId}`, err);
@@ -205,12 +219,18 @@ export class DaemonObject extends DurableObject<Env> {
 
   /**
    * Current connection
-   * @returns the open connection, if any
+   * @returns the newest open connection, if any
    */
   private _socket(): WebSocket | undefined {
-    return this.ctx
-      .getWebSockets()
-      .find((ws) => ws.readyState === WebSocket.OPEN);
+    let newest: { ws: WebSocket; connectedAt: number } | undefined;
+    for (const ws of this.ctx.getWebSockets()) {
+      if (ws.readyState !== WebSocket.OPEN) continue;
+      const { connectedAt } =
+        ws.deserializeAttachment() as ConnectionAttachment;
+      if (!newest || connectedAt >= newest.connectedAt)
+        newest = { ws, connectedAt };
+    }
+    return newest?.ws;
   }
 
   /**

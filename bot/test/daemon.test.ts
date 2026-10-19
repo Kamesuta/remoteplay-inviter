@@ -103,17 +103,38 @@ describe('connection', () => {
     expect(row).toEqual({ daemonVersion: '0.3.1' });
   });
 
-  it('replaces the previous connection of the same client', async () => {
+  it('replaces the previous connection of the same client process', async () => {
     const first = await connect('replace', 1);
     await first.next();
-    const second = await connect('replace', 2);
+    const second = await connect('replace', 1);
     await second.next();
     expect((await first.closed).code).toBe(4000);
     expect(await daemon('replace').status()).toEqual({
       online: true,
       version: '0.3.1',
-      sessionId: 2,
+      sessionId: 1,
     });
+  });
+
+  it('keeps another process with the same client ID and uses the newest', async () => {
+    const first = await connect('twice', 1);
+    await first.next();
+    const second = await connect('twice', 2);
+    await second.next();
+    expect(first.ws.readyState).toBe(WebSocket.OPEN);
+    expect(await daemon('twice').status()).toMatchObject({ sessionId: 2 });
+
+    // Requests go to the newest connection
+    const result = daemon('twice').request(DaemonCmd.gameId, USER, {}, 5_000);
+    const request = await second.next();
+    second.ws.send(JSON.stringify({ id: request.id, cmd: 'game', game: 1 }));
+    expect(await result).toMatchObject({ ok: true });
+
+    // The older one takes over when the newest disconnects
+    second.ws.close(1000, 'bye');
+    await expect
+      .poll(() => daemon('twice').status())
+      .toMatchObject({ sessionId: 1 });
   });
 
   it('is offline when no client is connected', async () => {

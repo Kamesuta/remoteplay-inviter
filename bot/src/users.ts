@@ -79,14 +79,16 @@ export class UserStore {
   }
 
   /**
-   * Record the version of a connected client
+   * Record the version of a connected client (written only when it changed)
    * @param daemonId client ID
    * @param daemonVersion version of the client
    */
   async updateVersion(daemonId: string, daemonVersion: string): Promise<void> {
     await this._db
-      .prepare('UPDATE UserData SET daemonVersion = ? WHERE daemonId = ?')
-      .bind(daemonVersion, daemonId)
+      .prepare(
+        'UPDATE UserData SET daemonVersion = ? WHERE daemonId = ? AND daemonVersion IS NOT ?',
+      )
+      .bind(daemonVersion, daemonId, daemonVersion)
       .run();
   }
 
