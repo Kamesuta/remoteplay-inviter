@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -20,6 +20,8 @@ export async function generateMetadata({
     locale,
   });
 }
+
+export const viewport: Viewport = { themeColor: "#0f1a28" };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
