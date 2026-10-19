@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG Image Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1e293b;
+        }
+        
+        .og-container {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e1b4b 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                radial-gradient(circle at 100px 100px, #66c0f4 50px, transparent 50px),
+                radial-gradient(circle at 1100px 530px, #5865f2 80px, transparent 80px),
+                radial-gradient(circle at 200px 500px, #8b5cf6 30px, transparent 30px),
+                radial-gradient(circle at 1000px 150px, #66c0f4 40px, transparent 40px);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 60px 30px 60px;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        
+        .header-title {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            margin: 0;
+        }
+        
+        .main-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            padding: 0 60px;
+        }
+        
+        .left-content {
+            flex: 1;
+            max-width: 600px;
+            margin-left: 50px;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 26px;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+            color: #10b981;
+        }
+        
+        .right-content {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -30px;
+        }
+        
+        .game-share-visual {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        
+        .center-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1b2838, #66c0f4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
+        .shared-player {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 3px solid #10b981;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #10b981;
+        }
+        
+        .shared-player:nth-child(2) { top: 0; left: 50%; transform: translateX(-50%); }
+        .shared-player:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); }
+        .shared-player:nth-child(4) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .shared-player:nth-child(5) { top: 50%; left: 0; transform: translateY(-50%); }
+        
+        .connection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, #66c0f4, transparent);
+            transform-origin: center;
+            z-index: 5;
+        }
+        
+        .connection:nth-child(6) { height: 140px; transform: translate(-50%, -50%) rotate(0deg); }
+        .connection:nth-child(7) { height: 140px; transform: translate(-50%, -50%) rotate(90deg); }
+        .connection:nth-child(8) { height: 140px; transform: translate(-50%, -50%) rotate(180deg); }
+        .connection:nth-child(9) { height: 140px; transform: translate(-50%, -50%) rotate(270deg); }
+        
+        .bottom-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 0px 60px 60px 60px;
+            z-index: 2;
+        }
+        
+        .action-btn {
+            padding: 24px 50px;
+            border-radius: 35px;
+            font-size: 28px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .download-btn {
+            background: #1b2838;
+            border: 2px solid #66c0f4;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .download-btn:hover {
+            background: #2c3e50;
+            border-color: #8fd3f4;
+        }
+        
+        .invite-btn {
+            background: linear-gradient(135deg, #5865f2, #7289da);
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        
+        .generate-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .lang-btn {
+            padding: 12px 24px;
+            background: #374151;
+            color: white;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .lang-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        
+        .highlight {
+            color: #00d4ff;
+            text-decoration: underline;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="og-container" id="ogContainer">
+        <div class="bg-pattern"></div>
+        
+        <div class="header">
+            <div class="header-left">
+                <img src="../../assets/branding/logo.png" alt="Logo" class="logo">
+                <h1 class="header-title">Remote Play Inviter</h1>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-content">
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-wifi"></i></span>
+                        <span></span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">$0</span>
+                        <span></span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon"><i class="fab fa-discord"></i></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-content">
+                <div class="game-share-visual">
+                    <div class="center-player"><i class="fas fa-gamepad"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="shared-player"><i class="fas fa-user"></i></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                    <div class="connection"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-section">
+            <a href="#" class="action-btn download-btn">
+                <i class="fas fa-download" style="font-size: 28px;"></i>
+                <span>ダウンロード</span>
+            </a>
+            <a href="#" class="action-btn invite-btn">
+                <i class="fas fa-robot" style="font-size: 28px;"></i>
+                <span>BOTを招待</span>
+            </a>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="lang-btn active" onclick="switchLanguage('ja', this)">日本語</button>
+        <button class="lang-btn" onclick="switchLanguage('en', this)">English</button>
+        <button class="generate-btn" onclick="downloadImage()">Download as PNG</button>
+    </div>
+    
+    <script>
+        const messages = {
+            ja: {
+                title: 'Remote Play Inviter',
+                features: [
+                    '離れたお友達と簡単に<span class="highlight">ローカルマルチプレイ</span>！',
+                    '一人が持ってたらほかの人はゲーム<span class="highlight">購入不要</span>',
+                    '<span class="highlight">Discord上で</span>自動で招待リンクを発行！'
+                ],
+                downloadBtn: 'ダウンロード',
+                inviteBtn: 'BOTを招待'
+            },
+            en: {
+                title: 'Remote Play Inviter',
+                features: [
+                    'Easy <span class="highlight">local multiplayer</span> with distant friends!',
+                    'One purchase, others play <span class="highlight">free</span>',
+                    '<span class="highlight">On Discord</span> automatically issue invitation links!'
+                ],
+                downloadBtn: 'Download',
+                inviteBtn: 'Invite BOT'
+            }
+        };
+        
+        function switchLanguage(lang, clickedButton = null) {
+            // ボタンのアクティブ状態を切り替え
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            } else {
+                // 初期化時は該当する言語ボタンをアクティブにする
+                const targetBtn = document.querySelector(`[onclick="switchLanguage('${lang}')"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+            
+            // コンテンツを更新
+            const msg = messages[lang];
+            document.querySelector('.header-title').textContent = msg.title;
+            
+            const featureItems = document.querySelectorAll('.feature-item');
+            featureItems.forEach((item, index) => {
+                if (index < msg.features.length) {
+                    const textSpan = item.querySelector('span:last-child');
+                    textSpan.innerHTML = msg.features[index];
+                }
+            });
+            
+            document.querySelector('.download-btn span').textContent = msg.downloadBtn;
+            document.querySelector('.invite-btn span').textContent = msg.inviteBtn;
+        }
+        
+        // 初期化：日本語を表示
+        document.addEventListener('DOMContentLoaded', function() {
+            switchLanguage('ja');
+        });
+        
+        async function downloadImage() {
+            const container = document.getElementById('ogContainer');
+            
+            // より高品質な画像生成
+            const dataUrl = await domtoimage.toPng(container, {
+                width: 1200,
+                height: 630,
+                quality: 1,
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left'
+                }
+            });
+            
+            const link = document.createElement('a');
+            link.download = 'og-image.png';
+            link.href = dataUrl;
+            link.click();
+        }
+    </script>
+</body>
+</html>
