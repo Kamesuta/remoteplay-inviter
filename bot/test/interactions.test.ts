@@ -14,6 +14,7 @@ import {
   InteractionType,
   APIMediaGalleryComponent,
   APISectionComponent,
+  APITextDisplayComponent,
   MessageFlags,
   RESTPatchAPIWebhookWithTokenMessageJSONBody,
 } from 'discord-api-types/v10';
@@ -386,11 +387,88 @@ describe('invite button', () => {
       { id: GUEST.id, name: GUEST.username },
       { game: 1306180 },
     ]);
-    const body = services.calls[1]![2] as Record<string, any>;
-    expect(body.content).toContain('https://s.team/p/abc');
-    expect(body.components[0].components[0]).toMatchObject({
+    const body = services.calls[1]![2] as Body;
+    // Ephemeral comes from the deferred response; the edit only switches to V2
+    expect(body.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(body.content).toBeUndefined();
+
+    const components = containerOf(body);
+    // The join button comes first
+    const [, joinRow, otherDevice] = components as [
+      unknown,
+      APIActionRowComponent<APIButtonComponent>,
+      APITextDisplayComponent,
+    ];
+    expect(joinRow.components[0]).toMatchObject({
+      style: ButtonStyle.Link,
       url: 'https://s.team/p/abc',
     });
+    expect(otherDevice.content).toContain('`https://s.team/p/abc`');
+
+    // The guest's language (ja), not the host's
+    const galleries = components.flatMap((c) =>
+      c.type === ComponentType.MediaGallery
+        ? c.items.map((item) => item.media.url)
+        : [],
+    );
+    expect(galleries).toEqual([
+      'https://steaminviter.app/assets/discord/ja/join-phone-v1.gif',
+      'https://steaminviter.app/assets/discord/ja/join-pc-v1.gif',
+    ]);
+    const text = components
+      .flatMap((c) => (c.type === ComponentType.TextDisplay ? [c.content] : []))
+      .join('\n');
+    expect(text).toContain('https://steaminviter.app/ja/guide/x360ce');
+    const urls = components.flatMap((c) =>
+      c.type === ComponentType.ActionRow
+        ? c.components.map((b) => ('url' in b ? b.url : undefined))
+        : [],
+    );
+    expect(urls).toEqual([
+      'https://s.team/p/abc',
+      'https://apps.apple.com/app/steam-link/id1246969117',
+      'https://play.google.com/store/apps/details?id=com.valvesoftware.steamlink',
+    ]);
+  });
+
+  it('tells the error from the client as text', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      responses: { link: { ok: false, phrase: 'error.daemon_invite_failed' } },
+    });
+    await handleInteraction(click('7'), services);
+    await services.done();
+    expect(services.calls.at(-1)).toEqual([
+      'editOriginal',
+      'token',
+      { content: i18n.t('ja', 'error.daemon_invite_failed') },
+    ]);
+  });
+
+  it('falls back to a text reply when Discord refuses the message', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      responses: {
+        link: {
+          ok: true,
+          value: { id: 'x', cmd: 'link', url: 'https://s.team/p/abc' },
+        },
+      },
+    });
+    const edit = services.discord.editOriginal;
+    services.discord.editOriginal = (token, body) =>
+      body.flags
+        ? Promise.reject(new Error('400 Invalid Form Body'))
+        : edit(token, body);
+    await handleInteraction(click('7'), services);
+    await services.done();
+    expect(services.calls.at(-1)).toEqual([
+      'editOriginal',
+      'token',
+      { content: i18n.t('ja', 'error.internal') },
+    ]);
   });
 });
 

@@ -6,12 +6,25 @@ import {
   MessageFlags,
 } from 'discord-api-types/v10';
 import { DaemonUser } from '../daemon/models.js';
-
-/** Embed color (DarkBlue) */
-export const EMBED_COLOR = 3447003;
+import { languageOf } from '../i18n/translator.js';
 
 /** Accent color of the invite panel (Steam blue) */
 export const PANEL_COLOR = 0x1a9fff;
+
+/** Accent color of the invite link reply (Discord green) */
+export const LINK_COLOR = 0x248046;
+
+/** Website with the guides and the pictures used in messages */
+export const SITE_URL = 'https://steaminviter.app';
+
+/**
+ * Language part of the website URLs
+ * @param locale Discord locale
+ * @returns `ja` or `en`
+ */
+export function siteLanguage(locale: string | undefined): string {
+  return languageOf(locale);
+}
 
 /**
  * Show text as it is in Discord markdown

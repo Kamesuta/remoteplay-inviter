@@ -1,25 +1,63 @@
 import {
   APIButtonComponentWithCustomId,
+  APIButtonComponentWithURL,
+  APIContainerComponent,
   APIInteractionResponse,
   APIMessageComponentButtonInteraction,
   ButtonStyle,
   ComponentType,
   InteractionResponseType,
   MessageFlags,
+  SeparatorSpacingSize,
 } from 'discord-api-types/v10';
 import { DaemonCmd } from '../daemon/models.js';
 import { i18n } from '../i18n/index.js';
 import {
   afterResponse,
   daemonUser,
-  EMBED_COLOR,
   ephemeral,
   interactionUser,
+  LINK_COLOR,
+  SITE_URL,
+  siteLanguage,
+  subtext,
 } from './common.js';
 import { Services } from './services.js';
 
 /** How long to wait for the client to create a link */
 export const LINK_TIMEOUT_MS = 25_000;
+
+/** Steam Link on the phone app stores */
+const STEAM_LINK_STORES = [
+  {
+    label: 'App Store',
+    url: 'https://apps.apple.com/app/steam-link/id1246969117',
+  },
+  {
+    label: 'Google Play',
+    url: 'https://play.google.com/store/apps/details?id=com.valvesoftware.steamlink',
+  },
+];
+
+/**
+ * Animation of the joining steps (bump the version when the picture changes,
+ * since Discord keeps showing the cached one)
+ * @param locale guest's locale
+ * @param device `phone` or `pc`
+ * @returns GIF URL
+ */
+export function joinGifUrl(locale: string, device: 'phone' | 'pc'): string {
+  return `${SITE_URL}/assets/discord/${siteLanguage(locale)}/join-${device}-v1.gif`;
+}
+
+/**
+ * Guide to use the keyboard as a controller
+ * @param locale guest's locale
+ * @returns URL
+ */
+export function controllerGuideUrl(locale: string): string {
+  return `${SITE_URL}/${siteLanguage(locale)}/guide/x360ce`;
+}
 
 /** Button parameters kept in its custom ID */
 export interface InviteButtonParams {
@@ -124,41 +162,10 @@ export async function handleInviteButton(
           return;
         }
 
-        const link = result.value.url;
         await services.discord.editOriginal(token, {
-          content: i18n.t(locale, 'invite_button.invite_message', { link }),
-          embeds: [
-            {
-              fields: [
-                {
-                  name: i18n.t(locale, 'invite_button.how_to_join_mobile.name'),
-                  value: i18n.t(
-                    locale,
-                    'invite_button.how_to_join_mobile.value',
-                  ),
-                },
-                {
-                  name: i18n.t(locale, 'invite_button.how_to_join_pc.name'),
-                  value: i18n.t(locale, 'invite_button.how_to_join_pc.value'),
-                },
-              ],
-              color: EMBED_COLOR,
-            },
-          ],
-          components: [
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  style: ButtonStyle.Link,
-                  label: i18n.t(locale, 'invite_button.join_button'),
-                  url: link,
-                  emoji: { name: '🎮' },
-                },
-              ],
-            },
-          ],
+          // The reply stays ephemeral from the deferred response
+          flags: MessageFlags.IsComponentsV2,
+          components: [inviteReply(result.value.url, locale)],
         });
       },
       () =>
@@ -171,5 +178,90 @@ export async function handleInviteButton(
   return {
     type: InteractionResponseType.DeferredChannelMessageWithSource,
     data: { flags: MessageFlags.Ephemeral },
+  };
+}
+
+/**
+ * Reply with the invite link and how to join
+ * @param link invite link
+ * @param locale guest's locale
+ * @returns container
+ */
+function inviteReply(link: string, locale: string): APIContainerComponent {
+  const storeButtons: APIButtonComponentWithURL[] = STEAM_LINK_STORES.map(
+    ({ label, url }) => ({
+      type: ComponentType.Button,
+      style: ButtonStyle.Link,
+      label,
+      url,
+    }),
+  );
+  return {
+    type: ComponentType.Container,
+    accent_color: LINK_COLOR,
+    components: [
+      {
+        type: ComponentType.TextDisplay,
+        content: `## ${i18n.t(locale, 'invite_button.reply.title')}`,
+      },
+      {
+        type: ComponentType.ActionRow,
+        components: [
+          {
+            type: ComponentType.Button,
+            style: ButtonStyle.Link,
+            label: i18n.t(locale, 'invite_button.reply.join_button'),
+            url: link,
+            emoji: { name: '🎮' },
+          },
+        ],
+      },
+      {
+        type: ComponentType.TextDisplay,
+        content: subtext(
+          `${i18n.t(locale, 'invite_button.reply.other_device')}\n\`${link}\``,
+        ),
+      },
+      {
+        type: ComponentType.Separator,
+        divider: true,
+        spacing: SeparatorSpacingSize.Small,
+      },
+      {
+        type: ComponentType.TextDisplay,
+        content: `### ${i18n.t(locale, 'invite_button.reply.phone.title')}\n${i18n.t(locale, 'invite_button.reply.phone.steps')}`,
+      },
+      { type: ComponentType.ActionRow, components: storeButtons },
+      {
+        type: ComponentType.MediaGallery,
+        items: [
+          {
+            media: { url: joinGifUrl(locale, 'phone') },
+            description: i18n.t(locale, 'invite_button.reply.phone.gif'),
+          },
+        ],
+      },
+      {
+        type: ComponentType.TextDisplay,
+        content: [
+          `### ${i18n.t(locale, 'invite_button.reply.pc.title')}`,
+          i18n.t(locale, 'invite_button.reply.pc.steps'),
+          subtext(
+            i18n.t(locale, 'invite_button.reply.pc.note', {
+              guide_url: controllerGuideUrl(locale),
+            }),
+          ),
+        ].join('\n'),
+      },
+      {
+        type: ComponentType.MediaGallery,
+        items: [
+          {
+            media: { url: joinGifUrl(locale, 'pc') },
+            description: i18n.t(locale, 'invite_button.reply.pc.gif'),
+          },
+        ],
+      },
+    ],
   };
 }
