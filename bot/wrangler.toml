@@ -14,8 +14,8 @@ routes = [{ pattern = "gateway.steaminviter.app", custom_domain = true }]
 DISCORD_APPLICATION_ID = "1252429340780527714"
 # Clients older than this are asked to update
 DAEMON_REQUIRED_VERSION = "0.3.1"
-# Download page shown to clients that need an update
-DAEMON_DOWNLOAD_URL = "https://steaminviter.app/download"
+# Latest release, shown to clients that need an update and on `/steam setup`
+DAEMON_DOWNLOAD_URL = "https://github.com/Kamesuta/remoteplay-inviter/releases/latest"
 
 # One Durable Object per client, holding its WebSocket connection
 [[durable_objects.bindings]]

@@ -1,10 +1,12 @@
 import {
   APIChatInputApplicationCommandInteraction,
-  APIEmbed,
+  APIContainerComponent,
   APIInteractionResponse,
+  ButtonStyle,
   ComponentType,
   InteractionResponseType,
   MessageFlags,
+  SeparatorSpacingSize,
 } from 'discord-api-types/v10';
 import { DaemonCmd } from '../daemon/models.js';
 import { i18n } from '../i18n/index.js';
@@ -14,11 +16,13 @@ import {
   avatarUrl,
   daemonUser,
   displayName,
-  EMBED_COLOR,
   ephemeral,
+  escapeMarkdown,
   interactionUser,
+  PANEL_COLOR,
+  subtext,
 } from './common.js';
-import { inviteButton } from './inviteButton.js';
+import { InviteButtonParams, inviteButton } from './inviteButton.js';
 import { Services } from './services.js';
 
 /** How long to wait for the client to report the running game */
@@ -107,18 +111,15 @@ export async function handleInvite(
         }
 
         await services.discord.editOriginal(token, {
-          embeds: [inviteEmbed(interaction, game, storeLink(gameId, language))],
+          flags: MessageFlags.IsComponentsV2,
           components: [
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                inviteButton(
-                  { user: user.id, game: `${gameId}`, session: `${sessionId}` },
-                  locale,
-                ),
-              ],
-            },
+            invitePanel(interaction, game, storeLink(gameId, language), {
+              user: user.id,
+              game: `${gameId}`,
+              session: `${sessionId}`,
+            }),
           ],
+          allowed_mentions: { parse: [] },
         });
       },
       () => fail('error.internal'),
@@ -133,29 +134,70 @@ export async function handleInvite(
  * @param interaction interaction of the host
  * @param game game to play
  * @param link store link of the game
- * @returns embed
+ * @param button parameters of the invite button
+ * @returns container
  */
-function inviteEmbed(
+function invitePanel(
   interaction: APIChatInputApplicationCommandInteraction,
   game: GameInfo,
   link: string,
-): APIEmbed {
+  button: InviteButtonParams,
+): APIContainerComponent {
   const locale = interaction.locale;
+  const host = displayName(interaction);
+  const title = i18n.t(locale, 'invite_panel.title', {
+    name: escapeMarkdown(game.name),
+  });
+  const recruiting = i18n.t(locale, 'invite_panel.host', {
+    name: escapeMarkdown(host),
+  });
   return {
-    author: {
-      name: displayName(interaction),
-      icon_url: avatarUrl(interactionUser(interaction)),
-    },
-    title: i18n.t(locale, 'invite_panel.title', { name: game.name }),
-    url: link,
-    description: i18n.t(locale, 'invite_panel.description'),
-    fields: [
+    type: ComponentType.Container,
+    accent_color: PANEL_COLOR,
+    components: [
       {
-        name: i18n.t(locale, 'invite_panel.features.name'),
-        value: i18n.t(locale, 'invite_panel.features.value'),
+        type: ComponentType.Section,
+        components: [
+          {
+            type: ComponentType.TextDisplay,
+            content: `## ${title}\n${recruiting}`,
+          },
+        ],
+        accessory: {
+          type: ComponentType.Thumbnail,
+          media: { url: avatarUrl(interactionUser(interaction)) },
+          description: host,
+        },
+      },
+      {
+        type: ComponentType.MediaGallery,
+        items: [{ media: { url: game.headerImage }, description: game.name }],
+      },
+      {
+        type: ComponentType.TextDisplay,
+        content: i18n.t(locale, 'invite_panel.features'),
+      },
+      {
+        type: ComponentType.Separator,
+        divider: true,
+        spacing: SeparatorSpacingSize.Small,
+      },
+      {
+        type: ComponentType.ActionRow,
+        components: [
+          inviteButton(button, locale),
+          {
+            type: ComponentType.Button,
+            style: ButtonStyle.Link,
+            label: i18n.t(locale, 'invite_panel.store_button'),
+            url: link,
+          },
+        ],
+      },
+      {
+        type: ComponentType.TextDisplay,
+        content: subtext(i18n.t(locale, 'invite_panel.note')),
       },
     ],
-    image: { url: game.headerImage },
-    color: EMBED_COLOR,
   };
 }

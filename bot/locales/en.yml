@@ -28,43 +28,38 @@ invite_command:
 invite_panel:
   steam_language: english
   title: "Let's play {{name}} together for free!"
-  description: |-
-    If you want to join, please enter the room following the steps below.
-    (Once it's your turn, I'll automatically assign a controller for you)
-  features:
-    name: Features
-    value: |-
-      - Join for free even if you don't own the game
-      - Join from your PC or even **from your smartphone!**
-      - Play without a Steam account
+  host: '**{{name}}** is looking for players'
+  features: |-
+    - Join for free, **even without owning** the game
+    - Join **from your phone**, too
+    - **No** Steam account needed
+  store_button: Store page
+  note: Press the button to get an invite link that only you can see. The host gives you a controller when it's your turn.
 
 invite_button:
-  label: Get an invitation link to join the game!
+  label: Get a link to join
   error:
     daemon_not_linked: The host has not registered their client ID.
     daemon_offline: The host is offline.
     invalid_session: This invitation panel has expired. Please ask the host to enter `/steam invite` again.
     request_failed: Failed to send invitation request. The host may not have started the game.
-  invite_message: |-
-    Invitation link created!
-    {{{link}}}
-    Click the link to join the game
-  how_to_join_mobile:
-    name: How to Join (For Mobile)
-    value: |-
-      1. Click the link above.
-      2. Install the Steam Link app by clicking on the iOS/Android link on the page.
-      3. Press the "Join Game" button on the page to open the app.
-  how_to_join_pc:
-    name: How to Join (For PC)
-    value: |-
-      1. Click the link above.
-      2. (For those who don't have the Steam client) Install the Steam Link app by clicking on the Windows/macOS/Linux link on the page.
-      3. Connect a controller (Pro Controller, Joy-Con, PlayStation Controller, Xbox Controller, etc.) to your PC.
-         If you don't have one, please install a controller emulator following the [x360ce installation guide](https://bit.ly/x360ce-tutorial).
-         If x360ce doesn't work, you can try playing on your mobile device.
-      4. Press the "Join Game" button on the page to open the Steam Link app.
-  join_button: Click to join the game!
+  reply:
+    title: Your invite link is ready!
+    join_button: Join the game
+    other_device: To play on another device, open this link on that device
+    phone:
+      title: Play on a phone
+      steps: |-
+        1. Install the Steam Link app
+        2. Press "Join the game" above
+      gif: 'Joining from a phone: press "Join the game", then press "Join Game" on the Steam page that opens'
+    pc:
+      title: Play on a PC
+      steps: |-
+        1. Connect a controller
+        2. Press "Join the game" above
+      note: If Steam isn't installed, get Steam Link from the page that opens. No controller? Follow the [x360ce guide]({{{guide_url}}}) or play on your phone.
+      gif: 'Joining from a PC: connect a controller, press "Join the game", then press "Join Game" on the Steam page that opens'
 
 daemon:
   welcome_message: |-

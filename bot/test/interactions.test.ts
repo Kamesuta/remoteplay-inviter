@@ -1,13 +1,22 @@
 import { env, SELF } from 'cloudflare:test';
 import {
+  APIActionRowComponent,
+  APIButtonComponent,
+  APIComponentInContainer,
+  APIContainerComponent,
   APIInteraction,
   APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandOptionType,
   ApplicationCommandType,
+  ButtonStyle,
   ComponentType,
   InteractionResponseType,
   InteractionType,
+  APIMediaGalleryComponent,
+  APISectionComponent,
+  APITextDisplayComponent,
   MessageFlags,
+  RESTPatchAPIWebhookWithTokenMessageJSONBody,
 } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
 import { handleInteraction } from '../src/commands/index.js';
@@ -101,7 +110,8 @@ function fake(options: {
     },
     gameInfo: () => Promise.resolve(options.game),
     waitUntil: (promise) => pending.push(promise),
-    downloadUrl: 'https://steaminviter.app/download',
+    downloadUrl:
+      'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
   };
 }
 
@@ -142,6 +152,20 @@ function click(session: string): APIInteraction {
     user: GUEST,
     data: { component_type: ComponentType.Button, custom_id: button.custom_id },
   } as unknown as APIInteraction;
+}
+
+/** Message body sent with editOriginal */
+type Body = RESTPatchAPIWebhookWithTokenMessageJSONBody;
+
+/**
+ * Components inside the container of a V2 message
+ * @param body message body
+ * @returns components of the only container
+ */
+function containerOf(body: Body): APIComponentInContainer[] {
+  const [container] = (body.components ?? []) as APIContainerComponent[];
+  expect(container?.type).toBe(ComponentType.Container);
+  return container!.components;
 }
 
 const RPT_GAME: GameInfo = {
@@ -193,20 +217,58 @@ describe('/steam invite', () => {
       { id: HOST.id, name: HOST.username },
       {},
     ]);
-    const [name, token, body] = services.calls[1] as [
-      string,
-      string,
-      Record<string, any>,
-    ];
+    const [name, token, body] = services.calls[1] as [string, string, Body];
     expect([name, token]).toEqual(['editOriginal', 'token']);
-    expect(body.embeds[0]).toMatchObject({
-      author: { name: 'Host nick' },
-      title: "Let's play Retrocycles together for free!",
-      url: 'https://store.steampowered.com/app/1306180?l=english',
-      image: { url: 'https://img/x.jpg' },
+    expect(body.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(body.content).toBeUndefined();
+    expect(body.embeds).toBeUndefined();
+    expect(body.allowed_mentions).toEqual({ parse: [] });
+
+    const [header, gallery, , , row] = containerOf(body) as [
+      APISectionComponent,
+      APIMediaGalleryComponent,
+      unknown,
+      unknown,
+      APIActionRowComponent<APIButtonComponent>,
+    ];
+    expect(header.components[0]!.content).toBe(
+      "## Let's play Retrocycles together for free!\n**Host nick** is looking for players",
+    );
+    expect(header.accessory).toMatchObject({
+      type: ComponentType.Thumbnail,
+      media: { url: 'https://cdn.discordapp.com/embed/avatars/0.png' },
     });
-    expect(body.components[0].components[0].custom_id).toBe(
-      '_=create_invite&_t=2&user=100&game=1306180&session=7',
+    expect(gallery.items[0]!.media.url).toBe('https://img/x.jpg');
+    expect(row.components[0]).toMatchObject({
+      custom_id: '_=create_invite&_t=2&user=100&game=1306180&session=7',
+    });
+    expect(row.components[1]).toMatchObject({
+      style: ButtonStyle.Link,
+      url: 'https://store.steampowered.com/app/1306180?l=english',
+    });
+  });
+
+  it('shows names as they are', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      game: { ...RPT_GAME, name: 'Tom_&_Jerry*' },
+    });
+    const interaction = command('invite', [
+      {
+        name: 'game_id',
+        type: ApplicationCommandOptionType.Number,
+        value: 1306180,
+      },
+    ]) as unknown as { member: { nick: string } };
+    interaction.member.nick = '**bold** <@1>';
+    await handleInteraction(interaction as unknown as APIInteraction, services);
+    await services.done();
+    const [header] = containerOf(services.calls[0]![2] as Body) as [
+      APISectionComponent,
+    ];
+    expect(header.components[0]!.content).toBe(
+      "## Let's play Tom\\_&\\_Jerry\\* together for free!\n**\\*\\*bold\\*\\* \\<@1\\>** is looking for players",
     );
   });
 
@@ -325,11 +387,88 @@ describe('invite button', () => {
       { id: GUEST.id, name: GUEST.username },
       { game: 1306180 },
     ]);
-    const body = services.calls[1]![2] as Record<string, any>;
-    expect(body.content).toContain('https://s.team/p/abc');
-    expect(body.components[0].components[0]).toMatchObject({
+    const body = services.calls[1]![2] as Body;
+    // Ephemeral comes from the deferred response; the edit only switches to V2
+    expect(body.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(body.content).toBeUndefined();
+
+    const components = containerOf(body);
+    // The join button comes first
+    const [, joinRow, otherDevice] = components as [
+      unknown,
+      APIActionRowComponent<APIButtonComponent>,
+      APITextDisplayComponent,
+    ];
+    expect(joinRow.components[0]).toMatchObject({
+      style: ButtonStyle.Link,
       url: 'https://s.team/p/abc',
     });
+    expect(otherDevice.content).toContain('`https://s.team/p/abc`');
+
+    // The guest's language (ja), not the host's
+    const galleries = components.flatMap((c) =>
+      c.type === ComponentType.MediaGallery
+        ? c.items.map((item) => item.media.url)
+        : [],
+    );
+    expect(galleries).toEqual([
+      'https://steaminviter.app/assets/discord/ja/join-phone-v1.gif',
+      'https://steaminviter.app/assets/discord/ja/join-pc-v1.gif',
+    ]);
+    const text = components
+      .flatMap((c) => (c.type === ComponentType.TextDisplay ? [c.content] : []))
+      .join('\n');
+    expect(text).toContain('https://steaminviter.app/ja/guide/x360ce');
+    const urls = components.flatMap((c) =>
+      c.type === ComponentType.ActionRow
+        ? c.components.map((b) => ('url' in b ? b.url : undefined))
+        : [],
+    );
+    expect(urls).toEqual([
+      'https://s.team/p/abc',
+      'https://apps.apple.com/app/steam-link/id1246969117',
+      'https://play.google.com/store/apps/details?id=com.valvesoftware.steamlink',
+    ]);
+  });
+
+  it('tells the error from the client as text', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      responses: { link: { ok: false, phrase: 'error.daemon_invite_failed' } },
+    });
+    await handleInteraction(click('7'), services);
+    await services.done();
+    expect(services.calls.at(-1)).toEqual([
+      'editOriginal',
+      'token',
+      { content: i18n.t('ja', 'error.daemon_invite_failed') },
+    ]);
+  });
+
+  it('falls back to a text reply when Discord refuses the message', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      responses: {
+        link: {
+          ok: true,
+          value: { id: 'x', cmd: 'link', url: 'https://s.team/p/abc' },
+        },
+      },
+    });
+    const edit = services.discord.editOriginal;
+    services.discord.editOriginal = (token, body) =>
+      body.flags
+        ? Promise.reject(new Error('400 Invalid Form Body'))
+        : edit(token, body);
+    await handleInteraction(click('7'), services);
+    await services.done();
+    expect(services.calls.at(-1)).toEqual([
+      'editOriginal',
+      'token',
+      { content: i18n.t('ja', 'error.internal') },
+    ]);
   });
 });
 
@@ -404,7 +543,7 @@ describe('/steam setup', () => {
       fake({}),
     )) as APIInteractionResponseChannelMessageWithSource;
     expect(response.data.content).toContain(
-      'https://steaminviter.app/download',
+      'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
     );
   });
 });

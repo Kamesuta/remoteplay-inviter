@@ -13,10 +13,10 @@ describe('i18n', () => {
       "Let's play Tom & Jerry together for free!",
     );
     expect(
-      i18n.t('en', 'invite_button.invite_message', {
-        link: 'https://s.team/p/x',
+      i18n.t('en', 'invite_button.reply.pc.note', {
+        guide_url: 'https://steaminviter.app/en/guide/x360ce?a=1&b=2',
       }),
-    ).toContain('https://s.team/p/x');
+    ).toContain('(https://steaminviter.app/en/guide/x360ce?a=1&b=2)');
   });
 
   it('returns the key for a missing message', () => {

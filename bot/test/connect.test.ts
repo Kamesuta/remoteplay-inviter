@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { checkConnection, refuseConnection } from '../src/daemon/connect.js';
 
 const REQUIRED = '0.3.1';
-const DOWNLOAD = 'https://steaminviter.app/download';
+const DOWNLOAD =
+  'https://github.com/Kamesuta/remoteplay-inviter/releases/latest';
 const check = (query: string): ReturnType<typeof checkConnection> =>
   checkConnection(new URL(`wss://bot.test/ws?${query}`), REQUIRED, DOWNLOAD);
 
