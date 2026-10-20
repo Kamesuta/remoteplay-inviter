@@ -1,0 +1,16 @@
+/* step 3: add the keyboard */
+.gad .cur{transform:translate(720px,480px)}
+.gad.p1 .r1,.gad.p2 .r2,.gad.p3 .r3{animation:xa-ripple .45s var(--eo)}
+.gad .dlgw{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(10px) scale(.98);transition:opacity .2s var(--eo),transform .4s var(--eo),visibility 0s .4s}
+.gad.dl .dlgw{opacity:1;visibility:visible;transform:none;transition:opacity .2s var(--eo),transform .4s var(--eo),visibility 0s}
+.gad .ksel{opacity:0;transition:opacity .15s var(--eo)}
+.gad.sel .ksel{opacity:1}
+.gad.sel .kt{color:#ffffff !important}
+.gad .asd{transition:transform .12s var(--eo)}
+.gad.p3 .asd{transform:scale(.95)}
+.gad.c1 .cur{transform:translate(558px,113px);opacity:1}
+.gad .r1{left:562px;top:117px}
+.gad.c2 .cur{transform:translate(356px,194px);opacity:1}
+.gad .r2{left:360px;top:198px}
+.gad.c3 .cur{transform:translate(402px,412px);opacity:1}
+.gad .r3{left:406px;top:416px}

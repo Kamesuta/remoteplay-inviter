@@ -1,20 +1,11 @@
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import type { Metadata, Viewport } from "next";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { routing } from "@/i18n/routing";
 import { generateMetadata as createMetadata } from "@/utils/metadata";
+import { fontVariables } from "../fonts";
 import "../globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata({
   params
@@ -22,15 +13,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
   return createMetadata({
     title: (messages as { title: string }).title,
     description: (messages as { description: string }).description,
-  }, locale);
+    locale,
+  });
 }
 
+export const viewport: Viewport = { themeColor: "#0f1a28" };
+
 export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'ja' }];
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
@@ -41,17 +35,18 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const messages = await getMessages();
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  // Lets the pages under this layout render statically
+  setRequestLocale(locale);
+  // Client components only read the animation copy, so only that goes to the browser
+  const { anim } = (await getMessages()) as { anim: Record<string, unknown> };
 
   return (
     <html lang={locale} className="scroll-smooth">
-      <head>
-        <GoogleAnalytics />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <NextIntlClientProvider messages={messages}>
+      <body className={`${fontVariables} antialiased`}>
+        <NextIntlClientProvider messages={{ anim }}>
           {children}
         </NextIntlClientProvider>
       </body>

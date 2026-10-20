@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
-interface Messages {
+export const SITE_URL = "https://steaminviter.app";
+
+interface PageMetadata {
   title: string;
   description: string;
+  locale?: string;
+  // Path after the locale, starting with "/" (empty for the top page)
+  path?: string;
 }
 
-export function generateMetadata(messages: Messages, locale: string = 'en'): Metadata {
+export function generateMetadata({ title, description, locale = routing.defaultLocale, path = "" }: PageMetadata): Metadata {
+  const url = `${SITE_URL}/${locale}${path}`;
+  const ogImage = `${SITE_URL}/assets/branding/og-image-${locale}.png`;
   return {
-    title: messages.title,
-    description: messages.description,
+    title,
+    description,
     icons: {
       icon: [
         { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
@@ -24,26 +32,34 @@ export function generateMetadata(messages: Messages, locale: string = 'en'): Met
     appleWebApp: {
       title: "RemotePlayInviter",
     },
+    alternates: {
+      canonical: url,
+      languages: {
+        ...Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`])),
+        "x-default": `${SITE_URL}/${routing.defaultLocale}${path}`,
+      },
+    },
     openGraph: {
       siteName: "Remote Play Inviter",
-      title: messages.title,
-      description: messages.description,
+      title,
+      description,
       images: [
         {
-          url: `https://steaminviter.app/assets/branding/og-image-${locale}.png`,
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: "Remote Play Inviter",
         },
       ],
-      url: "https://steaminviter.app",
+      url,
+      locale: locale === "ja" ? "ja_JP" : "en_US",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: messages.title,
-      description: messages.description,
-      images: [`https://steaminviter.app/assets/branding/og-image-${locale}.png`],
+      title,
+      description,
+      images: [ogImage],
     },
   };
 }

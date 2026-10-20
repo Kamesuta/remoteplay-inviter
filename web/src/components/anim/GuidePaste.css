@@ -1,0 +1,33 @@
+/* step 4: paste the preset */
+.gps .cur{transform:translate(720px,480px)}
+.gps.p1 .r1,.gps.p2 .r2,.gps.p3 .r3{animation:xa-ripple .45s var(--eo)}
+.gps .card{transition:opacity .3s var(--eo),transform .4s var(--eo),visibility 0s}
+.gps.cg .card{opacity:0;visibility:hidden;transform:translateY(10px) scale(.97);transition:opacity .3s var(--eo),transform .4s var(--eo),visibility 0s .4s}
+.gps.p1 .cpb{transform:scale(.94)}
+.gps .cpb span{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .2s var(--eo)}
+.gps .cpb .l1{opacity:0}
+.gps.t1 .cpb .l0{opacity:0}
+.gps.t1 .cpb .l1{opacity:1}
+.gps .psb{transition:transform .12s var(--eo)}
+.gps.p2 .psb{transform:scale(.95)}
+.gps .fv{opacity:0;transition:opacity .2s var(--eo)}
+.gps .cbf{transition:border-color .3s var(--eo),box-shadow .3s var(--eo)}
+.gps.fill .fv{opacity:1}
+.gps.fill .cbf{border-color:#1a9fff;box-shadow:0 0 0 2px rgba(26,159,255,.35)}
+.gps.fill .f1{transition-delay:0.06s}
+.gps.fill .f2{transition-delay:0.12s}
+.gps.fill .f3{transition-delay:0.18s}
+.gps.fill .f4{transition-delay:0.24s}
+.gps.fill .f5{transition-delay:0.30s}
+.gps.fill .f6{transition-delay:0.36s}
+.gps.fill .f7{transition-delay:0.42s}
+.gps.fill .f8{transition-delay:0.48s}
+.gps.fill .f9{transition-delay:0.54s}
+.gps.fill .f10{transition-delay:0.60s}
+.gps.fill .f11{transition-delay:0.66s}
+.gps.c1 .cur{transform:translate(149px,220px);opacity:1}
+.gps .r1{left:153px;top:224px}
+.gps.c2 .cur{transform:translate(603px,436px);opacity:1}
+.gps .r2{left:607px;top:440px}
+.gps.c3 .cur{transform:translate(627px,69px);opacity:1}
+.gps .r3{left:631px;top:73px}

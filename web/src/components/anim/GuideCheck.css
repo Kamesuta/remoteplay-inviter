@@ -1,0 +1,8 @@
+/* step 5: turn it on */
+.gck .cur{transform:translate(720px,480px)}
+.gck.p1 .r1{animation:xa-ripple .45s var(--eo)}
+.gck .eon{opacity:0;transition:opacity .15s var(--eo)}
+.gck.on .eon{opacity:1}
+.gck.on .eoff{opacity:0}
+.gck.c1 .cur{transform:translate(43px,113px);opacity:1}
+.gck .r1{left:47px;top:117px}

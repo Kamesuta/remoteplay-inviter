@@ -1,23 +1,23 @@
-import { MetadataRoute } from 'next'
- 
+import type { MetadataRoute } from "next";
+import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/utils/metadata";
+
+// Pages people visit (the embed pages are for recording and stay out)
+const PAGES = [
+  { path: "", priority: 1 },
+  { path: "/guide/x360ce", priority: 0.7 },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const locales = ['en', 'ja'];
-  const baseUrl = 'https://steaminviter.app';
-
-  const localeUrls: MetadataRoute.Sitemap = locales.map((locale) => ({
-    url: `${baseUrl}/${locale}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }));
-
-  return [
-    {
-      url: baseUrl,
+  return PAGES.flatMap(({ path, priority }) =>
+    routing.locales.map((locale) => ({
+      url: `${SITE_URL}/${locale}${path}`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 1,
-    },
-    ...localeUrls,
-  ];
+      changeFrequency: "monthly" as const,
+      priority,
+      alternates: {
+        languages: Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`])),
+      },
+    })),
+  );
 }

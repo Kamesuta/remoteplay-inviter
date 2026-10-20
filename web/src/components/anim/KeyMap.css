@@ -1,0 +1,29 @@
+/* ---------- animation: key map (hero) ---------- */
+.kmp *{box-sizing:border-box}
+.kmp .sc{position:absolute;inset:0;transition:opacity .4s var(--eo)}
+.kmp.fading .sc{opacity:0}
+.kmp .ab{position:absolute}
+.kmp .kb{left:30px;top:100px;width:420px;height:186px;border-radius:16px;background:#1f2a38;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.kmp .k{width:34px;height:34px;border-radius:7px;background:#2c3a4d;box-shadow:0 3px 0 #16202d;color:#8fa3b6;font-size:13px;font-weight:900;display:grid;place-items:center;transition:transform .12s var(--eo),background-color .15s var(--eo),color .15s var(--eo),box-shadow .12s var(--eo)}
+.kmp .k.m{color:#ffffff;box-shadow:0 3px 0 #16202d,inset 0 -3px 0 var(--c)}
+.kmp .sp{left:150px;top:240px;width:180px;height:30px;border-radius:7px;background:#2c3a4d;box-shadow:0 3px 0 #16202d}
+.kmp .arrow{left:462px;top:170px;color:#3d4f62}
+.kmp .pad{left:500px;top:60px;width:340px;height:238px}
+.kmp .ring{width:44px;height:44px;border-radius:50%;background:#c9d1da}
+.kmp .knob{width:36px;height:36px;border-radius:50%;background:#3d4552;border:3px solid #5c6573;transition:transform .2s var(--eo),border-color .15s var(--eo)}
+.kmp .dp{width:30px;height:30px}
+.kmp .dp i{position:absolute;background:#3d4552;border-radius:3px;display:block}
+.kmp .bt{width:22px;height:22px;border-radius:50%;color:#ffffff;font-size:11px;font-weight:900;display:grid;place-items:center;transition:transform .2s var(--sp),box-shadow .2s var(--eo)}
+.kmp .cap{left:200px;top:352px;width:480px;height:48px}
+.kmp .cap div{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12px;font-size:17px;font-weight:900;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .2s var(--eo),transform .25s var(--eo),visibility 0s .25s}
+.kmp .cap b{min-width:40px;height:36px;padding:0 10px;border-radius:8px;background:#e3ecf3;color:#111d2c;box-shadow:0 3px 0 #8fa3b6;display:grid;place-items:center;font-size:16px}
+.kmp .cap span{color:#8fa3b6}
+.kmp .cap em{font-style:normal;padding:4px 12px;border-radius:999px;background:var(--c);color:#0b1520}
+.kmp.p1 .c1,.kmp.p2 .c2,.kmp.p3 .c3,.kmp.p4 .c4,.kmp.p5 .c5,.kmp.p6 .c6,.kmp.p7 .c7,.kmp.p8 .c8,.kmp.done .c9{opacity:1;visibility:visible;transform:none;transition:opacity .2s var(--eo),transform .25s var(--eo),visibility 0s}
+.kmp.p1 .kW,.kmp.p2 .kA,.kmp.p3 .kS,.kmp.p4 .kD,.kmp.p5 .kK,.kmp.p6 .kL,.kmp.p7 .kJ,.kmp.p8 .kI{transform:translateY(3px);background:var(--c);color:#0b1520;box-shadow:0 0 0 #16202d}
+.kmp.p1 .knob,.kmp.p2 .knob,.kmp.p3 .knob,.kmp.p4 .knob{border-color:#06dec5}
+.kmp.p1 .knob{transform:translateY(-9px)}
+.kmp.p2 .knob{transform:translateX(-9px)}
+.kmp.p3 .knob{transform:translateY(9px)}
+.kmp.p4 .knob{transform:translateX(9px)}
+.kmp.p5 .bA,.kmp.p6 .bB,.kmp.p7 .bX,.kmp.p8 .bY{transform:scale(1.3);box-shadow:0 0 0 7px rgba(255,255,255,.28)}

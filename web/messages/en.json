@@ -1,199 +1,410 @@
 {
   "title": "Remote Play Inviter - Discord Bot for Steam Remote Play Together Invitations",
   "description": "Easily invite friends to Steam Remote Play Together through Discord for free!",
-  "hero": {
-    "badge": "Enjoy Steam games with friends for free!",
-    "title": [
-      {"text": "Steam Remote Play Together", "style": "gradient"},
-      {"text": " ", "style": "white"},
-      {"text": "Easy", "style": "white"},
-      {"text": " Discord", "style": "discord"},
-      {"text": " Invites", "style": "white"}
-    ],
-    "description": "A Discord bot that makes Steam Remote Play Together invitations easy.",
-    "description2": "If one person owns the game, participants can join for free!",
-    "getStarted": "Get Started",
-    "viewGitHub": "View on GitHub",
-    "slides": [
-      {
-        "alt": "Remote Play Inviter Concept Diagram",
-        "title": "Easy Invitation System"
+  "home": {
+    "nav": {
+      "t1": "What it does",
+      "t2": "Features",
+      "t3": "Get started",
+      "t4": "FAQ",
+      "t5": "Add to Discord",
+      "t6": "Download"
+    },
+    "hero": {
+      "t1": "For whoever hosts game night",
+      "h11": "Only <span0>one person</span0><br></br>needs to own the game.",
+      "p1": "Post an invite panel in Discord, and everyone who presses the join button automatically gets a <b0>Steam Remote Play Together</b0> invite link. Your friends can play along without buying the game.",
+      "t2": "Add to Discord",
+      "t3": "Download for Windows",
+      "p2": "Free and open source · <a0>macOS and Linux</a0>"
+    },
+    "worry": {
+      "t1": "Calling all hosts",
+      "h21": "Sound <span0>familiar?</span0>",
+      "t2": "Making links is a chore…",
+      "t3": "Every time a friend shows up, open Steam, make an invite link, copy, paste.",
+      "t4": "It falls apart as more join…",
+      "t5": "Third guest, fourth guest… The host is stuck handing out links and the game never starts.",
+      "t6": "They don't own the game…",
+      "t7": "The friend you want to invite doesn't have the game you want to play.",
+      "t8": "Inviting with Steam alone looks like this, for every guest",
+      "h22": "Remote Play Inviter<br></br><span0>fixes all of it!</span0>",
+      "t9": "Post the panel once. After that, each person who presses the button gets a link of their own.",
+      "t10": "Here is what it looks like for a guest",
+      "attr1": "A real recording: a guest presses the button on the Discord invite panel, an invite link arrives only for them, and the Steam invite page opens",
+      "figcaption1": "<span0>Real recording</span0> Press the button → a link only you can see → the Steam invite page"
+    },
+    "features": {
+      "h21": "Easy on <span0>your guests</span0>.",
+      "t1": "From anywhere",
+      "t2": "Join from a phone",
+      "t3": "With the Steam Link app, guests can play on a phone or tablet. No PC needed.",
+      "t4": "Free for guests",
+      "t5": "Only the host needs to own the game. Guests don't even need a Steam account.",
+      "t6": "Any supported game",
+      "t7": "Anything that supports Remote Play Together works. The bot tells you when a game doesn't.",
+      "t8": "Add it to yourself, use it anywhere",
+      "t9": "Add the bot to your own account and you can post invite panels in servers without the bot, in DMs and in group DMs.",
+      "t10": "Windows, macOS and Linux",
+      "t11": "Only the host installs the client. Guests don't need to install anything.",
+      "t12": "Open source",
+      "t13": "Published on GitHub under the MIT license. Forks and pull requests are welcome.",
+      "t14": "View on GitHub"
+    },
+    "start": {
+      "h21": "Get started in <span0>3 steps</span0>.",
+      "t1": "Only the host has to set anything up. Guests just open the link they receive.",
+      "t2": "Add the bot",
+      "t3": "We recommend adding it to your own account, so you can use it in servers without the bot and in DMs too.",
+      "t4": "Add to Discord",
+      "t5": "Start the client and link it",
+      "t6": "Open it while Steam is running and a link command is copied for you. Just paste it into Discord and send.",
+      "t7": "Download",
+      "t8": "Post an invite panel",
+      "p1": "Start a game that supports Remote Play Together and type <code0>/steam invite</code0> wherever you want to invite people.",
+      "t9": "FAQ",
+      "t10": "Is it really free?",
+      "t11": "Yes. Only the host needs to buy the game. Guests play for free.",
+      "t12": "Do guests need to install anything?",
+      "t13": "No. Only the host needs the client.",
+      "t14": "How long does an invite panel work?",
+      "t15": "Until you close the client. After restarting it, post a new panel.",
+      "t16": "It says the invite link is invalid",
+      "t17": "Invite links work only once. If you get disconnected, press the button again to get a new link.",
+      "t18": "Can I use it in servers without the bot, or in DMs?",
+      "t19": "Yes. Add the bot to your own account and you can use it in servers without the bot, in DMs and in group DMs. It won't work in servers that don't allow \"Use External Apps\".",
+      "faqController": {
+        "q": "Can I join without a controller?",
+        "a": "Yes. On a phone, you can play with the on-screen buttons in Steam Link. On a PC, follow <link>the guide to turn your keyboard into a controller</link>."
       },
-      {
-        "alt": "Local Multiplayer with Remote Friends",
-        "title": "Multiplayer Support"
+      "t20": "Is this an official Steam tool?",
+      "t21": "No. Remote Play Together is an official Steam feature, but this tool is unofficial.",
+      "h22": "Try it at<br></br>tonight's game night.",
+      "t22": "Only the host needs to set it up. Guests just press a button.",
+      "t23": "Add to Discord",
+      "t24": "Download",
+      "t25": "This is an unofficial tool not affiliated with Valve. Steam and Remote Play Together are trademarks of Valve Corporation.",
+      "t26": "All downloads",
+      "attr1": "Back to top"
+    }
+  },
+  "anim": {
+    "ifl": {
+      "attr1": "The host posts an invite panel with /steam invite. Three friends each press the join button, an invite link appears only on the screen of whoever pressed it, and each of them joins Steam Remote Play Together",
+      "div1": "<b0>#</b0>game-night",
+      "t1": "APP",
+      "t2": "Let's play POCO PARK 2 together for free!",
+      "t3": "Join the game now!",
+      "t4": "Only Yu can see this",
+      "t5": "Your invite link is ready",
+      "t6": "Join!",
+      "t7": "Only Mio can see this",
+      "t8": "Your invite link is ready",
+      "t9": "Join!",
+      "t10": "Only Sora can see this",
+      "t11": "Your invite link is ready",
+      "t12": "Join!",
+      "t13": "Message #game-night",
+      "div2": "<span0>1</span0>The host posts a panel",
+      "div3": "<span0>2</span0>Each person who presses it gets their own link",
+      "div4": "<span0>3</span0>Everyone joins with their own link",
+      "div5": "<span0>4</span0>The host just waits in the game",
+      "div6": "<b0>1P</b0>Haru<small1>Host</small1>",
+      "t14": "2P open",
+      "div7": "<b0>2P</b0>Yu<small1>Phone</small1>",
+      "t15": "3P open",
+      "div8": "<b0>3P</b0>Mio<small1>PC</small1>",
+      "t16": "4P open",
+      "div9": "<b0>4P</b0>Sora<small1>PC</small1>",
+      "t17": "None of the 3 guests own the game",
+      "t18": "Haru",
+      "t19": "Yu",
+      "t20": "Mio",
+      "t21": "Sora"
+    },
+    "wry": {
+      "attr1": "Inviting with Steam alone: in the middle of the game, open the overlay with Shift+Tab, create an invite link, copy it, switch to Discord with Alt+Tab and paste it. Then do it again for every person who joins",
+      "t1": "1P Haru",
+      "t2": "Discord · Yu",
+      "t3": "Send me a link!",
+      "div1": "Friends<span0>Shift+Tab</span0>",
+      "t4": "Invite link created",
+      "t5": "Copy",
+      "t6": "Copied",
+      "t7": "game-night",
+      "t8": "Links sent",
+      "div2": "<b0>Yu</b0>Send me a link!",
+      "div3": "<b0>Haru</b0>Here you go! <span1>https://s.team/remoteplay/QvR7Tk2</span1>",
+      "div4": "<b0>Mio</b0>Me too!",
+      "div5": "<b0>Haru</b0>Sure! <span1>https://s.team/remoteplay/Lm4Xa9P</span1>",
+      "div6": "<b0>Sora</b0>One for me too~",
+      "t9": "Message #game-night",
+      "t10": "Once per guest…",
+      "t11": "The host is stuck handing out links",
+      "div7": "<span0>1</span0>Pause the game and open the Steam overlay",
+      "div8": "<span0>2</span0>Create an invite link and copy it",
+      "div9": "<span0>3</span0>Switch to Discord and paste it",
+      "div10": "<span0>4</span0>A second guest. The same steps again…",
+      "div11": "<span0>5</span0>And the third, and the fourth…"
+    },
+    "cmp": {
+      "attr1": "On the left, Steam alone: the host makes an invite link in the Steam overlay, copies it and pastes it into Discord, one guest at a time. On the right, Remote Play Inviter: the host posts a panel once and three guests each press the button and join right away",
+      "t1": "Steam alone",
+      "t2": "Haru: making links…",
+      "t3": "Haru: finally playing…",
+      "div1": "<em0>#</em0>game-night",
+      "div2": "<b0>Yu</b0>Send me a link!",
+      "div3": "<b0>Mio</b0>Me too!",
+      "div4": "<b0>Sora</b0>Me three~",
+      "t4": "Haru",
+      "t5": "@Yu",
+      "div5": "<b0>Mio</b0>Still waiting~",
+      "t6": "Haru",
+      "t7": "@Mio",
+      "t8": "Haru",
+      "t9": "@Sora",
+      "div6": "Steam overlay<span0>Shift+Tab</span0>",
+      "t10": "Copy",
+      "div7": "Haru<b0>1P</b0>",
+      "div8": "Yu<b0>2P</b0>",
+      "div9": "Mio<b0>3P</b0>",
+      "div10": "Sora<b0>4P</b0>",
+      "t11": "By hand, one guest at a time",
+      "t12": "Haru: in the game",
+      "div11": "<em0>#</em0>game-night",
+      "t13": "Haru",
+      "t14": "APP",
+      "t15": "Join the game now!",
+      "div12": "<small0>Only Yu sees this</small0>Invite link ready<span1>Join!</span1>",
+      "div13": "<small0>Only Mio sees this</small0>Invite link ready<span1>Join!</span1>",
+      "div14": "<small0>Only Sora sees this</small0>Invite link ready<span1>Join!</span1>",
+      "div15": "Haru<b0>1P</b0>",
+      "div16": "Yu<b0>2P</b0>",
+      "div17": "Mio<b0>3P</b0>",
+      "div18": "Sora<b0>4P</b0>",
+      "t16": "One panel, and everyone's in!",
+      "t17": "Haru",
+      "t18": "Yu",
+      "t19": "Mio",
+      "t20": "Sora"
+    },
+    "stp": {
+      "attr1": "Starting the client copies a link command; pasting it into Discord and sending it links the client",
+      "t1": "Connecting to the server…",
+      "t2": "Connected",
+      "t3": "Copied the link command",
+      "div1": "<em0>#</em0>general",
+      "t4": "Linked!",
+      "t5": "You can now use",
+      "t6": "",
+      "t7": "Message #general"
+    },
+    "phn": {
+      "attr1": "In the Discord app on a phone, pressing the join button on the invite panel sends an invite link only to you; Steam Link connects and you join the game as 2P in landscape",
+      "t1": "In the Discord app",
+      "t2": "With Steam Link",
+      "t3": "Join right in as 2P!",
+      "div1": "<em0>#</em0>game-night",
+      "t4": "APP",
+      "t5": "Let's play POCO PARK 2 together for free!",
+      "t6": "Join the game now!",
+      "t7": "Only Yu can see this",
+      "t8": "Your invite link is ready",
+      "t9": "Tap to join!",
+      "t10": "Message #game-night",
+      "t11": "Discord · #game-night",
+      "t12": "Haru posted an invite panel",
+      "t13": "Connecting to Haru's PC…",
+      "t14": "Playing as 2P"
+    },
+    "kmp": {
+      "attr1": "Pressing W, A, S and D on the keyboard moves the controller's left stick, and pressing K, L, J and I presses the A, B, X and Y buttons",
+      "t1": "Left stick ↑",
+      "t2": "Left stick ←",
+      "t3": "Left stick ↓",
+      "t4": "Left stick →",
+      "t5": "A button",
+      "t6": "B button",
+      "t7": "X button",
+      "t8": "Y button",
+      "t9": "Your keyboard is now a controller!"
+    },
+    "gdl": {
+      "attr1": "On the official x360ce site, press DOWNLOAD FOR ALL GAMES for Version 4 on the left, not the two Version 3 buttons on the right. x360ce.zip downloads, and Extract All from the right-click menu gives you x360ce.exe",
+      "t1": "Skip the two on the right",
+      "t2": "Press this one, on the far left!",
+      "t3": "Download complete",
+      "t4": "Downloads",
+      "t5": "Open",
+      "t6": "Extract All..."
+    },
+    "x360": {
+      "keyboard": "Keyboard",
+      "mouse": "Mouse",
+      "driverNeeded": "Virtual Driver is required"
+    },
+    "gis": {
+      "label": "If the Issues tab in x360ce shows a warning, open it and press Install for Virtual Device Driver until it says All OK. No issues were found.",
+      "k1": "Press it if it shows ⚠",
+      "k2": "Press Install",
+      "k3": "Done when it says All OK!"
+    },
+    "gad": {
+      "label": "On the Controller 1 tab in x360ce, press Add..., pick the keyboard in Map Device To Controller and press Add Selected Device to add the keyboard",
+      "k1": "Press + Add...",
+      "k2": "Pick the keyboard",
+      "k3": "Added!"
+    },
+    "gps": {
+      "label": "Press Copy preset on this page, press Paste Preset in x360ce to fill every button field with values like Button 37, then save with Save All",
+      "card": "Recommended preset",
+      "copy": "Copy preset",
+      "copied": "Copied",
+      "k1": "① Copy it on this page",
+      "k2": "② Paste Preset fills in every key",
+      "k3": "③ Save with Save All"
+    },
+    "gck": {
+      "label": "Ticking Enable 1 Mapped Device in x360ce makes Steam show the notification Controller connected: Xbox 360 Controller",
+      "k1": "Tick it to turn it ON",
+      "toastTitle": "Controller connected",
+      "toastName": "Xbox 360 Controller",
+      "k2": "Steam sees an Xbox 360 controller!"
+    },
+    "jph": {
+      "attr1": "Joining from a phone: press \"Join the game\" in Discord, press \"Join Game\" on the Steam page that opens, and Steam Link connects you to the game in landscape",
+      "div1": "<em0>#</em0>game-night",
+      "t1": "Only you can see this",
+      "t2": "Your invite link is ready!",
+      "t3": "Join the game",
+      "p1": "<b0>Haru</b0> invited you to play POCO PARK 2",
+      "t4": "Join Game",
+      "t5": "No Steam Link yet? Get it from this page",
+      "t6": "Connecting to Haru's PC…",
+      "t7": "Playing as 2P!",
+      "t8": "Join from a phone",
+      "div2": "<b0>1</b0>Press \"Join the game\"",
+      "div3": "<b0>2</b0>Press \"Join Game\" on the Steam page",
+      "div4": "<b0>3</b0>Turn sideways and play"
+    },
+    "jpc": {
+      "attr1": "Joining from a PC: connect a controller, press \"Join the game\" in Discord, then press \"Join Game\" on the Steam page that opens to join the game",
+      "div1": "<em0>#</em0>game-night",
+      "t1": "Only you can see this",
+      "t2": "Your invite link is ready!",
+      "t3": "Join the game",
+      "p1": "<b0>Haru</b0> invited you to play POCO PARK 2",
+      "t4": "Join Game",
+      "t5": "No Steam? Get Steam Link from this page",
+      "t6": "Connecting to Haru's PC…",
+      "t7": "Playing as 2P!",
+      "t8": "Controller connected",
+      "t9": "Join from a PC",
+      "div2": "<b0>1</b0>Connect a controller",
+      "div3": "<b0>2</b0>Press \"Join the game\"",
+      "div4": "<b0>3</b0>Press \"Join Game\" on the Steam page"
+    }
+  },
+  "guide": {
+    "nav": {
+      "t1": "Before you start",
+      "t2": "Steps",
+      "t3": "Key map",
+      "t4": "Troubleshooting",
+      "t5": "x360ce website"
+    },
+    "hero": {
+      "t1": "For anyone without a controller",
+      "h11": "Turn your keyboard<br></br>into a <span0>controller</span0>.",
+      "p1": "The free tool <b0>x360ce</b0> lets you use your keyboard as an Xbox controller, so you can join Steam Remote Play Together as a \"controller\" even if you don't have one.",
+      "t2": "See the steps",
+      "t3": "x360ce website"
+    },
+    "when": {
+      "h21": "When it <span0>helps</span0>",
+      "t1": "No controller…",
+      "t2": "Your keyboard stands in for a controller.",
+      "t3": "The keyboard doesn't work…",
+      "t4": "Join games where only 1P can use the keyboard and everyone else needs a controller.",
+      "t5": "Rather play on PC than phone",
+      "t6": "Join from your PC, with a big screen and a keyboard."
+    },
+    "ready": {
+      "t1": "What you need",
+      "t2": "A Windows PC",
+      "t3": "x360ce runs on Windows.",
+      "t4": "A keyboard",
+      "t5": "The one you always use is fine.",
+      "t6": "x360ce (free)",
+      "t7": "You'll download it from the official site in step 1."
+    },
+    "steps": {
+      "h21": "Set it up in <span0>5 steps</span0>.",
+      "t1": "You only do this once. After that, just turn it ON as in step 5.",
+      "t2": "Download and extract",
+      "li1": "Open the official site and, in the top row, press <b1>DOWNLOAD FOR ALL GAMES</b1> for Version 4 on the <b0>far left</b0>.",
+      "t3": "The two on the right (32-BIT / 64-BIT GAMES) are Version 3, which works differently. Don't press them.",
+      "li2": "Right-click the downloaded <b0>x360ce.zip</b0> and choose Extract All. Any folder is fine.",
+      "li3": "You'll use <b0>x360ce.exe</b0> inside it.",
+      "t4": "Open the x360ce website",
+      "t5": "Start it and check Issues",
+      "li4": "Start <b0>x360ce.exe</b0>.",
+      "li5": "If the <b0>Issues</b0> tab at the top shows a grey check mark, go straight to step 3.",
+      "li6": "If it shows ⚠, open it and press <b0>Install</b0> (or Download and Install) on the right.",
+      "li7": "You're done when <b0>All OK. No issues were found.</b0> appears at the bottom.",
+      "div1": "<b0>Did it freeze after pressing Install?</b0><br></br>Wait about 15 seconds, then force-quit x360ce and start it again.",
+      "t6": "Add your keyboard",
+      "li8": "On the <b0>Controller 1</b0> tab, press <b1>+ Add...</b1> at the top right.",
+      "li9": "In the Map Device To Controller list, pick your <b0>keyboard</b0>.",
+      "li10": "Press <b0>Add Selected Device</b0> and the keyboard is added.",
+      "t7": "Set all the keys at once",
+      "t8": "Recommended preset",
+      "attr1": "W A S D for the left stick, K L J I for the A B X Y buttons",
+      "li11": "Press <b0>Copy preset</b0> above.",
+      "li12": "Press <b0>Paste Preset</b0> at the bottom of x360ce, and every key is assigned at once.",
+      "li13": "Save with <b0>Save All</b0> at the top right.",
+      "t9": "Turn it ON and check",
+      "li14": "Tick <b0>Enable 1 Mapped Device</b0> at the top left to turn it ON. Untick it to turn it OFF.",
+      "li15": "If Steam is running, it shows \"Controller connected: <b0>Xbox 360 Controller</b0>\" at the bottom right. You're all set.",
+      "li16": "If Steam shows nothing, open <b0>Game Controllers...</b0> at the bottom left and check that <b1>Controller (XBOX 360 For Windows)</b1> says OK.",
+      "t10": "Now just join from the Steam invite link. When you're done playing, untick it to turn it OFF.",
+      "t11": "Recommended key map",
+      "t12": "This is the map that the preset in step 4 sets up: move with WASD on your left hand, press buttons with IJKL on your right. It works for most games.",
+      "t13": "Left stick",
+      "div2": "<b0>K</b0>A button",
+      "div3": "<b0>L</b0>B button",
+      "div4": "<b0>J</b0>X button",
+      "div5": "<b0>I</b0>Y button",
+      "t14": "What's in the recommended preset (what step 4 copies)",
+      "t15": "In the format x360ce's Paste Preset reads.",
+      "t16": "Preset for Overcooked! 2 (move with the D-pad)",
+      "t17": "J throws, K picks up, L dashes. WASD is mapped to the D-pad.",
+      "t18": "Troubleshooting",
+      "t19": "It froze after pressing Install",
+      "t20": "Installing Virtual Device Driver can hang. Wait about 15 seconds, then force-quit x360ce and start it again.",
+      "t21": "It isn't recognized as a controller",
+      "t22": "Check whether the Issues tab shows ⚠. If it does, install as in step 2. Also make sure Enable 1 Mapped Device is ticked.",
+      "t23": "Issues lists Visual C++",
+      "t24": "Press Download and Install on the right to install what's needed.",
+      "t25": "I want to change a button",
+      "t26": "Choose Record in the drop-down next to the button you want to change, then press the key you want. When a red ● blinks on the controller picture in the middle, it's assigned. Finish with Save All.",
+      "t27": "When I'm done playing?",
+      "t28": "Untick Enable 1 Mapped Device to turn it OFF, and your keyboard goes back to normal.",
+      "h22": "Once you're ready,<br></br>join from the invite link.",
+      "t29": "Press \"Join the game\" in Discord and play as usual.",
+      "t30": "Back to Remote Play Inviter",
+      "t31": "x360ce is software by Jocys.com and is not affiliated with Remote Play Inviter. Screens are simplified for this guide.",
+      "t32": "x360ce website",
+      "copy": {
+        "preset": "Copy preset",
+        "short": "Copy",
+        "copied": "Copied",
+        "selected": "Selected. Press Ctrl+C to copy"
       }
-    ]
-  },
-  "nav": {
-    "features": "Features",
-    "setup": "Setup",
-    "download": "Download",
-    "github": "GitHub"
-  },
-  "problemSolution": {
-    "title": "Why Remote Play Inviter?",
-    "problem": {
-      "title": "With Official Steam Client...",
-      "point1": "Host must manually generate invite links one by one",
-      "point2": "Tedious copy-paste process",
-      "point3": "More participants = more complexity"
     },
-    "solution": {
-      "title": "With Remote Play Inviter",
-      "point1": "Create invite panel once on Discord",
-      "point2": "Automatic invite link generation when participants click",
-      "point3": "Host does nothing - fully automated!"
-    },
-    "media": {
-      "videoCaption": {
-        "without": "Traditional Method: Manual Link Generation",
-        "with": "Remote Play Inviter: Automated Invitations"
-      },
-      "videoFallback": "Your browser does not support video playback."
+    "meta": {
+      "title": "Use your keyboard as a controller (x360ce) - Remote Play Inviter",
+      "description": "How to use your keyboard as an Xbox controller with the free tool x360ce, so you can join Steam Remote Play Together without a controller."
     }
-  },
-  "features": {
-    "title": "Key Features",
-    "discord": {
-      "title": "Discord BOT",
-      "description": "Convenient bot that simplifies invite link generation and sharing through Discord"
-    },
-    "autoInvite": {
-      "title": "Auto Invite Links",
-      "description": "Invite links are automatically generated when participants click the button"
-    },
-    "free": {
-      "title": "Completely Free",
-      "description": "Uses Steam's official features. Participants play for free if one person owns the game"
-    }
-  },
-  "setup": {
-    "title": "Easy 3-Step Setup",
-    "step1": {
-      "title": "Invite the Bot",
-      "description": "Click \"Add to Server\" to install the Remote Play Inviter bot to your Discord server",
-      "button": "Invite Bot"
-    },
-    "step2": {
-      "title": "Download Client",
-      "description": "Download the Remote Play Inviter client, launch it, and copy the client_id",
-      "button": "Download"
-    },
-    "step3": {
-      "title": "Link Bot & Client",
-      "description": "In Discord, type `/steam invite client_id:~~~` to link the bot and client"
-    },
-    "media": {
-      "altText": {
-        "botInvite": "Bot Invitation Screen",
-        "clientScreen": "Client Screen",
-        "setupScreen": "Setup Screen"
-      }
-    }
-  },
-  "howToUse": {
-    "title": "How to Use",
-    "subtitle": "Check the actual operation steps in the video",
-    "videoTitle": "Invitation & Participation Demo Video",
-    "videoDescription": "See all steps from hosting to joining in one video",
-    "step1": {
-      "title": "Host: Create Invite Panel",
-      "description": "Type `/steam invite` to send an invite panel. You can send it privately via DM or recruit participants on a large scale through group DMs or server channels."
-    },
-    "step2": {
-      "title": "Participants: Click Join Button",
-      "description": "Click the \"Join Game Now!\" button to automatically generate your personal invite link."
-    },
-    "step3": {
-      "title": "Participants: Open Steam",
-      "description": "When the invite link is generated, click \"Click to Join Game!\" to open the Steam Remote Play Together page. Then just follow Steam's instructions and enjoy the game!"
-    },
-    "media": {
-      "videoFallback": "Your browser does not support video playback.",
-      "altText": {
-        "discordPanel": "Discord Invitation Panel",
-        "joinButton": "Join Button Clicked Screen",
-        "steamScreen": "Steam Remote Play Together Screen"
-      }
-    }
-  },
-  "media": {
-    "videoFallback": "Your browser does not support video playback.",
-    "videoCaption": {
-      "without": "Traditional Method: Manual Link Generation",
-      "with": "Remote Play Inviter: Automated Invitations"
-    },
-    "altText": {
-      "botInvite": "Bot Invitation Screen",
-      "clientScreen": "Client Screen",
-      "setupScreen": "Setup Screen", 
-      "discordPanel": "Discord Invitation Panel",
-      "joinButton": "Join Button Clicked Screen",
-      "steamScreen": "Steam Remote Play Together Screen"
-    }
-  },
-  "faq": {
-    "title": "Frequently Asked Questions",
-    "q1": {
-      "question": "Q. Is this tool free?",
-      "answer": "Yes, it's free. However, the host needs to purchase the game on Steam. Participants can play completely for free."
-    },
-    "q2": {
-      "question": "Q. Which OS is supported?",
-      "answer": "The client supports Windows/Mac/Linux. However, only the host needs to download the client. Participants don't need the client and can join games just by receiving invite links."
-    },
-    "q3": {
-      "question": "Q. How long is the invite panel valid?",
-      "answer": "It's valid until you close the client. When you restart the client, the invite panel becomes invalid, so please create a new invite panel."
-    },
-    "q4": {
-      "question": "Q. Is this tool an official Steam feature?",
-      "answer": "No. \"Steam Remote Play Together\" is an official Steam feature, but this tool \"Remote Play Inviter\" is not official. This tool is an unofficial utility that automates the invite link generation for \"Remote Play Together\"."
-    },
-    "q5": {
-      "question": "Q. It says the invite link is invalid.",
-      "answer": "Invite links are single-use and become invalid once used. If disconnected, please click the \"Generate Invite Link\" button again to regenerate the link."
-    },
-    "q6": {
-      "question": "Q. Which games can I use this with?",
-      "answer": "You can use it with any game that supports Steam Remote Play Together."
-    },
-    "q7": {
-      "question": "Q. Can I use this on any Discord server?",
-      "answer": "Yes, it works on any server. However, it won't work on Discord servers where \"Use External Apps\" is not permitted."
-    },
-    "q8": {
-      "question": "Q. Is the source code publicly available?",
-      "answer": "Yes, it's available on GitHub. You're free to modify and use it. Pull requests are welcome."
-    },
-    "q9": {
-      "question": "Q. Can I play without a controller?",
-      "answer": "You can use software called x360ce to emulate a gamepad with your keyboard. Please see here for detailed instructions."
-    }
-  },
-  "cta": {
-    "title": "Get Started Now!",
-    "description": "Start your fun gaming experience with friends using Remote Play Inviter",
-    "inviteBot": "Invite Bot",
-    "downloadClient": "Download Client"
-  },
-  "footer": {
-    "description": "This tool is an unofficial tool unrelated to Steam.",
-    "description2": " official features more convenient to use",
-    "sourceCode": {
-      "client": "Source Code (Client)",
-      "bot": "Source Code (Bot)",
-      "web": "Source Code (Web)"
-    },
-    "license": "Licensed under the MIT License"
-  },
-  "diagram": {
-    "text1": "Invite via Discord",
-    "text2": "Auto-generate links!",
-    "multiplayer1": "Remote Friends",
-    "multiplayer2": "Local Multiplayer",
-    "multiplayer3": "No Purchase Required!",
-    "multiplayer4": ""
   }
 }
