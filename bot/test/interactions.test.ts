@@ -1,13 +1,21 @@
 import { env, SELF } from 'cloudflare:test';
 import {
+  APIActionRowComponent,
+  APIButtonComponent,
+  APIComponentInContainer,
+  APIContainerComponent,
   APIInteraction,
   APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandOptionType,
   ApplicationCommandType,
+  ButtonStyle,
   ComponentType,
   InteractionResponseType,
   InteractionType,
+  APIMediaGalleryComponent,
+  APISectionComponent,
   MessageFlags,
+  RESTPatchAPIWebhookWithTokenMessageJSONBody,
 } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
 import { handleInteraction } from '../src/commands/index.js';
@@ -145,6 +153,20 @@ function click(session: string): APIInteraction {
   } as unknown as APIInteraction;
 }
 
+/** Message body sent with editOriginal */
+type Body = RESTPatchAPIWebhookWithTokenMessageJSONBody;
+
+/**
+ * Components inside the container of a V2 message
+ * @param body message body
+ * @returns components of the only container
+ */
+function containerOf(body: Body): APIComponentInContainer[] {
+  const [container] = (body.components ?? []) as APIContainerComponent[];
+  expect(container?.type).toBe(ComponentType.Container);
+  return container!.components;
+}
+
 const RPT_GAME: GameInfo = {
   name: 'Retrocycles',
   headerImage: 'https://img/x.jpg',
@@ -194,20 +216,58 @@ describe('/steam invite', () => {
       { id: HOST.id, name: HOST.username },
       {},
     ]);
-    const [name, token, body] = services.calls[1] as [
-      string,
-      string,
-      Record<string, any>,
-    ];
+    const [name, token, body] = services.calls[1] as [string, string, Body];
     expect([name, token]).toEqual(['editOriginal', 'token']);
-    expect(body.embeds[0]).toMatchObject({
-      author: { name: 'Host nick' },
-      title: "Let's play Retrocycles together for free!",
-      url: 'https://store.steampowered.com/app/1306180?l=english',
-      image: { url: 'https://img/x.jpg' },
+    expect(body.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(body.content).toBeUndefined();
+    expect(body.embeds).toBeUndefined();
+    expect(body.allowed_mentions).toEqual({ parse: [] });
+
+    const [header, gallery, , , row] = containerOf(body) as [
+      APISectionComponent,
+      APIMediaGalleryComponent,
+      unknown,
+      unknown,
+      APIActionRowComponent<APIButtonComponent>,
+    ];
+    expect(header.components[0]!.content).toBe(
+      "## Let's play Retrocycles together for free!\n**Host nick** is looking for players",
+    );
+    expect(header.accessory).toMatchObject({
+      type: ComponentType.Thumbnail,
+      media: { url: 'https://cdn.discordapp.com/embed/avatars/0.png' },
     });
-    expect(body.components[0].components[0].custom_id).toBe(
-      '_=create_invite&_t=2&user=100&game=1306180&session=7',
+    expect(gallery.items[0]!.media.url).toBe('https://img/x.jpg');
+    expect(row.components[0]).toMatchObject({
+      custom_id: '_=create_invite&_t=2&user=100&game=1306180&session=7',
+    });
+    expect(row.components[1]).toMatchObject({
+      style: ButtonStyle.Link,
+      url: 'https://store.steampowered.com/app/1306180?l=english',
+    });
+  });
+
+  it('shows names as they are', async () => {
+    const services = fake({
+      daemonId: 'd',
+      status: ONLINE,
+      game: { ...RPT_GAME, name: 'Tom_&_Jerry*' },
+    });
+    const interaction = command('invite', [
+      {
+        name: 'game_id',
+        type: ApplicationCommandOptionType.Number,
+        value: 1306180,
+      },
+    ]) as unknown as { member: { nick: string } };
+    interaction.member.nick = '**bold** <@1>';
+    await handleInteraction(interaction as unknown as APIInteraction, services);
+    await services.done();
+    const [header] = containerOf(services.calls[0]![2] as Body) as [
+      APISectionComponent,
+    ];
+    expect(header.components[0]!.content).toBe(
+      "## Let's play Tom\\_&\\_Jerry\\* together for free!\n**\\*\\*bold\\*\\* \\<@1\\>** is looking for players",
     );
   });
 

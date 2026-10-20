@@ -28,18 +28,16 @@ invite_command:
 invite_panel:
   steam_language: english
   title: "Let's play {{name}} together for free!"
-  description: |-
-    If you want to join, please enter the room following the steps below.
-    (Once it's your turn, I'll automatically assign a controller for you)
-  features:
-    name: Features
-    value: |-
-      - Join for free even if you don't own the game
-      - Join from your PC or even **from your smartphone!**
-      - Play without a Steam account
+  host: '**{{name}}** is looking for players'
+  features: |-
+    - Join for free, **even without owning** the game
+    - Join **from your phone**, too
+    - **No** Steam account needed
+  store_button: Store page
+  note: Press the button to get an invite link that only you can see. The host gives you a controller when it's your turn.
 
 invite_button:
-  label: Get an invitation link to join the game!
+  label: Get a link to join
   error:
     daemon_not_linked: The host has not registered their client ID.
     daemon_offline: The host is offline.

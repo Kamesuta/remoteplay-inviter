@@ -10,6 +10,30 @@ import { DaemonUser } from '../daemon/models.js';
 /** Embed color (DarkBlue) */
 export const EMBED_COLOR = 3447003;
 
+/** Accent color of the invite panel (Steam blue) */
+export const PANEL_COLOR = 0x1a9fff;
+
+/**
+ * Show text as it is in Discord markdown
+ * @param text user-provided text such as a name
+ * @returns escaped text
+ */
+export function escapeMarkdown(text: string): string {
+  return text.replace(/[\\*_~`|<>[\]()#-]/g, '\\$&');
+}
+
+/**
+ * Small gray text (`-#` on every line)
+ * @param text message
+ * @returns markdown
+ */
+export function subtext(text: string): string {
+  return text
+    .split('\n')
+    .map((line) => `-# ${line}`)
+    .join('\n');
+}
+
 /**
  * User who triggered an interaction
  * @param interaction interaction
