@@ -5,7 +5,7 @@ interface __BaseEnv_Env {
 	DB: D1Database;
 	DISCORD_APPLICATION_ID: "1252429340780527714";
 	DAEMON_REQUIRED_VERSION: "0.3.1";
-	DAEMON_DOWNLOAD_URL: "https://steaminviter.app/download";
+	DAEMON_DOWNLOAD_URL: "https://github.com/Kamesuta/remoteplay-inviter/releases/latest";
 	DISCORD_TOKEN: string;
 	DISCORD_PUBLIC_KEY: string;
 	DAEMON: DurableObjectNamespace<import("./src/index").DaemonObject>;

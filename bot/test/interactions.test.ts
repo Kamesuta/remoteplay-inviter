@@ -101,7 +101,8 @@ function fake(options: {
     },
     gameInfo: () => Promise.resolve(options.game),
     waitUntil: (promise) => pending.push(promise),
-    downloadUrl: 'https://steaminviter.app/download',
+    downloadUrl:
+      'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
   };
 }
 
@@ -404,7 +405,7 @@ describe('/steam setup', () => {
       fake({}),
     )) as APIInteractionResponseChannelMessageWithSource;
     expect(response.data.content).toContain(
-      'https://steaminviter.app/download',
+      'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
     );
   });
 });

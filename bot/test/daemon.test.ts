@@ -77,7 +77,8 @@ describe('connection', () => {
     expect(JSON.parse(response.headers.get('X-Error')!)).toMatchObject({
       error: 'outdated',
       required: '0.3.1',
-      download: 'https://steaminviter.app/download',
+      download:
+        'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
     });
   });
 
@@ -234,7 +235,7 @@ describe('fetch', () => {
     });
     expect(response.status).toBe(302);
     expect(response.headers.get('Location')).toBe(
-      'https://steaminviter.app/download',
+      'https://github.com/Kamesuta/remoteplay-inviter/releases/latest',
     );
   });
 });
