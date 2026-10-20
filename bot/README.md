@@ -51,6 +51,18 @@ npm run dev
 
 クライアントを `ws://localhost:8787` につなぐには、実行ファイルの隣に `remoteplay-inviter.endpoint.toml`（`url = "ws://localhost:8787"`）を置きます。開発版のクライアントは版が `0.1.0` なので、`npm run dev -- --var DAEMON_REQUIRED_VERSION:0.1.0` で起動してください。
 
+### モッククライアント
+
+Steam なしで Discord 側を試すには、モッククライアントをつなぎます。実際のクライアントと同じように Bot につなぎ、`/steam invite` には決まったゲーム(既定は Overcooked! 2)を、参加ボタンにはダミーの招待リンクを返します。
+
+```bash
+npm run mock -- --config <remoteplay-inviter.config.toml>
+```
+
+- `--config` には、Discord アカウントとリンク済みのクライアントの設定ファイルを渡します。そのクライアント ID でつなぎます(画面には出しません)。
+- 本番の Bot につなぐときは `--endpoint wss://gateway.steaminviter.app` を付けます。同じクライアント ID の本物が動いていても、本物は切れません。Bot はあとからつないだほう(モック)を使い、モックを止めると本物に戻ります。
+- `--fail-link invite_failed` などで、エラーの返り方も試せます。ほかのオプションは [scripts/mock-client.ts](scripts/mock-client.ts) の冒頭にあります。
+
 ### 確認
 
 ```bash
