@@ -16,7 +16,7 @@ export default function HomeFeatures() {
           </div>
           <div className="zf-phn"><Phone /></div>
         </div>
-        <div style={{ flex: "999 1 520px", minWidth: "0", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "40px 20px", paddingTop: "22px" }}>
+        <div className="cols-2" style={{ flex: "999 1 520px", minWidth: "0", display: "grid", gap: "40px 20px", paddingTop: "22px" }}>
           <div className="rv lift" style={{ position: "relative", background: "var(--t-card)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "24px", padding: "40px 24px 24px", boxShadow: "var(--t-card-shadow)" }}>
             <span style={{ position: "absolute", left: "22px", top: "-22px", width: "46px", height: "46px", borderRadius: "50%", background: "#06dec5", color: "#0b1520", fontFamily: "var(--font-dela), sans-serif", fontSize: "16px", display: "grid", placeItems: "center" }}>01</span>
             <span style={{ position: "absolute", left: "39px", top: "20px", width: "12px", height: "12px", background: "#06dec5", transform: "rotate(45deg)" }}></span>

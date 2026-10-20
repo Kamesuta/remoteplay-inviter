@@ -14,7 +14,7 @@ export default function HomeWorry() {
         <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#dcc02e" }}></span>
         <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#1a9fff" }}></span>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "40px 24px", marginTop: "64px" }}>
+      <div className="cols-3" style={{ display: "grid", gap: "40px 24px", marginTop: "64px" }}>
         <div className="rv" style={{ position: "relative", background: "var(--t-card)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", padding: "52px 28px 30px", boxShadow: "var(--t-card-shadow)" }}>
           <div style={{ position: "absolute", left: "50%", top: "-22px", transform: "translateX(-50%)", whiteSpace: "nowrap", background: "#06dec5", color: "#0b1520", fontWeight: "900", fontSize: "15px", padding: "8px 18px", borderRadius: "999px" }}>
             {t("t2")}
