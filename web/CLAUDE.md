@@ -55,7 +55,8 @@ src/
 
 ### アニメ
 - 各アニメは外枠 `.rpa.<接頭辞>`(例 `.rpa.ifl`)の `className` に付け外しするクラスで場面を進め、動きはすべて CSS の transition。接頭辞でほかの CSS とぶつからないようにする。
-- 進め方は `LOOP = { beats: [[ms, 付けるクラス, 外すクラス], …], period, finalFlags }` で書き、`useLoopAnimation(ref, LOOP)` に渡す。React は再描画しない。画面外では止まり、reduced motion のときは `finalFlags` の場面を静止で見せる。
+- 進め方は `LOOP = { beats: [[ms, 付けるクラス, 外すクラス], …], period }` で書き、`useLoopAnimation(ref, LOOP)` に渡す。React は再描画しない。画面外では止まる。
+- OS の「アニメーション効果」がオフ(`prefers-reduced-motion: reduce`)でも止めない。使い方の説明そのものなので、止めると何も伝わらない。速さのためにオフにしている PC もある。
 - 動かすのは transform と opacity だけ。スマホ幅では `globals.css` の `.zf-*` で縮める。
 - アニメの中の文字は `messages/*.json` の `anim.<接頭辞>`。ブラウザに送るメッセージは `anim` だけ(`[locale]/layout.tsx`)。
 

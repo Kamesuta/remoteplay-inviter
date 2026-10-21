@@ -12,7 +12,7 @@ function keyBeats(): Beat[] {
   return beats;
 }
 
-const LOOP: Loop = { beats: keyBeats(), period: 7600, finalFlags: ['done'] };
+const LOOP: Loop = { beats: keyBeats(), period: 7600 };
 
 export default function KeyMap() {
   const t = useTranslations("anim.kmp");

@@ -23,7 +23,6 @@ const LOOP: Loop = {
     [5700, ['ca'], ['c3']],
   ],
   period: 8200,
-  finalFlags: ['cg', 'fill', 't2'],
 };
 
 const KEYS = [["W", "#06dec5"], ["A", "#06dec5"], ["S", "#06dec5"], ["D", "#06dec5"], ["K", "#4cc25a"], ["L", "#f0584c"], ["J", "#3b8bff"], ["I", "#f2c230"]];

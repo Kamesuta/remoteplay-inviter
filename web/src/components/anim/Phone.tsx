@@ -23,7 +23,6 @@ const LOOP: Loop = {
     [5450, ['p6'], []],
   ],
   period: 8200,
-  finalFlags: ['e1', 'rp', 'p2', 'p3', 'p4', 'p5', 'p6', 'L3'],
 };
 
 export default function Phone() {

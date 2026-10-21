@@ -19,7 +19,6 @@ const LOOP: Loop = {
     [5050, ['d3'], []],
   ],
   period: 7200,
-  finalFlags: ['b1', 'c1', 'p3', 'd1', 'd2', 'd3', 's3'],
 };
 
 export default function JoinPhone() {

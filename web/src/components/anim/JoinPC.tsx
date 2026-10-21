@@ -20,7 +20,6 @@ const LOOP: Loop = {
     [5200, ['d2'], []],
   ],
   period: 7200,
-  finalFlags: ['ct1', 'ct2', 'b1', 'cl', 'd1', 'd2', 's3'],
 };
 
 export default function JoinPC() {

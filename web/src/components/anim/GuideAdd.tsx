@@ -24,7 +24,6 @@ const LOOP: Loop = {
     [4600, ['ca'], ['c3']],
   ],
   period: 7400,
-  finalFlags: ['row', 'k3'],
 };
 
 export default function GuideAdd() {
