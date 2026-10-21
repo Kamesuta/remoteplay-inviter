@@ -15,7 +15,6 @@ const LOOP: Loop = {
     [4600, [], ['k2']],
   ],
   period: 7200,
-  finalFlags: ['s1', 's2', 's3', 's5'],
 };
 
 export default function Setup() {

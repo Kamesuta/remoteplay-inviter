@@ -18,7 +18,6 @@ const LOOP: Loop = {
     [2700, ['k2'], ['k1']],
   ],
   period: 6800,
-  finalFlags: ['on', 'st', 'k2'],
 };
 
 export default function GuideCheck() {

@@ -22,7 +22,6 @@ const LOOP: Loop = {
     [4900, ['ca'], ['c3']],
   ],
   period: 7600,
-  finalFlags: ['iss', 'ok', 'k3'],
 };
 
 export default function GuideIssues() {

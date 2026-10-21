@@ -20,7 +20,6 @@ const LOOP: Loop = {
     [5200, ['hl', 'ca'], ['c3']],
   ],
   period: 7800,
-  finalFlags: ['sp', 'z1'],
 };
 
 export default function GuideDownload() {

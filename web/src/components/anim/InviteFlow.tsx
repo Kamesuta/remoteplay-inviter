@@ -37,7 +37,6 @@ const LOOP: Loop = {
     [6400, ['st4', 's-note'], ['st3']],
   ],
   period: 9200,
-  finalFlags: ['s-panel', 'h2', 'r2', 'r3', 'r4', 'd2', 'd3', 'd4', 's-note', 'st4'],
 };
 
 export default function InviteFlow() {

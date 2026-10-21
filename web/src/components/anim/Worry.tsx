@@ -42,7 +42,6 @@ const LOOP: Loop = {
     [10400, ['stamp'], []],
   ],
   period: 13000,
-  finalFlags: ['o1', 'lk', 'cp', 'd1', 'm1', 'm2', 'a2', 'a3', 'cnt1', 'cnt2', 'r2', 'stamp', 'st5'],
 };
 
 export default function Worry() {

@@ -41,7 +41,6 @@ function compareBeats(): Beat[] {
 const LOOP: Loop = {
   beats: compareBeats(),
   period: 11000,
-  finalFlags: ['lm1', 'lm2', 'lm3', 'lm5', 'lh1', 'lh2', 'lh3', 'ls2', 'ls3', 'ls4', 'ldone', 'rc', 'rpn', 'rs', 'rr2', 'rr3', 'rr4', 'rs2', 'rs3', 'rs4', 'rdone'],
 };
 
 export default function Compare() {
