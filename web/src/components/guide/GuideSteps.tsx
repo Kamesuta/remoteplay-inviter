@@ -39,26 +39,10 @@ export default function GuideSteps() {
           <div style={{ flex: "1 1 340px", minWidth: "0" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "14px" }}>
               <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>2</span>
-              <h3 style={{ margin: "0", fontSize: "24px" }}>{t("t5")}</h3>
-            </div>
-            <ol style={{ margin: "14px 0 0", paddingLeft: "20px", color: "var(--t-sub)" }}>
-              <li>{t.rich("li4", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
-              <li>{t.rich("li5", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
-              <li>{t.rich("li6", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
-              <li>{t.rich("li7", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
-            </ol>
-            <div style={{ marginTop: "16px", padding: "14px 16px", borderRadius: "16px", background: "var(--t-card)", border: "var(--t-bw) solid var(--t-card-line)", fontSize: "14px", color: "var(--t-sub)" }}>{t.rich("div1", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b>, br: () => <br /> })}</div>
-          </div>
-          <div className="rv" style={{ flex: "0 1 auto", padding: "12px", background: "var(--t-frame)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", boxShadow: "var(--t-card-shadow)" }}><div className="zf-wd"><GuideIssues /></div></div>
-        </div>
-        {/* Step 3 */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "32px 48px", alignItems: "center", marginTop: "88px" }}>
-          <div style={{ flex: "1 1 340px", minWidth: "0" }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "14px" }}>
-              <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>3</span>
               <h3 style={{ margin: "0", fontSize: "24px" }}>{t("t6")}</h3>
             </div>
             <ol style={{ margin: "14px 0 0", paddingLeft: "20px", color: "var(--t-sub)" }}>
+              <li>{t.rich("li4", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
               <li>{t.rich("li8", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b>, b1: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
               <li>{t.rich("li9", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
               <li>{t.rich("li10", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
@@ -66,11 +50,11 @@ export default function GuideSteps() {
           </div>
           <div className="rv" style={{ flex: "0 1 auto", padding: "12px", background: "var(--t-frame)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", boxShadow: "var(--t-card-shadow)" }}><div className="zf-wd"><GuideAdd /></div></div>
         </div>
-        {/* Step 4 */}
+        {/* Step 3 */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "32px 48px", alignItems: "center", marginTop: "88px" }}>
           <div style={{ flex: "1 1 300px", minWidth: "0" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "14px" }}>
-              <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>4</span>
+              <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>3</span>
               <h3 style={{ margin: "0", fontSize: "24px" }}>{t("t7")}</h3>
             </div>
             <div style={{ marginTop: "18px", display: "flex", flexDirection: "column", gap: "14px", padding: "16px 16px 16px 18px", background: "var(--t-card)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "22px", boxShadow: "var(--t-card-shadow)" }}>
@@ -98,21 +82,36 @@ export default function GuideSteps() {
           </div>
           <div className="rv" style={{ flex: "0 1 auto", padding: "12px", background: "var(--t-frame)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", boxShadow: "var(--t-card-shadow)" }}><div className="zf-wd"><GuidePaste /></div></div>
         </div>
-        {/* Step 5 */}
+        {/* Step 4 */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "32px 48px", alignItems: "center", marginTop: "88px" }}>
           <div style={{ flex: "1 1 340px", minWidth: "0" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "14px" }}>
-              <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>5</span>
+              <span style={{ fontFamily: "var(--font-dela), sans-serif", fontSize: "56px", lineHeight: "1", color: "var(--t-hl)" }}>4</span>
               <h3 style={{ margin: "0", fontSize: "24px" }}>{t("t9")}</h3>
             </div>
             <ol style={{ margin: "14px 0 0", paddingLeft: "20px", color: "var(--t-sub)" }}>
               <li>{t.rich("li14", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
               <li>{t.rich("li15", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
               <li>{t.rich("li16", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b>, b1: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
+              <li>{t.rich("liToIssues", { a0: (c) => <a href="#issues" style={{ color: "var(--t-hl)", fontWeight: "700" }}>{c}</a> })}</li>
             </ol>
             <p style={{ margin: "12px 0 0", fontSize: "14px", color: "var(--t-sub)" }}>{t("t10")}</p>
           </div>
           <div className="rv" style={{ flex: "0 1 auto", padding: "12px", background: "var(--t-frame)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", boxShadow: "var(--t-card-shadow)" }}><div className="zf-wd"><GuideCheck /></div></div>
+        </div>
+        {/* Issues (only when the controller is not recognized) */}
+        <div id="issues" style={{ display: "flex", flexWrap: "wrap", gap: "32px 48px", alignItems: "center", marginTop: "88px", scrollMarginTop: "96px" }}>
+          <div style={{ flex: "1 1 340px", minWidth: "0" }}>
+            <div style={{ fontFamily: "var(--font-dot), monospace", fontSize: "15px", letterSpacing: "0.1em", color: "var(--t-hl)" }}>{t("issuesLabel")}</div>
+            <h3 style={{ margin: "6px 0 0", fontSize: "24px" }}>{t("t5")}</h3>
+            <ol style={{ margin: "14px 0 0", paddingLeft: "20px", color: "var(--t-sub)" }}>
+              <li>{t.rich("li5", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
+              <li>{t.rich("li6", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
+              <li>{t.rich("li7", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b> })}</li>
+            </ol>
+            <div style={{ marginTop: "16px", padding: "14px 16px", borderRadius: "16px", background: "var(--t-card)", border: "var(--t-bw) solid var(--t-card-line)", fontSize: "14px", color: "var(--t-sub)" }}>{t.rich("div1", { b0: (c) => <b style={{ color: "var(--t-ink)" }}>{c}</b>, br: () => <br /> })}</div>
+          </div>
+          <div className="rv" style={{ flex: "0 1 auto", padding: "12px", background: "var(--t-frame)", border: "var(--t-bw) solid var(--t-card-line)", borderRadius: "28px", boxShadow: "var(--t-card-shadow)" }}><div className="zf-wd"><GuideIssues /></div></div>
         </div>
         {/* Key map + presets */}
         <div id="keys" style={{ paddingTop: "120px" }}>
