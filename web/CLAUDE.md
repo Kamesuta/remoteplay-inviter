@@ -24,6 +24,7 @@ npm run record    # Discord 用の GIF と OG 画像を撮り直す(下記)
 | `/en` `/ja` | LP(`src/app/[locale]/(site)/page.tsx`) |
 | `/en/guide/x360ce` `/ja/guide/x360ce` | キーボードをコントローラーにする手順 |
 | `/[locale]/embed/<name>` | アニメ 1 本だけを舞台の大きさで出す録画用のページ。noindex、sitemap に載せない、GA なし |
+| `/discord/home-{en,ja}.json` | LP を Discord に貼ったときに出すカード(Component Embed)。LP の `<link rel="discord:component-embed">` が指す |
 
 - `/` は middleware が Accept-Language などで `/en` か `/ja` に振り分ける。
 - `(site)` グループのページだけが Google Analytics を読む。
@@ -46,7 +47,9 @@ src/
 │   ├── PageShell.tsx            # 背景と基本の文字
 │   ├── LanguageLink.tsx         # 同じページの別の言語へ
 │   └── OgCard.tsx               # OG 画像のカード
-└── utils/metadata.ts            # メタデータ(canonical・hreflang・OGP)
+└── utils/
+    ├── metadata.ts              # メタデータ(canonical・hreflang・OGP)
+    └── discordEmbed.ts          # Discord のリンクカード(3,000 バイトを超えるとビルドが止まる)
 ```
 
 ### スタイル
@@ -61,7 +64,7 @@ src/
 - アニメの中の文字は `messages/*.json` の `anim.<接頭辞>`。ブラウザに送るメッセージは `anim` だけ(`[locale]/layout.tsx`)。
 
 ### 国際化
-- `messages/ja.json` と `messages/en.json` は同じキーにそろえる。名前空間は `home.*`(LP)、`guide.*`(説明ページ)、`anim.*`(アニメ)、`title`/`description`(LP のメタデータ)。
+- `messages/ja.json` と `messages/en.json` は同じキーにそろえる。名前空間は `home.*`(LP)、`guide.*`(説明ページ)、`anim.*`(アニメ)、`discordEmbed.*`(Discord のリンクカード)、`title`/`description`(LP のメタデータ)。
 - 太字やリンクを含む文は `t.rich("key", { b0: (c) => <b>{c}</b> })` のようにタグで書く。キー名(`t1`、`h21` など)はデザインから移したときの通し番号。
 - 内部リンクは `@/i18n/routing` の `Link` を使う(言語が付く)。
 
@@ -73,3 +76,8 @@ src/
 ## 外部の URL
 - BOT の追加:`https://discord.com/oauth2/authorize?client_id=1252429340780527714`
 - ダウンロード:`https://github.com/Kamesuta/remoteplay-inviter/releases/latest/download/remoteplay-inviter-windows.zip`(ほかの OS は releases/latest)
+
+## Discord のリンクカード
+- LP の URL を Discord に貼ると、OG の代わりに `/discord/home-<locale>.json` のカードが出る。仕様は https://docs.discord.com/developers/link-previews/component-embeds 。
+- 使えるのはリンクボタンだけで、上限は 3,000 バイト・部品 40 個。OG のタグは、カードが出せないときの代わりなので消さない。
+- 確かめるときは https://discord.com/developers/embeds 。Discord は 30 分ほど展開をキャッシュするので、貼り直すときは `?v=2` などを付ける。
