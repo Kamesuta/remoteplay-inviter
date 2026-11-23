@@ -1,6 +1,6 @@
 {
-  "title": "Remote Play Inviter - DiscordでSteam Remote Play Togetherに招待できるBOT",
-  "description": "DiscordでSteam Remote Play Togetherに友達を無料で簡単に招待！",
+  "title": "Remote Play Inviter - Discord で Steam Remote Play Together に招待できる BOT",
+  "description": "Discord から Steam のゲームに友だちを招待できる BOT です。ゲームを持っていない友だちも、Steam Remote Play Together で無料で一緒に遊べます。",
   "home": {
     "nav": {
       "t1": "なにができる？",
@@ -405,8 +405,20 @@
       "liToIssues": "どちらでも認識されないときは、下の<a0>「Issues を確認」</a0>へ進みます。"
     },
     "meta": {
-      "title": "キーボードをコントローラーにする方法(x360ce)- Remote Play Inviter",
+      "title": "キーボードをコントローラーにする方法(x360ce) - Remote Play Inviter",
       "description": "無料ソフトの x360ce で、キーボードを Xbox のコントローラーとして使う方法。コントローラーがなくても Steam Remote Play Together に参加できます。"
     }
+  },
+  "discordEmbed": {
+    "lead": "Discord から Steam のゲームに友だちを招待できる BOT です。ゲームを持っていない友だちも、無料で一緒に遊べます。",
+    "addTitle": "BOT を Discord に追加する",
+    "addText": "サーバーのほか、DM でも使えます。",
+    "addButton": "追加する",
+    "appTitle": "PC にアプリを入れる",
+    "appText": "入れるのはゲームを持っている人（ホスト役）だけで OK です。Windows・macOS・Linux に対応しています。",
+    "appButton": "ダウンロード",
+    "invite": "ゲームを起動して Discord で `/steam invite` と送るだけで、みんなを招待できます！",
+    "siteButton": "サイトを見る",
+    "foot": "無料で使えます。ソースコードは {github} で公開しています。"
   }
 }

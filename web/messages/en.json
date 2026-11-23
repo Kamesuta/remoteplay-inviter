@@ -1,6 +1,6 @@
 {
   "title": "Remote Play Inviter - Discord Bot for Steam Remote Play Together Invitations",
-  "description": "Easily invite friends to Steam Remote Play Together through Discord for free!",
+  "description": "A Discord bot that invites your friends to Steam games. Friends who don't own the game can play along for free with Steam Remote Play Together.",
   "home": {
     "nav": {
       "t1": "What it does",
@@ -408,5 +408,17 @@
       "title": "Use your keyboard as a controller (x360ce) - Remote Play Inviter",
       "description": "How to use your keyboard as an Xbox controller with the free tool x360ce, so you can join Steam Remote Play Together without a controller."
     }
+  },
+  "discordEmbed": {
+    "lead": "A Discord bot that invites your friends to Steam games. Friends who don't own the game can play along for free.",
+    "addTitle": "Add the bot to Discord",
+    "addText": "Works in servers and in DMs.",
+    "addButton": "Add",
+    "appTitle": "Install the app on your PC",
+    "appText": "Only the person who owns the game (the host) needs it. Works on Windows, macOS and Linux.",
+    "appButton": "Download",
+    "invite": "Just start the game and send `/steam invite` in Discord to invite everyone!",
+    "siteButton": "Visit site",
+    "foot": "Free to use. The source code is on {github}."
   }
 }
