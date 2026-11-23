@@ -1,6 +1,6 @@
 {
   "title": "Remote Play Inviter - Discord Bot for Steam Remote Play Together Invitations",
-  "description": "Easily invite friends to Steam Remote Play Together through Discord for free!",
+  "description": "A Discord bot that invites your friends to Steam games. Friends who don't own the game can play along for free with Steam Remote Play Together.",
   "home": {
     "nav": {
       "t1": "What it does",
